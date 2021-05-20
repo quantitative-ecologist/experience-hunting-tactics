@@ -1,0 +1,15 @@
+---
+title: Demo Weave Document
+author: Maxico Franco
+date: 2021-05-20
+---
+
+# Import packages
+Let's start by importing the data
+```julia
+using Pkg
+using Weave
+
+# Test math function
+f = (x) -> x^2
+```
