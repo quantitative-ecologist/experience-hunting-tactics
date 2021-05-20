@@ -1,11 +1,13 @@
 ---
-title: Demo Weave Document
-author: Maxico Franco
+title: Data exploration
+author: Anonymous for review
 date: 2021-05-20
+contact: anonymous@courrier.uqam.ca
 ---
 
 # Import packages
-Let's start by importing the data
+Let's start by importing the data.
+
 ```julia
 using Pkg
 using Weave
