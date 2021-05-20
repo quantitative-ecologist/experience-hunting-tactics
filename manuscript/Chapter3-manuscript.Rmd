@@ -1,0 +1,50 @@
+---
+title: "How hunting experience, habitat structure, and prey predictability jointly shape individual specialisation in predator foraging mode in an online videogame"
+author: "Maxime Fraser Franco^1^, Francesca Santostefano^1^, Clint D. Kelly^1^, Pierre-Olivier Montiglio^1^"
+output: 
+  word_document:
+    reference_docx: Chapter3-styles.docx
+bibliography: references.bib
+csl: american-naturalist.csl
+---
+###### Groupe de Recherche en Écologie Comportementale et Animale (GRECA), Département des Sciences Biologiques, Université du Québec à Montréal, Montréal, QC, Canada
+  
+###### ^1^Correspondence: Pavillon des Sciences Biologiques (SB) SB-1805, 141 Avenue du Président-Kennedy, Montréal (Québec), Canada, H2X 1Y4
+
+###### ^1^Corresponding author: maxime(dot)fraser(dot)franco(at)hotmail.com
+
+
+\newpage
+# Abstract {.unnumbered}
+This is my abstract paragraph
+
+Keywords: individual variation, hunting success, plasticity, learning, prey predictability, online videogames
+
+\newpage
+# Introduction {.unnumbered}
+
+Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [sources]. Recently, ecologists have began to hypothesise that there may be a functional relationship linking individual foraging specialisation to specialisation in resource consumption (i.e. niche specialisation) [sources: Toscano et al. 2016, etc]. One of the postulates of this hypothesis is that predators need to develop specific foraging tactics that are fine tuned to specific prey attributes [sources: Phillips, Woo, etc.]. For instance, predators species often use stereotyped hunting techniques required to capture the type of prey they encounter [sources : Woo, Estes, tinker, etc]. However, it remains largely unclear how extrinsinc and intrinsinct factors interact to shape these individual-level processes. Therefore, we still have limited knowledge on the ecological consequences of individual foraging and diet specialisation. An important question that remains unanswered is how generalist and specialist individuals can coexist within predator populations. If foraging and resource specialisation can help maintain community stability by promoting species coexistence [sources: bolnick, araujo, wolf, etc], it is crucial that we develop studies that integrate these two individual components with their associate causes and consequences.
+ 
+Several studies have shown that generalist and specialist individuals often don't differ in fitness related measures [sources: à partir de Woo]. An emerging explanation is that temporal fluctuations in the predictability of resources (abundance, availability, behaviour) may favor one or the other strategy depending on the time scale [sources : Woo, Phillips, Ceia, etc]. The resource-predictability hypothesis advances that when resources are predictable, particularly on short time-scales, individual specialists should benefit from higher fitness returns. The rationale behind this prediction is that individuals should have higher prey delivery rates when they repeatedly employ the same foraging technique as it is easier to assess prey predictability over shorter time-scales. In contrast, individual generalists should be advantaged over longer time scales as resource parameters are expected to fluctuate.
+
+Hunting experience and age have been proposed as major potential drivers of the relationship between foraging specialisation and resource use [sources]. Learning how to hunt is crucial for young predators to reach adulthood and survive.
+
+
+(par contre, décomposer l'âge de l'expérience est difficile, et particulièrement chez des espèces sur le terrain puisque ça peut impliquer des techniques invasives)
+(parler des études qui ont montré que certains spécialistes étaient meilleurs, mais que c'était confondu par l'âge)
+
+A second important driver of individual differences in predator hunting behaviour is related to habitat specific features [sources]. Predators are expected to adjust their foraging strategies to their habitat as they offer different structures which can aid/impair (ex. perches, vegetation density) vision or the ability to hide, which may facilitate the use of a specific hunting mode (ambush vs cursorial). For instance, predators often shift from a cursorial hunting mode in open and homogeneous landscapes, to an ambush hunting mode in closed and heterogeneous landscapes [sources].  
+
+
+Several studies have shown that individual specialists can outperform
+
+- Paragraphe 1 (effet de la taille, du sexe, et importance du foraging mode)
+
+- Paragraphe 2 (importance des proies (woo et al.) et de l'habitat)
+
+- Paragraphe 3 (importance de l'expérience et comment c'est un rôle probable mais encore inexploré) (sources Weimerskirch, 2005, 2007)
+
+- Paragraphe 4 (système qu'on utilise) (jeux vidéo : paragraphe le + court possible)
+
+- Paragraphe 5 (objectifs et hypotèses)
+
