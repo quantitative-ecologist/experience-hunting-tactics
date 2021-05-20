@@ -33,7 +33,7 @@ Hunting experience and age have been proposed as major potential drivers of the 
 (par contre, décomposer l'âge de l'expérience est difficile, et particulièrement chez des espèces sur le terrain puisque ça peut impliquer des techniques invasives)
 (parler des études qui ont montré que certains spécialistes étaient meilleurs, mais que c'était confondu par l'âge)
 
-A second important driver of individual differences in predator hunting behaviour is related to habitat specific features [sources]. Predators are expected to adjust their foraging strategies to their habitat as they offer different structures which can aid/impair (ex. perches, vegetation density) vision or the ability to hide, which may facilitate the use of a specific hunting mode (ambush vs cursorial). For instance, predators often shift from a cursorial hunting mode in open and homogeneous landscapes, to an ambush hunting mode in closed and heterogeneous landscapes [sources].  
+A second important driver of individual differences in predator hunting behaviour is related to habitat-specific features [sources, Kobler, parler de la ideal free distribution?]. Predators are expected to adjust their foraging mode (ambush vs cursorial) to habitat structures that aid/impair (ex. perches, vegetation density) their vision, ability to hide, or energetic/time requirements. For instance, predators who ambush in closed and heterogeneous landscapes often switch to cursorial hunters in open and homogeneous landscapes [sources]. (Donner exemple des orcs)
 
 
 Several studies have shown that individual specialists can outperform
