@@ -12,7 +12,7 @@ cd("C:/Users/maxim/OneDrive/Documents/GitHub/Chapter3")
 **1.1 Load the required packages.**
 
 ```julia
-using Pkg, Weave, CSV, DataFrames
+using Pkg, Weave, CSV, DataFrames, Plots
 ```
 
 **1.2 Import the data.**
@@ -22,3 +22,44 @@ data = DataFrame(CSV.File("data/merged-data.csv"))
 ```
 
 # 2. Inspect the data
+
+**2.1 Distribution of predator behaviour**
+
+```julia
+# Predator behaviour
+a = histogram(data.Zspeed, bins = 50, label = "Pred. speed")
+b = histogram(data.Zspace_covered_rate, bins = 50, label = "Pred. space")
+c = histogram(data.Zprox_mid_guard, bins = 50, label = "Pred. ambush time")
+d = histogram(data.Zhook_start_time, bins = 50, label = "Pred. latency 1st capt.")
+
+plot(a, b, c, d, layout = 4)
+```
+
+```julia
+# Square root of predator behaviour
+a1 = histogram(data.sqrtspeed, bins = 50, label = "Pred. speed")
+b1 = histogram(data.sqrtspace_covered_rate, bins = 50, label = "Pred. space")
+c1 = histogram(data.sqrtprox_mid_guard, bins = 50, label = "Pred. ambush time")
+d1 = histogram(data.sqrthook_start_time, bins = 50, label = "Pred. latency 1st capt.")
+
+plot(a1, b1, c1, d1, layout = 4)
+```
+
+```julia
+# Square root of predator behaviour
+a2 = histogram(data.logspeed, bins = 50, label = "Pred. speed")
+b2 = histogram(data.logspace_covered_rate, bins = 50, label = "Pred. space")
+c2 = histogram(data.logprox_mid_guard, bins = 50, label = "Pred. ambush time")
+d2 = histogram(data.loghook_start_time, bins = 50, label = "Pred. latency 1st capt.")
+
+plot(a2, b2, c2, d2, layout = 4)
+```
+**2.1 Distribution of prey behaviour**
+
+```julia
+# Prey behaviour
+e = histogram(data.surv_speed, bins = 50, label = "Prey speed")
+f = histogram(data.surv_space_covered_rate, bins = 50, label = "Prey space")
+#g = histogram(data.boldness, bins = 50, label = "Prey boldness")
+plot(e, f, layout = 2, size = (600, 200))
+```
