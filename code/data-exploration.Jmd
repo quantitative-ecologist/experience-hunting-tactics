@@ -25,6 +25,7 @@ data = DataFrame(CSV.File("data/merged-data.csv"))
 
 **2.1 Distribution of predator behaviour**
 
+Standard variables
 ```julia
 # Predator behaviour
 a = histogram(data.Zspeed, bins = 50, label = "Pred. speed")
@@ -34,7 +35,7 @@ d = histogram(data.Zhook_start_time, bins = 50, label = "Pred. latency 1st capt.
 
 plot(a, b, c, d, layout = 4)
 ```
-
+Square root variables
 ```julia
 # Square root of predator behaviour
 a1 = histogram(data.sqrtspeed, bins = 50, label = "Pred. speed")
@@ -44,9 +45,9 @@ d1 = histogram(data.sqrthook_start_time, bins = 50, label = "Pred. latency 1st c
 
 plot(a1, b1, c1, d1, layout = 4)
 ```
-
+Log variables
 ```julia
-# Square root of predator behaviour
+# Log of predator behaviour
 a2 = histogram(data.logspeed, bins = 50, label = "Pred. speed")
 b2 = histogram(data.logspace_covered_rate, bins = 50, label = "Pred. space")
 c2 = histogram(data.logprox_mid_guard, bins = 50, label = "Pred. ambush time")
