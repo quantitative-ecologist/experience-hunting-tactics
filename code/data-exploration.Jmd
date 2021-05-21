@@ -4,16 +4,20 @@ author: Anonymous for review
 date: 2021-05-20
 ---
 
+```julia; echo = false
+cd("C:/Users/maxim/OneDrive/Documents/GitHub/Chapter3")
+```
+
 # 1. Prepare the data
-### 1.1 Load the required packages.
+**1.1 Load the required packages.**
 
 ```julia
 using Pkg, Weave, CSV, DataFrames
 ```
 
-### 1.2 Import the data.
+**1.2 Import the data.**
 
-```julia; echo = FALSE
+```julia
 data = DataFrame(CSV.File("data/merged-data.csv"))
 ```
 

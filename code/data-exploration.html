@@ -658,8 +658,9 @@ div.title {text-align: center;}
           <h5>2021-05-20</h5>
         </div>
 
-        <h1>1. Prepare the data</h1>
-<h2>1.1 Load the required packages.</h2>
+        
+<h1>1. Prepare the data</h1>
+<p><strong>1.1 Load the required packages.</strong></p>
 
 
 <pre class='hljl'>
@@ -668,7 +669,7 @@ div.title {text-align: center;}
 
 
 
-<h2>1.2 Import the data.</h2>
+<p><strong>1.2 Import the data.</strong></p>
 
 
 <pre class='hljl'>
@@ -676,23 +677,10 @@ div.title {text-align: center;}
 </pre>
 
 
-<pre class="julia-error">
-ERROR: ArgumentError: &quot;data/merged-data.csv&quot; is not a valid file
-</pre>
 
+<table class="data-frame"><thead><tr><th></th><th>mirrors_id</th><th>match_id</th><th>platform</th><th>cohort</th><th>map_name</th></tr><tr><th></th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th></tr></thead><tbody><p>70,831 rows × 81 columns (omitted printing of 76 columns)</p><tr><th>1</th><td>INTPA4488Y</td><td>1205AE3646F30FE2A709F7822E38A9BE</td><td>PC</td><td>Third cohort</td><td>Hos_Treatment</td></tr><tr><th>2</th><td>INTPA4488Y</td><td>23D811A34061519DFE452BB2A1A4AADD</td><td>PC</td><td>Third cohort</td><td>Frm_Silo</td></tr><tr><th>3</th><td>INTPA4488Y</td><td>43C9DFA446BBF308C2099AB2355FF031</td><td>PC</td><td>Third cohort</td><td>Frm_Barn</td></tr><tr><th>4</th><td>INTPA4488Y</td><td>445D8ABE40BA0C39C217D0BE061AFEC5</td><td>PC</td><td>Third cohort</td><td>Jnk_Office</td></tr><tr><th>5</th><td>INTPA4488Y</td><td>48D0B7754A1CD9C1370BB7BC9F2C2859</td><td>PC</td><td>Third cohort</td><td>Jnk_Lodge</td></tr><tr><th>6</th><td>INTPA4488Y</td><td>4EA2D16D41599258A08A829A4EB3D97C</td><td>PC</td><td>Third cohort</td><td>Fin_Hideout</td></tr><tr><th>7</th><td>INTPA4488Y</td><td>6FBFE77740FB421A363B7BBD7F539663</td><td>PC</td><td>Third cohort</td><td>Asy_Asylum</td></tr><tr><th>8</th><td>INTPA4488Y</td><td>8F442A354ACAB763CB5877B5EF24D94D</td><td>PC</td><td>Third cohort</td><td>Fin_Hideout</td></tr><tr><th>9</th><td>INTPA4488Y</td><td>B5961DF346B77C007C0E14B3011BF852</td><td>PC</td><td>Third cohort</td><td>Eng_Street</td></tr><tr><th>10</th><td>INTPA4488Y</td><td>C11BDB5D4E4B979C5D1590A7A33A1A48</td><td>PC</td><td>Third cohort</td><td>Asy_Asylum</td></tr><tr><th>11</th><td>INTPA4488Y</td><td>CAA2858B468098813F5F4896EB2B29BF</td><td>PC</td><td>Third cohort</td><td>Ind_Mine</td></tr><tr><th>12</th><td>INTPA4488Y</td><td>D03669AC4DDF7D618A975C8EDDCC7107</td><td>PC</td><td>Third cohort</td><td>Asy_Asylum</td></tr><tr><th>13</th><td>INTPA4488Y</td><td>D73C0ABF481EB501FCC582A0350F8176</td><td>PC</td><td>Third cohort</td><td>Frm_Farmhouse</td></tr><tr><th>14</th><td>INTPA4488Y</td><td>DC7AA7A3408018654ECE0D97E13A7164</td><td>PC</td><td>Third cohort</td><td>Ind_Mine</td></tr><tr><th>15</th><td>LMDUQ5788L</td><td>0008CF4E4A5DB097D5734AB3531D738C</td><td>PC</td><td>First cohort</td><td>Ind_Forest</td></tr><tr><th>16</th><td>LMDUQ5788L</td><td>003C616D44EA9B45D9A6BAA35889577B</td><td>PC</td><td>First cohort</td><td>Brl_Temple</td></tr><tr><th>17</th><td>LMDUQ5788L</td><td>00CA67354BFB346F874105933EB83EF8</td><td>PC</td><td>First cohort</td><td>Ind_Mine</td></tr><tr><th>18</th><td>LMDUQ5788L</td><td>02B0932B4CE878A580201A9411C6ABCD</td><td>PC</td><td>First cohort</td><td>Jnk_GasStation</td></tr><tr><th>19</th><td>LMDUQ5788L</td><td>02FC7CE14851BB7180D4DC9F4442AF3A</td><td>PC</td><td>First cohort</td><td>Kny_Cottage</td></tr><tr><th>20</th><td>LMDUQ5788L</td><td>030C957C48477F18921FF18F932612DE</td><td>PC</td><td>First cohort</td><td>Ind_Foundry</td></tr><tr><th>21</th><td>LMDUQ5788L</td><td>03162A9A46BF77666D73F1ABEC44F48A</td><td>PC</td><td>First cohort</td><td>Frm_Cornfield</td></tr><tr><th>22</th><td>LMDUQ5788L</td><td>03A2C29C4F8FCD070C9009A77D2B7221</td><td>PC</td><td>First cohort</td><td>Swp_GrimPantry</td></tr><tr><th>23</th><td>LMDUQ5788L</td><td>04CE3E4240D906BA2D92E0B73889217C</td><td>PC</td><td>First cohort</td><td>Jnk_Lodge</td></tr><tr><th>24</th><td>LMDUQ5788L</td><td>0522AEA84DC92B8199A348B8C35071A1</td><td>PC</td><td>First cohort</td><td>Frm_Silo</td></tr><tr><th>&vellip;</th><td>&vellip;</td><td>&vellip;</td><td>&vellip;</td><td>&vellip;</td><td>&vellip;</td></tr></tbody></table>
 
-<h1>1. Inspect the data</h1>
-
-
-<pre class='hljl'>
-<span class='hljl-n'>data</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: UndefVarError: data not defined
-</pre>
-
+<h1>2. Inspect the data</h1>
 
 
         <HR/>
