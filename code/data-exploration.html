@@ -658,21 +658,39 @@ div.title {text-align: center;}
           <h5>2021-05-20</h5>
         </div>
 
-        <h1>Import packages</h1>
-<p>Let&#39;s start by importing the data.</p>
+        <h1>1. Prepare the data</h1>
+<h2>1.1 Load the required packages.</h2>
 
 
 <pre class='hljl'>
-<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Pkg</span><span class='hljl-t'>
-</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Weave</span><span class='hljl-t'>
-
-</span><span class='hljl-cs'># Test math function</span><span class='hljl-t'>
-</span><span class='hljl-n'>f</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>^</span><span class='hljl-ni'>2</span>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Pkg</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>Weave</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>DataFrames</span>
 </pre>
 
 
-<pre class="output">
-#1 &#40;generic function with 1 method&#41;
+
+<h2>1.2 Import the data.</h2>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>data</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>DataFrame</span><span class='hljl-p'>(</span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>File</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/merged-data.csv&quot;</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: ArgumentError: &quot;data/merged-data.csv&quot; is not a valid file
+</pre>
+
+
+<h1>1. Inspect the data</h1>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>data</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: data not defined
 </pre>
 
 

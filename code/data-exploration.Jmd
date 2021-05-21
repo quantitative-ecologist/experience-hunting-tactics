@@ -2,16 +2,19 @@
 title: Data exploration
 author: Anonymous for review
 date: 2021-05-20
-contact: anonymous@courrier.uqam.ca
 ---
 
-# Import packages
-Let's start by importing the data.
+# 1. Prepare the data
+### 1.1 Load the required packages.
 
 ```julia
-using Pkg
-using Weave
-
-# Test math function
-f = (x) -> x^2
+using Pkg, Weave, CSV, DataFrames
 ```
+
+### 1.2 Import the data.
+
+```julia; echo = FALSE
+data = DataFrame(CSV.File("data/merged-data.csv"))
+```
+
+# 2. Inspect the data
