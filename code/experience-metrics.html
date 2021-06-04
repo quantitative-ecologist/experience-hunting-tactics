@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<HTML lang = "en">
+<HEAD>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Compute experience metrics</title>
+  
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+  </script>
+
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+
+  
+<style>
+pre.hljl {
+    border: 1px solid #ccc;
+    margin: 5px;
+    padding: 5px;
+    overflow-x: auto;
+    color: rgb(68,68,68); background-color: rgb(251,251,251); }
+pre.hljl > span.hljl-t { }
+pre.hljl > span.hljl-w { }
+pre.hljl > span.hljl-e { }
+pre.hljl > span.hljl-eB { }
+pre.hljl > span.hljl-o { }
+pre.hljl > span.hljl-k { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kc { color: rgb(59,151,46); font-style: italic; }
+pre.hljl > span.hljl-kd { color: rgb(214,102,97); font-style: italic; }
+pre.hljl > span.hljl-kn { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kp { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kr { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kt { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-n { }
+pre.hljl > span.hljl-na { }
+pre.hljl > span.hljl-nb { }
+pre.hljl > span.hljl-nbp { }
+pre.hljl > span.hljl-nc { }
+pre.hljl > span.hljl-ncB { }
+pre.hljl > span.hljl-nd { color: rgb(214,102,97); }
+pre.hljl > span.hljl-ne { }
+pre.hljl > span.hljl-neB { }
+pre.hljl > span.hljl-nf { color: rgb(66,102,213); }
+pre.hljl > span.hljl-nfm { color: rgb(66,102,213); }
+pre.hljl > span.hljl-np { }
+pre.hljl > span.hljl-nl { }
+pre.hljl > span.hljl-nn { }
+pre.hljl > span.hljl-no { }
+pre.hljl > span.hljl-nt { }
+pre.hljl > span.hljl-nv { }
+pre.hljl > span.hljl-nvc { }
+pre.hljl > span.hljl-nvg { }
+pre.hljl > span.hljl-nvi { }
+pre.hljl > span.hljl-nvm { }
+pre.hljl > span.hljl-l { }
+pre.hljl > span.hljl-ld { color: rgb(148,91,176); font-style: italic; }
+pre.hljl > span.hljl-s { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sa { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sb { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sc { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sd { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdC { color: rgb(201,61,57); }
+pre.hljl > span.hljl-se { color: rgb(59,151,46); }
+pre.hljl > span.hljl-sh { color: rgb(201,61,57); }
+pre.hljl > span.hljl-si { }
+pre.hljl > span.hljl-so { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sr { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ss { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ssB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-nB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nbB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nfB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nh { color: rgb(59,151,46); }
+pre.hljl > span.hljl-ni { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nil { color: rgb(59,151,46); }
+pre.hljl > span.hljl-noB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-oB { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-ow { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-p { }
+pre.hljl > span.hljl-c { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-ch { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cm { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cp { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cpB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cs { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-csB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-g { }
+pre.hljl > span.hljl-gd { }
+pre.hljl > span.hljl-ge { }
+pre.hljl > span.hljl-geB { }
+pre.hljl > span.hljl-gh { }
+pre.hljl > span.hljl-gi { }
+pre.hljl > span.hljl-go { }
+pre.hljl > span.hljl-gp { }
+pre.hljl > span.hljl-gs { }
+pre.hljl > span.hljl-gsB { }
+pre.hljl > span.hljl-gt { }
+</style>
+
+
+
+  <style type="text/css">
+  @font-face {
+  font-style: normal;
+  font-weight: 300;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 600;
+}
+html {
+  font-family: sans-serif; /* 1 */
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+body {
+  margin: 0;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+audio,
+canvas,
+progress,
+video {
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
+}
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+[hidden],
+template {
+  display: none;
+}
+a:active,
+a:hover {
+  outline: 0;
+}
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+b,
+strong {
+  font-weight: bold;
+}
+dfn {
+  font-style: italic;
+}
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+mark {
+  background: #ff0;
+  color: #000;
+}
+small {
+  font-size: 80%;
+}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+img {
+  border: 0;
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+figure {
+  margin: 1em 40px;
+}
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+pre {
+  overflow: auto;
+}
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit; /* 1 */
+  font: inherit; /* 2 */
+  margin: 0; /* 3 */
+}
+button {
+  overflow: visible;
+}
+button,
+select {
+  text-transform: none;
+}
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button; /* 2 */
+  cursor: pointer; /* 3 */
+}
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+input {
+  line-height: normal;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+input[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box; /* 2 */
+  box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+legend {
+  border: 0; /* 1 */
+  padding: 0; /* 2 */
+}
+textarea {
+  overflow: auto;
+}
+optgroup {
+  font-weight: bold;
+}
+table {
+  font-family: monospace, monospace;
+  font-size : 0.8em;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td,
+th {
+  padding: 0;
+}
+thead th {
+    border-bottom: 1px solid black;
+    background-color: white;
+}
+tr:nth-child(odd){
+  background-color: rgb(248,248,248);
+}
+
+
+/*
+* Skeleton V2.0.4
+* Copyright 2014, Dave Gamache
+* www.getskeleton.com
+* Free to use under the MIT license.
+* http://www.opensource.org/licenses/mit-license.php
+* 12/29/2014
+*/
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box; }
+.column,
+.columns {
+  width: 100%;
+  float: left;
+  box-sizing: border-box; }
+@media (min-width: 400px) {
+  .container {
+    width: 85%;
+    padding: 0; }
+}
+@media (min-width: 550px) {
+  .container {
+    width: 80%; }
+  .column,
+  .columns {
+    margin-left: 4%; }
+  .column:first-child,
+  .columns:first-child {
+    margin-left: 0; }
+
+  .one.column,
+  .one.columns                    { width: 4.66666666667%; }
+  .two.columns                    { width: 13.3333333333%; }
+  .three.columns                  { width: 22%;            }
+  .four.columns                   { width: 30.6666666667%; }
+  .five.columns                   { width: 39.3333333333%; }
+  .six.columns                    { width: 48%;            }
+  .seven.columns                  { width: 56.6666666667%; }
+  .eight.columns                  { width: 65.3333333333%; }
+  .nine.columns                   { width: 74.0%;          }
+  .ten.columns                    { width: 82.6666666667%; }
+  .eleven.columns                 { width: 91.3333333333%; }
+  .twelve.columns                 { width: 100%; margin-left: 0; }
+
+  .one-third.column               { width: 30.6666666667%; }
+  .two-thirds.column              { width: 65.3333333333%; }
+
+  .one-half.column                { width: 48%; }
+
+  /* Offsets */
+  .offset-by-one.column,
+  .offset-by-one.columns          { margin-left: 8.66666666667%; }
+  .offset-by-two.column,
+  .offset-by-two.columns          { margin-left: 17.3333333333%; }
+  .offset-by-three.column,
+  .offset-by-three.columns        { margin-left: 26%;            }
+  .offset-by-four.column,
+  .offset-by-four.columns         { margin-left: 34.6666666667%; }
+  .offset-by-five.column,
+  .offset-by-five.columns         { margin-left: 43.3333333333%; }
+  .offset-by-six.column,
+  .offset-by-six.columns          { margin-left: 52%;            }
+  .offset-by-seven.column,
+  .offset-by-seven.columns        { margin-left: 60.6666666667%; }
+  .offset-by-eight.column,
+  .offset-by-eight.columns        { margin-left: 69.3333333333%; }
+  .offset-by-nine.column,
+  .offset-by-nine.columns         { margin-left: 78.0%;          }
+  .offset-by-ten.column,
+  .offset-by-ten.columns          { margin-left: 86.6666666667%; }
+  .offset-by-eleven.column,
+  .offset-by-eleven.columns       { margin-left: 95.3333333333%; }
+
+  .offset-by-one-third.column,
+  .offset-by-one-third.columns    { margin-left: 34.6666666667%; }
+  .offset-by-two-thirds.column,
+  .offset-by-two-thirds.columns   { margin-left: 69.3333333333%; }
+
+  .offset-by-one-half.column,
+  .offset-by-one-half.columns     { margin-left: 52%; }
+
+}
+html {
+  font-size: 62.5%; }
+body {
+  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222; }
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-weight: 300; }
+h1 { font-size: 3.6rem; line-height: 1.2;  letter-spacing: -.1rem;}
+h2 { font-size: 3.4rem; line-height: 1.25; letter-spacing: -.1rem; }
+h3 { font-size: 3.2rem; line-height: 1.3;  letter-spacing: -.1rem; }
+h4 { font-size: 2.8rem; line-height: 1.35; letter-spacing: -.08rem; }
+h5 { font-size: 2.4rem; line-height: 1.5;  letter-spacing: -.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
+
+p {
+  margin-top: 0; }
+a {
+  color: #1EAEDB; }
+a:hover {
+  color: #0FA0CE; }
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box; }
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+  color: #333;
+  border-color: #888;
+  outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0; }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB; }
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+  height: 38px;
+  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box; }
+/* Removes awkward default styles on some inputs for iOS */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
+textarea {
+  min-height: 65px;
+  padding-top: 6px;
+  padding-bottom: 6px; }
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #33C3F0;
+  outline: 0; }
+label,
+legend {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600; }
+fieldset {
+  padding: 0;
+  border-width: 0; }
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline; }
+label > .label-body {
+  display: inline-block;
+  margin-left: .5rem;
+  font-weight: normal; }
+ul {
+  list-style: circle; }
+ol {
+  list-style: decimal; }
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+  margin: 1.5rem 0 1.5rem 3rem;
+  font-size: 90%; }
+li > p {margin : 0;}
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #E1E1E1; }
+th:first-child,
+td:first-child {
+  padding-left: 0; }
+th:last-child,
+td:last-child {
+  padding-right: 0; }
+button,
+.button {
+  margin-bottom: 1rem; }
+input,
+textarea,
+select,
+fieldset {
+  margin-bottom: 1.5rem; }
+pre,
+blockquote,
+dl,
+figure,
+table,
+p,
+ul,
+ol,
+form {
+  margin-bottom: 1.0rem; }
+.u-full-width {
+  width: 100%;
+  box-sizing: border-box; }
+.u-max-full-width {
+  max-width: 100%;
+  box-sizing: border-box; }
+.u-pull-right {
+  float: right; }
+.u-pull-left {
+  float: left; }
+hr {
+  margin-top: 3rem;
+  margin-bottom: 3.5rem;
+  border-width: 0;
+  border-top: 1px solid #E1E1E1; }
+.container:after,
+.row:after,
+.u-cf {
+  content: "";
+  display: table;
+  clear: both; }
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+pre.hljl {
+  margin: 0 0 10px;
+  display: block;
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding : 5px;
+}
+
+pre.output {
+  background: #ffffff;
+}
+
+pre.code {
+  background: #ffffff;
+}
+
+pre.julia-error {
+  color : red
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+
+@media (min-width: 400px) {}
+@media (min-width: 550px) {}
+@media (min-width: 750px) {}
+@media (min-width: 1000px) {}
+@media (min-width: 1200px) {}
+
+h1.title {margin-top : 20px}
+img {max-width : 100%}
+div.title {text-align: center;}
+
+  </style>
+</HEAD>
+
+<BODY>
+  <div class ="container">
+    <div class = "row">
+      <div class = "col-md-12 twelve columns">
+        <div class="title">
+          <h1 class="title">Compute experience metrics</h1>
+          <h5>Anonymous for review</h5>
+          <h5>2021-06-04</h5>
+        </div>
+
+        
+<h1>1. Prepare the data</h1>
+<p><strong>1.1 Load the required packages.</strong></p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Pkg</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>Weave</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>DataFrames</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>Plots</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>Statistics</span>
+</pre>
+
+
+
+<p><strong>1.2 Import the data.</strong></p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>data</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>DataFrame</span><span class='hljl-p'>(</span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>File</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/merged-data.csv&quot;</span><span class='hljl-p'>))</span>
+</pre>
+
+
+
+<table class="data-frame"><thead><tr><th></th><th>mirrors_id</th><th>match_id</th><th>platform</th><th>cohort</th><th>map_name</th></tr><tr><th></th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th></tr></thead><tbody><p>70,831 rows × 81 columns (omitted printing of 76 columns)</p><tr><th>1</th><td>INTPA4488Y</td><td>1205AE3646F30FE2A709F7822E38A9BE</td><td>PC</td><td>Third cohort</td><td>Hos_Treatment</td></tr><tr><th>2</th><td>INTPA4488Y</td><td>23D811A34061519DFE452BB2A1A4AADD</td><td>PC</td><td>Third cohort</td><td>Frm_Silo</td></tr><tr><th>3</th><td>INTPA4488Y</td><td>43C9DFA446BBF308C2099AB2355FF031</td><td>PC</td><td>Third cohort</td><td>Frm_Barn</td></tr><tr><th>4</th><td>INTPA4488Y</td><td>445D8ABE40BA0C39C217D0BE061AFEC5</td><td>PC</td><td>Third cohort</td><td>Jnk_Office</td></tr><tr><th>5</th><td>INTPA4488Y</td><td>48D0B7754A1CD9C1370BB7BC9F2C2859</td><td>PC</td><td>Third cohort</td><td>Jnk_Lodge</td></tr><tr><th>6</th><td>INTPA4488Y</td><td>4EA2D16D41599258A08A829A4EB3D97C</td><td>PC</td><td>Third cohort</td><td>Fin_Hideout</td></tr><tr><th>7</th><td>INTPA4488Y</td><td>6FBFE77740FB421A363B7BBD7F539663</td><td>PC</td><td>Third cohort</td><td>Asy_Asylum</td></tr><tr><th>8</th><td>INTPA4488Y</td><td>8F442A354ACAB763CB5877B5EF24D94D</td><td>PC</td><td>Third cohort</td><td>Fin_Hideout</td></tr><tr><th>9</th><td>INTPA4488Y</td><td>B5961DF346B77C007C0E14B3011BF852</td><td>PC</td><td>Third cohort</td><td>Eng_Street</td></tr><tr><th>10</th><td>INTPA4488Y</td><td>C11BDB5D4E4B979C5D1590A7A33A1A48</td><td>PC</td><td>Third cohort</td><td>Asy_Asylum</td></tr><tr><th>11</th><td>INTPA4488Y</td><td>CAA2858B468098813F5F4896EB2B29BF</td><td>PC</td><td>Third cohort</td><td>Ind_Mine</td></tr><tr><th>12</th><td>INTPA4488Y</td><td>D03669AC4DDF7D618A975C8EDDCC7107</td><td>PC</td><td>Third cohort</td><td>Asy_Asylum</td></tr><tr><th>13</th><td>INTPA4488Y</td><td>D73C0ABF481EB501FCC582A0350F8176</td><td>PC</td><td>Third cohort</td><td>Frm_Farmhouse</td></tr><tr><th>14</th><td>INTPA4488Y</td><td>DC7AA7A3408018654ECE0D97E13A7164</td><td>PC</td><td>Third cohort</td><td>Ind_Mine</td></tr><tr><th>15</th><td>LMDUQ5788L</td><td>0008CF4E4A5DB097D5734AB3531D738C</td><td>PC</td><td>First cohort</td><td>Ind_Forest</td></tr><tr><th>16</th><td>LMDUQ5788L</td><td>003C616D44EA9B45D9A6BAA35889577B</td><td>PC</td><td>First cohort</td><td>Brl_Temple</td></tr><tr><th>17</th><td>LMDUQ5788L</td><td>00CA67354BFB346F874105933EB83EF8</td><td>PC</td><td>First cohort</td><td>Ind_Mine</td></tr><tr><th>18</th><td>LMDUQ5788L</td><td>02B0932B4CE878A580201A9411C6ABCD</td><td>PC</td><td>First cohort</td><td>Jnk_GasStation</td></tr><tr><th>19</th><td>LMDUQ5788L</td><td>02FC7CE14851BB7180D4DC9F4442AF3A</td><td>PC</td><td>First cohort</td><td>Kny_Cottage</td></tr><tr><th>20</th><td>LMDUQ5788L</td><td>030C957C48477F18921FF18F932612DE</td><td>PC</td><td>First cohort</td><td>Ind_Foundry</td></tr><tr><th>21</th><td>LMDUQ5788L</td><td>03162A9A46BF77666D73F1ABEC44F48A</td><td>PC</td><td>First cohort</td><td>Frm_Cornfield</td></tr><tr><th>22</th><td>LMDUQ5788L</td><td>03A2C29C4F8FCD070C9009A77D2B7221</td><td>PC</td><td>First cohort</td><td>Swp_GrimPantry</td></tr><tr><th>23</th><td>LMDUQ5788L</td><td>04CE3E4240D906BA2D92E0B73889217C</td><td>PC</td><td>First cohort</td><td>Jnk_Lodge</td></tr><tr><th>24</th><td>LMDUQ5788L</td><td>0522AEA84DC92B8199A348B8C35071A1</td><td>PC</td><td>First cohort</td><td>Frm_Silo</td></tr><tr><th>&vellip;</th><td>&vellip;</td><td>&vellip;</td><td>&vellip;</td><td>&vellip;</td><td>&vellip;</td></tr></tbody></table>
+
+<h1>2. Evaluate player experience</h1>
+<p><strong>2.1 Add columns that show different total player experience metrics</strong></p>
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># Total experience by player ID</span><span class='hljl-t'>
+</span><span class='hljl-nf'>transform!</span><span class='hljl-p'>(</span><span class='hljl-nf'>groupby</span><span class='hljl-p'>(</span><span class='hljl-n'>data</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:mirrors_id</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-sc'>:match_id</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>length</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-sc'>:n_total_matches</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Experience in a specific map by player ID</span><span class='hljl-t'>
+</span><span class='hljl-nf'>transform!</span><span class='hljl-p'>(</span><span class='hljl-nf'>groupby</span><span class='hljl-p'>(</span><span class='hljl-n'>data</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:mirrors_id</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:map_name</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-sc'>:match_id</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>length</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-sc'>:n_matches_map</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Maybe calculate experience based on the type of prey encountered</span>
+</pre>
+
+
+
+<table class="data-frame"><thead><tr><th></th><th>mirrors_id</th><th>match_id</th><th>platform</th><th>cohort</th><th>map_name</th></tr><tr><th></th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th></tr></thead><tbody><p>70,831 rows × 83 columns (omitted printing of 78 columns)</p><tr><th>1</th><td>INTPA4488Y</td><td>1205AE3646F30FE2A709F7822E38A9BE</td><td>PC</td><td>Third cohort</td><td>Hos_Treatment</td></tr><tr><th>2</th><td>INTPA4488Y</td><td>23D811A34061519DFE452BB2A1A4AADD</td><td>PC</td><td>Third cohort</td><td>Frm_Silo</td></tr><tr><th>3</th><td>INTPA4488Y</td><td>43C9DFA446BBF308C2099AB2355FF031</td><td>PC</td><td>Third cohort</td><td>Frm_Barn</td></tr><tr><th>4</th><td>INTPA4488Y</td><td>445D8ABE40BA0C39C217D0BE061AFEC5</td><td>PC</td><td>Third cohort</td><td>Jnk_Office</td></tr><tr><th>5</th><td>INTPA4488Y</td><td>48D0B7754A1CD9C1370BB7BC9F2C2859</td><td>PC</td><td>Third cohort</td><td>Jnk_Lodge</td></tr><tr><th>6</th><td>INTPA4488Y</td><td>4EA2D16D41599258A08A829A4EB3D97C</td><td>PC</td><td>Third cohort</td><td>Fin_Hideout</td></tr><tr><th>7</th><td>INTPA4488Y</td><td>6FBFE77740FB421A363B7BBD7F539663</td><td>PC</td><td>Third cohort</td><td>Asy_Asylum</td></tr><tr><th>8</th><td>INTPA4488Y</td><td>8F442A354ACAB763CB5877B5EF24D94D</td><td>PC</td><td>Third cohort</td><td>Fin_Hideout</td></tr><tr><th>9</th><td>INTPA4488Y</td><td>B5961DF346B77C007C0E14B3011BF852</td><td>PC</td><td>Third cohort</td><td>Eng_Street</td></tr><tr><th>10</th><td>INTPA4488Y</td><td>C11BDB5D4E4B979C5D1590A7A33A1A48</td><td>PC</td><td>Third cohort</td><td>Asy_Asylum</td></tr><tr><th>11</th><td>INTPA4488Y</td><td>CAA2858B468098813F5F4896EB2B29BF</td><td>PC</td><td>Third cohort</td><td>Ind_Mine</td></tr><tr><th>12</th><td>INTPA4488Y</td><td>D03669AC4DDF7D618A975C8EDDCC7107</td><td>PC</td><td>Third cohort</td><td>Asy_Asylum</td></tr><tr><th>13</th><td>INTPA4488Y</td><td>D73C0ABF481EB501FCC582A0350F8176</td><td>PC</td><td>Third cohort</td><td>Frm_Farmhouse</td></tr><tr><th>14</th><td>INTPA4488Y</td><td>DC7AA7A3408018654ECE0D97E13A7164</td><td>PC</td><td>Third cohort</td><td>Ind_Mine</td></tr><tr><th>15</th><td>LMDUQ5788L</td><td>0008CF4E4A5DB097D5734AB3531D738C</td><td>PC</td><td>First cohort</td><td>Ind_Forest</td></tr><tr><th>16</th><td>LMDUQ5788L</td><td>003C616D44EA9B45D9A6BAA35889577B</td><td>PC</td><td>First cohort</td><td>Brl_Temple</td></tr><tr><th>17</th><td>LMDUQ5788L</td><td>00CA67354BFB346F874105933EB83EF8</td><td>PC</td><td>First cohort</td><td>Ind_Mine</td></tr><tr><th>18</th><td>LMDUQ5788L</td><td>02B0932B4CE878A580201A9411C6ABCD</td><td>PC</td><td>First cohort</td><td>Jnk_GasStation</td></tr><tr><th>19</th><td>LMDUQ5788L</td><td>02FC7CE14851BB7180D4DC9F4442AF3A</td><td>PC</td><td>First cohort</td><td>Kny_Cottage</td></tr><tr><th>20</th><td>LMDUQ5788L</td><td>030C957C48477F18921FF18F932612DE</td><td>PC</td><td>First cohort</td><td>Ind_Foundry</td></tr><tr><th>21</th><td>LMDUQ5788L</td><td>03162A9A46BF77666D73F1ABEC44F48A</td><td>PC</td><td>First cohort</td><td>Frm_Cornfield</td></tr><tr><th>22</th><td>LMDUQ5788L</td><td>03A2C29C4F8FCD070C9009A77D2B7221</td><td>PC</td><td>First cohort</td><td>Swp_GrimPantry</td></tr><tr><th>23</th><td>LMDUQ5788L</td><td>04CE3E4240D906BA2D92E0B73889217C</td><td>PC</td><td>First cohort</td><td>Jnk_Lodge</td></tr><tr><th>24</th><td>LMDUQ5788L</td><td>0522AEA84DC92B8199A348B8C35071A1</td><td>PC</td><td>First cohort</td><td>Frm_Silo</td></tr><tr><th>&vellip;</th><td>&vellip;</td><td>&vellip;</td><td>&vellip;</td><td>&vellip;</td><td>&vellip;</td></tr></tbody></table>
+
+<p><strong>2.1 Add columns that show cumulative player experience</strong></p>
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># Total experience by player ID</span><span class='hljl-t'>
+
+
+</span><span class='hljl-cs'># Experience in a specific map by player ID</span><span class='hljl-t'>
+
+
+</span><span class='hljl-cs'># Maybe calculate experience based on the type of prey encountered</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># =======================================================</span><span class='hljl-t'>
+</span><span class='hljl-cs'># R code to generate the cumulative experience metrics</span><span class='hljl-t'>
+</span><span class='hljl-cs'># =======================================================</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># I need the timestamps. Should use the ones in match_info?</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Order timestamps</span><span class='hljl-t'>
+</span><span class='hljl-cs'># library(lubridate)</span><span class='hljl-t'>
+</span><span class='hljl-cs'># data1[, timestamp := ymd_hms(timestamp)]</span><span class='hljl-t'>
+</span><span class='hljl-cs'># setorder(data1, timestamp, mirrors_id)</span><span class='hljl-t'>
+
+
+</span><span class='hljl-cs'># Vector for cumsum calculation must start at 0 (first match)</span><span class='hljl-t'>
+</span><span class='hljl-cs'>#for.cumsum &lt;- data1[, .SD[which.min(timestamp)], by = mirrors_id]</span><span class='hljl-t'>
+</span><span class='hljl-cs'>#for.cumsum[, for_cumsum := 0]</span><span class='hljl-t'>
+</span><span class='hljl-cs'>#data1 &lt;- merge(for.cumsum[,c(2:3,50)], data1, all.y=T, by =c(&quot;timestamp&quot;, &quot;match_id&quot;))</span><span class='hljl-t'>
+</span><span class='hljl-cs'>#for (col in &quot;for_cumsum.x&quot;) data1[is.na(get(col)), (col) := 1] # replace all NAs with 1</span><span class='hljl-t'>
+
+
+</span><span class='hljl-cs'># Total cumulative sum of matches</span><span class='hljl-t'>
+</span><span class='hljl-cs'># ----------------</span><span class='hljl-t'>
+</span><span class='hljl-cs'># data1[, xp.total := cumsum(for_cumsum), by = mirrors_id]</span><span class='hljl-t'>
+</span><span class='hljl-cs'># ----------------</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Experience in the focal map or realm</span><span class='hljl-t'>
+</span><span class='hljl-cs'># data1[, xp.focal.map := cumsum(for_cumsum), by = .(mirrors_id, map_name)]</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Prior experience in other maps in the focal role, variables no.3 and no.4 for Julien</span><span class='hljl-t'>
+</span><span class='hljl-cs'># data1[, priorxp.other.maps := xp.focal.role - xp.focal.rolemap]</span>
+</pre>
+
+
+
+
+        <HR/>
+        <div class="footer">
+          <p>
+            Published from <a href="experience-metrics.Jmd">experience-metrics.Jmd</a>
+            using <a href="http://github.com/JunoLab/Weave.jl">Weave.jl</a> v0.10.8 on 2021-06-04.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</BODY>
+
+</HTML>
