@@ -1,0 +1,77 @@
+---
+title: Compute experience metrics
+author: Anonymous for review
+date: 2021-06-04
+---
+
+```julia; echo = false
+cd("C:/Users/maxim/OneDrive/Documents/GitHub/Chapter3")
+```
+
+# 1. Prepare the data
+**1.1 Load the required packages.**
+
+```julia
+using Pkg, Weave, CSV, DataFrames, Plots, Statistics
+```
+
+**1.2 Import the data.**
+
+```julia
+data = DataFrame(CSV.File("data/merged-data.csv"))
+```
+
+# 2. Evaluate player experience
+**2.1 Add columns that show different total player experience metrics**
+
+```julia
+# Total experience by player ID
+transform!(groupby(data, :mirrors_id), :match_id => length => :n_total_matches)
+
+# Experience in a specific map by player ID
+transform!(groupby(data, [:mirrors_id, :map_name]), :match_id => length => :n_matches_map)
+
+# Maybe calculate experience based on the type of prey encountered
+```
+
+**2.1 Add columns that show cumulative player experience**
+
+```julia
+# Total experience by player ID
+
+
+# Experience in a specific map by player ID
+
+
+# Maybe calculate experience based on the type of prey encountered
+
+# =======================================================
+# R code to generate the cumulative experience metrics
+# =======================================================
+
+# I need the timestamps. Should use the ones in match_info?
+
+# Order timestamps
+# library(lubridate)
+# data1[, timestamp := ymd_hms(timestamp)]
+# setorder(data1, timestamp, mirrors_id)
+
+
+# Vector for cumsum calculation must start at 0 (first match)
+#for.cumsum <- data1[, .SD[which.min(timestamp)], by = mirrors_id]
+#for.cumsum[, for_cumsum := 0]
+#data1 <- merge(for.cumsum[,c(2:3,50)], data1, all.y=T, by =c("timestamp", "match_id"))
+#for (col in "for_cumsum.x") data1[is.na(get(col)), (col) := 1] # replace all NAs with 1
+
+
+# Total cumulative sum of matches
+# ----------------
+# data1[, xp.total := cumsum(for_cumsum), by = mirrors_id]
+# ----------------
+
+# Experience in the focal map or realm
+# data1[, xp.focal.map := cumsum(for_cumsum), by = .(mirrors_id, map_name)]
+
+# Prior experience in other maps in the focal role, variables no.3 and no.4 for Julien
+# data1[, priorxp.other.maps := xp.focal.role - xp.focal.rolemap]
+```
