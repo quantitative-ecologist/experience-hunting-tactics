@@ -28,10 +28,16 @@ data = DataFrame(CSV.File("data/merged-data.csv"))
 # Total experience by player ID
 transform!(groupby(data, :mirrors_id), :match_id => length => :n_total_matches)
 
+# Experience in a specific role by player ID
+transform!(groupby(data, [:mirrors_id, :role]), :match_id => length => :n_matches_map)
+
 # Experience in a specific map by player ID
 transform!(groupby(data, [:mirrors_id, :map_name]), :match_id => length => :n_matches_map)
 
+
 # Maybe calculate experience based on the type of prey encountered
+# Here I would create a grouping variable that determines the type of prey encountered
+# Above average would be fast prey, below average would be sedentary prey.
 ```
 
 **2.1 Add columns that show cumulative player experience**
