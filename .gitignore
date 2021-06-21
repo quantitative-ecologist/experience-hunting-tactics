@@ -2,4 +2,4 @@ code/data-exploration.Jmd
 code/compile-weave.jl
 code/data-exploration-figs
 data
-Chapter3/tests
+tests
