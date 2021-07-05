@@ -2,6 +2,8 @@
 title: Data exploration
 author: Anonymous for review
 date: 2021-05-20
+weave_options:
+  doctype: github
 ---
 
 ```julia; echo = false
