@@ -1,0 +1,74 @@
+---
+title: Analysis plan for Chapter 3
+author: Anonymous for review
+date: `j import Dates; Dates.Date(Dates.now())`
+---
+
+# Research questions and hypotheses
+
+## 1. How does experience shape individual differences in foraging behavior?
+
+### 1.1 Individual differences in the average behavioral expression
+
+**H1)** Experience will explain an important portion of the observed among-individual differences in average behavioral expression.
+
+### 1.2 Individual differences in behavioral plasticity
+
+**H2)** Experienced individuals will have a greater response to prey behavior than unexperienced individuals:
+
+- The reaction norm slope value of predator behavior as a function of prey behavior will be greater for experienced individuals
+
+### 1.3 Individual differences in the range of behavioral expression
+
+**H3)** Experience increases the range of behavioral expression, favoring flexibility:
+
+- There will be a positive relationship between prior experience and intra-individual variance (IIV)
+
+**H3.A)** Experience is an optimizing process where individuals specialize with time:
+
+- There will be a negative relationship between prior experience and intra-individual variance (IIV)
+
+---
+
+\pagebreak
+
+## 2. How does fluctuations in prey predictability influence changes in foraging specialization?
+
+**H1)** When prey behavior is predictable, individuals will specialize, and vice versa when prey become unpredictable:
+
+- Prey IIV in behavior is positively correlated with IIV in predator foraging behavior
+
+---
+
+## 3. What are the consequences of foraging specialization?
+
+### 3.1 For the type of prey captured (individual niche specialization)? 
+
+**H1)** Predators who specialize on specific foraging tactics will tend to capture a lower range of prey behavioural types:
+
+- There will be a positive correlation between the IIV of predator foraging behavior and the IIV in the behavioural-type of prey captured 
+
+### 3.2 For the amount of prey captured (hunting success)?
+
+**H2)** The success of both specialists and generalists will be similar over the sampling period:
+
+- Specialist hunters will fare better on short timescales, when prey predictability is higher
+- Generalist hunters will fare better on longer timescales, as they follow prey fluctuations
+- Both types of hunters will thus achieve similar hunting success over the sampling period
+
+---
+
+# Objectives
+
+**We use a double-hierarchical multivariate linear model (DHMLM) to adress the following objectives:**
+
+1. Quantify the effect of experience on individual differences in foraging behavior
+2. Quantify the relationship between prey behavioral IIV and predator behavioral IIV
+3. Quantify the relationship between predator foraging specialization (IIV) and the type of prey captured (IIV of the behavior of the prey captured)
+
+**We then evaluate the consequences of behavioral specialization for foraging success [^1] using a standard GLMM to:**
+
+4. Quantify the relationship between individual behavioural specialization and hunting success
+5. Quantify differences in the total amount of prey captured between specialist and generalist individuals
+
+ [^1]: Controlling for predator experience.
