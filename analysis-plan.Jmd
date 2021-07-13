@@ -77,101 +77,59 @@ This document provides a detailed description of the analysis plan for the manus
 
 ## 3.1 Data collection
 
-### 3.1.1 Sampled population
-
 - ~5000 players
 - 1st match of every player
 - Period of 6 months
 
-### 3.1.2 General information
-
-Player and match information:
-
-- mirrors_id
-- match_id
-- platform
-- player_role
-- country_long
-- last_match_timestamp
-- timestamp
-- game_mode
-- map_realm
-- map_name
-
-Player avatar information:
-
-- name_short
-- loadout_perk
-- loadout_perk2
-- loadout_perk3
-- loadout_perk4
-- loadout_perks
-- loadout_item	
-- loadout_item_add_on1
-- loadout_item_add_on2
-- loadout_item_add_ons
-- loadout_offering
-
-### 3.1.3 Predator and prey behavior
-
-General:
-
-- amount_tiles_visted
-- speed
-- chase_count
-
-Predator-specific:
-
-- chase_count_fail
-- chase_count_success
-- hit_close_count
-- hit_close_count_success
-- hit_far_count
-- hit_far_count_success
-- hit_special_count
-- hit_special_count_success
-- hook_count
-- pallet_destroyed
-- secondes_at_least_one_survivor_hooked
-
-Prey-specific:
-
-- closet_enter
-- chase_duration
-- crouching duration
-- heal_count
-- healthy_duration
-- injured_duration
-- unhook_count
-
-### 3.1.4 Match outcome
-
-General:
-
-- survivor_spawning_position
-- generators_done
-- escapees_count
-- disconnect_count
-- sacrificed_count
-- killed_count
-- match_end_reason
-- game_duration
-
-Predator-specific:
-
-- brutality_score
-- deviousness_score
-- hunter_score
-- sacrifice_score	
-
-Prey-specific:
-
-- objectives_score
-- survival_score
-- altruism_score
-- boldness_score
-- hooked_count
-- outcome
-- damage_state
-
 ## 3.2 Statistical analysis
+
+We will use a multivariate double hierarchical generalized linear model to be able to model both the mean and dispersion components of the players' behavior. This type of model will also enable us to quantify correlations between combinations of predator and prey behaviors, and between the predator behaviors and the type of prey they captured at different hierarchical levels.
+
+All the predator and prey behaviors are divided by the match duration, square-root transformed to achieve normality, and then standardized to mean and unit variance.
+
+**Matrix of response variables:**
+
+```julia; results = "hidden"
+# Predator behaviors
+rate_of_space_covered
+speed
+time_in_ambush
+latency_1st_capture
+
+# Prey behaviors
+prey_rate_of_space_covered
+prey_speed
+prey_heal_count
+prey_unhook_count
+
+# Average behavior of prey captured7
+captured_rate_of_space_covered
+captured_speed
+captured_heal_count
+captured_unhook_count
+```
+
+The following fixed effects will be modeled on the mean and dispersion parts of the equation to assess the effect of experience on both the mean and variance of individual behavior.
+
+**Fixed effects:**
+
+```julia; results = "hidden"
+# Experience metrics
+cumul_xp
+cumul_xp_predator_role
+cumul_xp_prey_role
+cumul_xp_map
+cumul_xp_predator_map
+cumul_xp_prey_map
+```
+
+Lastly, we model the following three random effects
+
+**Random effects:**
+
+```julia; results = "hidden"
+# Experience metrics
+player_ID
+role
+avatar
+```
