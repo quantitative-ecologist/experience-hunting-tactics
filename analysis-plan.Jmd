@@ -1,5 +1,5 @@
 ---
-title: Analysis plan for Chapter 3
+title: Analysis plan to quantify the effect of experience and prey variability on predator behavior and hunting success
 author: Anonymous for review
 date: `j import Dates; Dates.Date(Dates.now())`
 ---
@@ -22,37 +22,42 @@ This document provides a detailed description of the analysis plan for the manus
 
 ### 1.1.2 Individual differences in the range of behavioral expression
 
-**H3)** Experience increases the range of behavioral expression, favoring flexibility:
+**H2)** Experience increases the range of behavioral expression, favoring flexibility:
 
 - There will be a positive relationship between prior experience and intra-individual variance (IIV)
 
-**H3.A)** Experience is an optimizing process where individuals specialize with time:
+**H2.A)** Experience is an optimizing process where individuals specialize with time:
 
 - There will be a negative relationship between prior experience and intra-individual variance (IIV)
 
 
-## 1.2 How does fluctuations in prey predictability influence changes in foraging specialization?
+## 1.2 How does fluctuations in prey behavior between encounters influence individual foraging specialization?
 
-**H1)** When prey behavior is predictable, individuals will specialize, and vice versa when prey become unpredictable:
+**H1)** When prey behavior is more stable, individuals will specialize, and vice versa when prey behavior is variable between encounters:
 
-- Prey IIV in behavior is positively correlated with IIV in predator foraging behavior
+- The residual behavioral variation of the prey encountered (average of the 4 prey within a match) is positively correlated with the IIV of the predator foraging behavior
 
 
-## 1.3 What are the consequences of foraging specialization?
+## 1.3 What are the consequences of experience and foraging specialization?
 
 ### 1.3.1 For the type of prey captured (individual niche specialization)? 
 
-**H1)** Predators who specialize on specific foraging tactics will tend to capture a lower range of prey behavioural types:
+**H1)** Predators who specialize on specific foraging tactics will tend to capture prey expressing behaviors within narrower ranges compared to flexible hunters:
 
-- There will be a positive correlation between the IIV of predator foraging behavior and the IIV in the behavioural-type of prey captured 
+- There will be a positive correlation between the IIV of the predator foraging behavior and the residual behavioral variation of the prey captured (averaged over all prey captured in a match)
 
 ### 1.3.2 For the amount of prey captured (hunting success)?
 
-**H2)** The success of both specialists and generalists will be similar over the sampling period:
+**H2)** The success of both foraging specialists and generalists will be similar over the sampling period:
 
-- Specialist hunters will fare better on short timescales, when prey predictability is higher
-- Generalist hunters will fare better on longer timescales, as they follow prey fluctuations
-- Both types of hunters will thus achieve similar hunting success over the sampling period
+- Specialist hunters will fare better when prey variability is lower
+- Generalist hunters will fare better when prey variability is higher
+- Thus, the relationship between the IIV in predator behavior and hunting success will be positive when the prey residual behavioral variation is high, and negative when the prey residual behavioral variation is low
+
+**H3)** The relationship between foraging specialization and the amount of prey captured will depend of the player experience:
+
+- The covariance between the IIV in predator behavior and hunting success will be null/low for novice players
+- The covariance between the IIV in predator behavior and hunting success will be strong for experienced players
 
 ---
 
@@ -60,30 +65,37 @@ This document provides a detailed description of the analysis plan for the manus
 
 # 2. Objectives
 
-**We use a double-hierarchical multivariate linear model (DHMLM) to adress the following objectives:**
+**We use multivariate double-hierarchical linear models (MDHLM) to adress the following objectives:**
 
-1. Quantify the effect of experience on individual differences in foraging behavior
-2. Quantify the relationship between prey behavioral IIV and predator behavioral IIV
-3. Quantify the relationship between predator foraging specialization (IIV) and the type of prey captured (IIV of the behavior of the prey captured)
-
-**We then evaluate the consequences of behavioral specialization for foraging success using a standard GLMM to:**
-
-4. Quantify the relationship between individual behavioural specialization and hunting success
-5. Quantify differences in the total amount of prey captured between specialist and generalist individuals (controlling for predator experience)
+1. Quantify the effect of experience on individual differences (mean and range) in foraging behavior
+2. Quantify the relationship between prey behavioral variation and predator foraging specialization
+3. Quantify the relationship between predator foraging specialization and the behavior of the prey captured (individual niche specialization)
+4. Quantify the relationship between predator foraging specialization and hunting success
+5. Quantify differences in the total amount of prey captured between specialist and generalist individuals as a function of their experience
 
 ---
 
 # 3. Methods
 
-## 3.1 Data collection
+## 3.1 Sampled population
+
+**For the query:**
 
 - ~5000 players
 - 1st match of every player
-- Period of 6 months
+- Period of ~6 months
+- Exclude mobile players
+- At least 10 matches minimum?
 
-## 3.2 Statistical analysis
+**Data filtering after the query:**
 
-We will use a multivariate double hierarchical generalized linear model to be able to model both the mean and dispersion components of the players' behavior. This type of model will also enable us to quantify correlations between combinations of predator and prey behaviors, and between the predator behaviors and the type of prey they captured at different hierarchical levels.
+- Filter to have players who played online only
+- Have a uniform distribution of player experience
+- Remove or control for matches where players disconnected
+
+## 3.2 Statistical analyses (under construction)
+
+We will use MDHLM to be able to model both the mean and dispersion components of the players' behavior. This type of model will enable us to quantify correlations between combinations of predator and prey behaviors, and between the predator behaviors and the type of prey they captured at different hierarchical levels.
 
 All the predator and prey behaviors are divided by the match duration, square-root transformed to achieve normality, and then standardized to mean and unit variance.
 
@@ -102,14 +114,14 @@ prey_speed
 prey_heal_count
 prey_unhook_count
 
-# Average behavior of prey captured7
+# Average behavior of prey captured
 captured_rate_of_space_covered
 captured_speed
 captured_heal_count
 captured_unhook_count
 ```
 
-The following fixed effects will be modeled on the mean and dispersion parts of the equation to assess the effect of experience on both the mean and variance of individual behavior.
+The following fixed effects will be modeled on the mean and dispersion parts of the equation to assess the effect of experience on both the mean and variance components of individual foraging behavior.
 
 **Fixed effects:**
 
@@ -123,13 +135,13 @@ cumul_xp_predator_map
 cumul_xp_prey_map
 ```
 
-Lastly, we model the following three random effects
+Lastly, we model the following three random effects to estimate the correlations in the response matrix variables at different levels.
 
 **Random effects:**
 
 ```julia; results = "hidden"
 # Experience metrics
 player_ID
-role
+game_environment
 avatar
 ```

@@ -16,7 +16,7 @@ weave("code/data-exploration.Jmd",
 weave("analysis-plan.Jmd",
         doctype = "pandoc2pdf",
         fig_path = "figures",
-        pandoc_options = ["--toc"])
+        pandoc_options = ["--toc"]) # toc includes a table of contents
 
 #weave("code/experience-metrics.Jmd",
 #        fig_path = "experience-metrics-figs",
