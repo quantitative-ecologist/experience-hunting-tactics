@@ -8,7 +8,7 @@ date: `j import Dates; Dates.Date(Dates.now())`
 
 # Summary
 
-This document provides a detailed description of the analysis plan for the manuscript "insert name". The data preparation and cleaning will be done using the Julia language version 1.6.1. The statistical models will be run using STAN programs within a Julia environment. All the analyses (code and outputs) will be reported on this GitHub repository (https://github.com/quantitative-ecologist/experience-hunting-tactics). If you wish to reproduce the results, simply download the folder with all the files and save it in your computer.
+This document provides a detailed description of the analysis plan for two different manuscripts aiming to assess the effect of experience and prey behavioral variability on predator foraging specialization. The data preparation and cleaning will be done using the Julia language version 1.6.1. The statistical models will be run using STAN programs within a Julia environment. All the analyses (code and outputs) will be reported on this GitHub repository (https://github.com/quantitative-ecologist/experience-hunting-tactics). If you wish to reproduce the results, simply download the folder with all the files and save it in your computer.
 
 \pagebreak
 
@@ -52,16 +52,14 @@ This document provides a detailed description of the analysis plan for the manus
 
 - Specialist hunters will fare better when prey variability is lower
 - Generalist hunters will fare better when prey variability is higher
-- Thus, the relationship between the IIV in predator behavior and hunting success will be positive when the prey residual behavioral variation is high, and negative when the prey residual behavioral variation is low
+- Thus, the relationship between the IIV of predator behavior and hunting success will be positive when the prey residual behavioral variation is high, and negative when the prey residual behavioral variation is low
 
 **H3)** The relationship between foraging specialization and the amount of prey captured will depend of the player experience:
 
-- The covariance between the IIV in predator behavior and hunting success will be null/low for novice players
-- The covariance between the IIV in predator behavior and hunting success will be strong for experienced players
+- The correlation between the IIV in predator behavior and hunting success will be null/low for novice players
+- The correlation between the IIV in predator behavior and hunting success will be strong for experienced players
 
 ---
-
-\pagebreak
 
 # 2. Objectives
 
