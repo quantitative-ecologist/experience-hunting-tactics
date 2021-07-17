@@ -8,7 +8,7 @@ date: `j import Dates; Dates.Date(Dates.now())`
 
 # Summary
 
-This document provides a detailed description of the analysis plan for two different manuscripts aiming to assess the effect of experience and prey behavioral variability on predator foraging specialization. The data preparation and cleaning will be done using the Julia language version 1.6.1. The statistical models will be run using STAN programs within a Julia environment. All the analyses (code and outputs) will be reported on this GitHub repository (https://github.com/quantitative-ecologist/experience-hunting-tactics). If you wish to reproduce the results, simply download the folder with all the files and save it in your computer.
+This document provides a detailed description of the analysis plan for two different manuscripts aiming to assess the effect of experience and prey behavioral variability on predator foraging specialization, niche specialization, and hunting success. The data preparation and cleaning will be done using the Julia language version 1.6.1. The statistical models will be run using STAN programs within a Julia environment. All the analyses (code and outputs) will be reported on this GitHub repository (https://github.com/quantitative-ecologist/experience-hunting-tactics). If you wish to reproduce the results, simply download the folder with all the files and save it in your computer.
 
 \pagebreak
 
@@ -93,7 +93,7 @@ This document provides a detailed description of the analysis plan for two diffe
 
 ## 3.2 Statistical analyses (under construction)
 
-We will use MDHLM to be able to model both the mean and dispersion components of the players' behavior. This type of model will enable us to quantify correlations between combinations of predator and prey behaviors, and between the predator behaviors and the type of prey they captured at different hierarchical levels.
+We will use MDHLMs to model both the mean and dispersion components of the players' behavior. This type of model will enable us to quantify correlations between combinations of predator and prey behaviors, and between the predator behaviors and the type of prey they captured at different hierarchical levels. (We will probably do seperate models to test the different hypotheses).
 
 All the predator and prey behaviors are divided by the match duration, square-root transformed to achieve normality, and then standardized to mean and unit variance.
 
@@ -117,6 +117,9 @@ captured_rate_of_space_covered
 captured_speed
 captured_heal_count
 captured_unhook_count
+
+# Hunting success
+amount_prey_captured
 ```
 
 The following fixed effects will be modeled on the mean and dispersion parts of the equation to assess the effect of experience on both the mean and variance components of individual foraging behavior.
@@ -133,13 +136,13 @@ cumul_xp_predator_map
 cumul_xp_prey_map
 ```
 
-Lastly, we model the following three random effects to estimate the correlations in the response matrix variables at different levels.
+Lastly, we model the following random effects to estimate the correlations in the response matrix variables at different levels.
 
 **Random effects:**
 
 ```julia; results = "hidden"
-# Experience metrics
 player_ID
 game_environment
 avatar
+total_experience
 ```
