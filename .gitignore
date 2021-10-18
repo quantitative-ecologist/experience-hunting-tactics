@@ -6,3 +6,4 @@ code/*.tex
 code/*.aux
 data
 tests
+.Rproj.user
