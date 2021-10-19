@@ -67,7 +67,8 @@ In this section, we will inspect the distribution of the different predator beha
 # Predator behavior
 a = histogram(data.pred_speed,
               bins = 40, 
-              label = "speed")
+              label = "speed",
+              color = :firebrick3)
 b = histogram(data.pred_amount_tiles_visited,
               bins = 40, 
               label = "space covered")
@@ -143,18 +144,21 @@ We now inspect the distribution of the prey behaviors.
 f = histogram(data.prey_avg_speed,
                 bins = 40, 
                 label = "prey speed",
-                color=:darkgray)
+                color = :dodgerblue)
 g = histogram(data.prey_avg_amount_tiles_visited,
                 bins = 40, 
-                label = "prey space covered")
+                label = "prey space covered",
+                color = :dodgerblue1)
 
 h = histogram(data.prey_total_heal_count,
                 bins = 40, 
-                label = "prey heal count")
+                label = "prey heal count",
+                color = :dodgerblue2)
 
 i = histogram(data.prey_avg_amount_tiles_visited,
                 bins = 40, 
-                label = "prey rescue count")                
+                label = "prey rescue count",
+                color = :dodgerblue3)                
 
 plot(f, g, h, i, layout = 4)
 ```
@@ -216,18 +220,22 @@ We now investigate the distribution of the cumulative and total player experienc
 # Prey behavior
 j = histogram(log.(data.cumul_xp_total),
                 bins = 40, 
-                label = "cumulative xp")
+                label = "cumulative xp",
+                color = :darkgray)
 k = histogram(log.(data.cumul_xp_role),
                 bins = 40, 
-                label = "cumulative xp as the predator")
+                label = "cumulative xp as the predator",
+                color = :darkgray)
 
 l = histogram(unique(data.total_matches),
                 bins = 40, 
-                label = "total matches")
+                label = "total matches",
+                color = :darkgray)
 
 m = histogram(unique(data.total_matches_killer),
                 bins = 40, 
-                label = "total predator matches")                
+                label = "total predator matches",
+                color = :darkgray)                
 
 plot(j, k, l, m, layout = 4)
 ```
