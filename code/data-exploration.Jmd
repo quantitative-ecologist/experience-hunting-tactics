@@ -8,9 +8,7 @@ date: 2021-10-18
 # 1. Prepare the data
 
 ```julia; echo = false; results = "hidden"
-
 path = "C:\\Users\\maxim\\UQAM\\Montiglio, Pierre-Olivier - Data Behaviour"
-
 ```
 
 ## 1.1 Load the required packages
@@ -76,7 +74,7 @@ a1 = histogram(sqrt.(data.pred_speed),
                 label = "speed^2")
 b1 = histogram(sqrt.(data.pred_amount_tiles_visited), 
                 bins = 40,
-                label = "space covered^2")
+                label = "space covered²")
 c1 = histogram(sqrt.(data.ambush_time_close), 
                 bins = 40,
                 label = "ambush time^2")
