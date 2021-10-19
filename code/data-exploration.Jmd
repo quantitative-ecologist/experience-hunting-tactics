@@ -7,8 +7,10 @@ date: 2021-10-18
 
 # 1. Prepare the data
 
-```julia; echo = false
+```julia; echo = false; results = "hidden"
+
 path = "C:\\Users\\maxim\\UQAM\\Montiglio, Pierre-Olivier - Data Behaviour"
+
 ```
 
 ## 1.1 Load the required packages
@@ -45,20 +47,20 @@ The transformations include :
 # Predator behavior
 a = histogram(data.pred_speed,
               bins = 40, 
-              label = "Pred. speed")
+              label = "speed")
 b = histogram(data.pred_amount_tiles_visited,
               bins = 40, 
-              label = "Pred. space")
+              label = "space covered")
 c = histogram(data.ambush_time_close,
               bins = 40, 
-              label = "Pred. ambush time")
+              label = "ambush time")
 d = histogram(data.latency_1st_capture,
               bins = 40, 
-              label = "Pred. latency 1st capt.")
+              label = "latency 1st capture")
 
 e = histogram(data.total_chase_duration,
               bins = 40, 
-              label = "Pred. chase duration")
+              label = "chase duration")
 
 plot(a, b, c, d, layout = 4)
 ```
@@ -71,16 +73,16 @@ plot(a, b, c, d, layout = 4)
 # Square root of predator behavior
 a1 = histogram(sqrt.(data.pred_speed),
                 bins = 40, 
-                label = "Pred. speed")
+                label = "speed^2")
 b1 = histogram(sqrt.(data.pred_amount_tiles_visited), 
                 bins = 40,
-                label = "Pred. space")
+                label = "space covered^2")
 c1 = histogram(sqrt.(data.ambush_time_close), 
                 bins = 40,
-                label = "Pred. ambush time")
+                label = "ambush time^2")
 d1 = histogram(sqrt.(data.latency_1st_capture),
                 bins = 40,
-                label = "Pred. latency 1st capt.")
+                label = "latency 1st capture^2.")
 
 plot(a1, b1, c1, d1, layout = 4)
 ```
@@ -93,15 +95,15 @@ plot(a1, b1, c1, d1, layout = 4)
 # Log of predator behavior
 a2 = histogram(log.(data.pred_speed),
                 bins = 40,
-                label = "Pred. speed")
+                label = "log(speed)")
 b2 = histogram(log.(data.pred_amount_tiles_visited),
                 bins = 40,
-                label = "Pred. space")
+                label = "log(space covered)")
 c2 = histogram(log.(data.ambush_time_close),
                 bins = 40, 
-                label = "Pred. ambush time")
+                label = "log(ambush time)")
 d2 = histogram(log.(data.latency_1st_capture), bins = 40, 
-                label = "Pred. latency 1st capt.")
+                label = "log(latency 1st capture)")
 
 plot(a2, b2, c2, d2, layout = 4)
 ```
@@ -121,18 +123,18 @@ The transformations include :
 # Prey behavior
 f = histogram(data.prey_avg_speed,
                 bins = 40, 
-                label = "Prey speed")
+                label = "prey speed")
 g = histogram(data.prey_avg_amount_tiles_visited,
                 bins = 40, 
-                label = "Prey space")
+                label = "prey space covered")
 
 h = histogram(data.prey_total_heal_count,
                 bins = 40, 
-                label = "Prey heal count")
+                label = "prey heal count")
 
 i = histogram(data.prey_avg_amount_tiles_visited,
                 bins = 40, 
-                label = "Prey unhook count")                
+                label = "prey rescue count")                
 #g = histogram(data.boldness, bins = 50, label = "Prey boldness")
 plot(f, g, h, i, layout = 4)
 ```
