@@ -65,29 +65,29 @@ plot(a, b, c, d, layout = 4)
 
 \pagebreak
 
-### 2.1.2 Square root variables
+### 2.1.2 Square root-transformed variables
 
 ```julia
 # Square root of predator behavior
 a1 = histogram(sqrt.(data.pred_speed),
                 bins = 40, 
-                label = "speed^2")
+                label = "(speed)²")
 b1 = histogram(sqrt.(data.pred_amount_tiles_visited), 
                 bins = 40,
-                label = "space covered²")
+                label = "(space covered)²")
 c1 = histogram(sqrt.(data.ambush_time_close), 
                 bins = 40,
-                label = "ambush time^2")
+                label = "(ambush time)²")
 d1 = histogram(sqrt.(data.latency_1st_capture),
                 bins = 40,
-                label = "latency 1st capture^2.")
+                label = "(latency 1st capture)².")
 
 plot(a1, b1, c1, d1, layout = 4)
 ```
 
 \pagebreak
 
-### 2.1.3 Log variables
+### 2.1.3 Log-transformed variables
 
 ```julia
 # Log of predator behavior
@@ -108,14 +108,18 @@ plot(a2, b2, c2, d2, layout = 4)
 
 \pagebreak
 
-## 2.1 Distribution of prey behavior
+## 2.2 Distribution of prey behavior
 
-We now inspect the distribution of the prey behavior. The different prey behaviors were calculated using the average behavior of the 4 prey within a match. We provide the distribution of the raw variables and their transformations. 
+We now inspect the distribution of the prey behaviors. The prey behaviors were calculated using the average values of the 4 prey within a match. We provide the distribution of the raw variables and their transformations.
 
 The transformations include :
 
     - square root
     - log
+
+\pagebreak
+
+### 2.2.1 Raw variables
 
 ```julia
 # Prey behavior
@@ -133,6 +137,54 @@ h = histogram(data.prey_total_heal_count,
 i = histogram(data.prey_avg_amount_tiles_visited,
                 bins = 40, 
                 label = "prey rescue count")                
-#g = histogram(data.boldness, bins = 50, label = "Prey boldness")
+
 plot(f, g, h, i, layout = 4)
+```
+
+\pagebreak
+
+### 2.2.2 Square root-transformed variables
+
+```julia
+# Prey behavior
+f1 = histogram(sqrt(data.prey_avg_speed),
+                bins = 40, 
+                label = "prey speed")
+g1 = histogram(sqrt(data.prey_avg_amount_tiles_visited),
+                bins = 40, 
+                label = "prey space covered")
+
+h1 = histogram(sqrt(data.prey_total_heal_count),
+                bins = 40, 
+                label = "prey heal count")
+
+i1 = histogram(sqrt(data.prey_avg_amount_tiles_visited),
+                bins = 40, 
+                label = "prey rescue count")                
+
+plot(f1, g1, h1, i1, layout = 4)
+```
+
+\pagebreak
+
+### 2.2.3 Log-transformed variables
+
+```julia
+# Prey behavior
+f2 = histogram(log(data.prey_avg_speed),
+                bins = 40, 
+                label = "log(prey speed)")
+g2 = histogram(log(data.prey_avg_amount_tiles_visited),
+                bins = 40, 
+                label = "log(prey space covered)")
+
+h2 = histogram(log(data.prey_total_heal_count),
+                bins = 40, 
+                label = "log(prey heal count)")
+
+i2 = histogram(log(data.prey_avg_amount_tiles_visited),
+                bins = 40, 
+                label = "log(prey rescue count)")                
+
+plot(f2, g2, h2, i2, layout = 4)
 ```
