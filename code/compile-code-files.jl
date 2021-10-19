@@ -11,7 +11,8 @@ directory = pwd()
 weave("code/data-exploration.Jmd", 
         fig_path = "data-exploration-figs",
         doctype = "pandoc2pdf",
-        fig_ext = ".png")
+        fig_ext = ".png",
+        pandoc_options = ["--toc"])
 
 #weave("code/experience-metrics.Jmd",
 #        fig_path = "experience-metrics-figs",

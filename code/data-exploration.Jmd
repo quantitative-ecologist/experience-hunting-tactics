@@ -1,9 +1,11 @@
 ---
-title: Data exploration
+title: Data exploration - Principal component analysis
 author: Anonymous
-date: 2021-10-18
+date: `j import Dates; Dates.Date(Dates.now())`
 ---
 
+# Summary 
+The following script explores the data used for the analyses presented in "title". We plot the distributions of the raw and transformed variables for predators and prey. We then use a principal component analysis to explore the correlations between the hunting behaviors. We further investigate the distributions of player experience, and look at the correlations between player experience metrics.
 
 # 1. Prepare the data
 
@@ -28,7 +30,7 @@ data = DataFrame(CSV.File(joinpath(path, "03_final-data",
 
 # 2. Inspect the data
 
-## 2.1 Distribution of predator behaviour
+## 2.1 Distribution of predator behavior
 
 In this section, we will inspect the distribution of the different predator behaviors. We provide the distribution of the raw variables and their transformations. 
 
@@ -188,3 +190,6 @@ i2 = histogram(log.(data.prey_avg_amount_tiles_visited),
 
 plot(f2, g2, h2, i2, layout = 4)
 ```
+
+
+# 3. Transformed-variables selected for the analyse
