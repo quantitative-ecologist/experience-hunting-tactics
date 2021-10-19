@@ -1,14 +1,15 @@
 ---
 title: Data exploration
-author: Anonymous for review
-date: 2021-05-20
+author: Anonymous
+date: 2021-10-18
 ---
 
-```julia; echo = false
-cd("C:/Users/maxim/OneDrive/Documents/GitHub/Chapter3")
-```
 
 # 1. Prepare the data
+
+```julia; echo = false
+path = "C:\\Users\\maxim\\UQAM\\Montiglio, Pierre-Olivier - Data Behaviour"
+```
 
 ## 1.1 Load the required packages
 
@@ -19,7 +20,10 @@ using Pkg, Weave, CSV, DataFrames, Plots
 ## 1.2 Import the data
 
 ```julia; results = "hidden"
-data = DataFrame(CSV.File("data/merged-data.csv"))
+data = DataFrame(CSV.File(joinpath(path, "03_final-data",
+                                         "03_final-data_2021",
+                                         "final-data.csv")))
+
 ```
 
 # 2. Inspect the data
@@ -39,14 +43,22 @@ The transformations include :
 
 ```julia
 # Predator behavior
-a = histogram(data.Zspeed, bins = 40, 
-                label = "Pred. speed")
-b = histogram(data.Zspace_covered_rate, bins = 40, 
-                label = "Pred. space")
-c = histogram(data.Zprox_mid_guard, bins = 40, 
-                label = "Pred. ambush time")
-d = histogram(data.Zhook_start_time, bins = 40, 
-                label = "Pred. latency 1st capt.")
+a = histogram(data.pred_speed,
+              bins = 40, 
+              label = "Pred. speed")
+b = histogram(data.pred_amount_tiles_visited,
+              bins = 40, 
+              label = "Pred. space")
+c = histogram(data.ambush_time_close,
+              bins = 40, 
+              label = "Pred. ambush time")
+d = histogram(data.latency_1st_capture,
+              bins = 40, 
+              label = "Pred. latency 1st capt.")
+
+e = histogram(data.total_chase_duration,
+              bins = 40, 
+              label = "Pred. chase duration")
 
 plot(a, b, c, d, layout = 4)
 ```
@@ -57,13 +69,17 @@ plot(a, b, c, d, layout = 4)
 
 ```julia
 # Square root of predator behavior
-a1 = histogram(data.sqrtspeed, bins = 40, 
+a1 = histogram(sqrt.(data.pred_speed),
+                bins = 40, 
                 label = "Pred. speed")
-b1 = histogram(data.sqrtspace_covered_rate, bins = 40,
+b1 = histogram(sqrt.(data.pred_amount_tiles_visited), 
+                bins = 40,
                 label = "Pred. space")
-c1 = histogram(data.sqrtprox_mid_guard, bins = 40,
+c1 = histogram(sqrt.(data.ambush_time_close), 
+                bins = 40,
                 label = "Pred. ambush time")
-d1 = histogram(data.sqrthook_start_time, bins = 40,
+d1 = histogram(sqrt.(data.latency_1st_capture),
+                bins = 40,
                 label = "Pred. latency 1st capt.")
 
 plot(a1, b1, c1, d1, layout = 4)
@@ -75,13 +91,16 @@ plot(a1, b1, c1, d1, layout = 4)
 
 ```julia
 # Log of predator behavior
-a2 = histogram(data.logspeed, bins = 40,
+a2 = histogram(log.(data.pred_speed),
+                bins = 40,
                 label = "Pred. speed")
-b2 = histogram(data.logspace_covered_rate, bins = 40,
+b2 = histogram(log.(data.pred_amount_tiles_visited),
+                bins = 40,
                 label = "Pred. space")
-c2 = histogram(data.logprox_mid_guard, bins = 40, 
+c2 = histogram(log.(data.ambush_time_close),
+                bins = 40, 
                 label = "Pred. ambush time")
-d2 = histogram(data.loghook_start_time, bins = 40, 
+d2 = histogram(log.(data.latency_1st_capture), bins = 40, 
                 label = "Pred. latency 1st capt.")
 
 plot(a2, b2, c2, d2, layout = 4)
@@ -100,10 +119,20 @@ The transformations include :
 
 ```julia
 # Prey behavior
-e = histogram(data.surv_speed, bins = 40, 
+f = histogram(data.prey_avg_speed,
+                bins = 40, 
                 label = "Prey speed")
-f = histogram(data.surv_space_covered_rate, bins = 40, 
+g = histogram(data.prey_avg_amount_tiles_visited,
+                bins = 40, 
                 label = "Prey space")
+
+h = histogram(data.prey_total_heal_count,
+                bins = 40, 
+                label = "Prey heal count")
+
+i = histogram(data.prey_avg_amount_tiles_visited,
+                bins = 40, 
+                label = "Prey unhook count")                
 #g = histogram(data.boldness, bins = 50, label = "Prey boldness")
-plot(e, f, layout = 2, size = (600, 200))
+plot(f, g, h, i, layout = 4)
 ```

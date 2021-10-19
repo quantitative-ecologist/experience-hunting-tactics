@@ -20,20 +20,3 @@ using Pkg, Weave, CSV, DataFrames, Plots, Statistics, Dates
 ```julia; results = "hidden"
 data = DataFrame(CSV.File("data/chap3-data.csv"))
 ```
-
-
-# 2. Calculate total player experience
-**2.1 Add columns of total player experience by group**
-
-```julia
-# Total experience by player ID
-transform!(groupby(data, :mirrors_id),
-           :match_id => length => :n_total_matches)
-
-# Experience in a specific role (predator or prey) by player ID
-# transform!(groupby(data, [:mirrors_id, :role]), :match_id => length => :n_matches_role)
-
-# Experience in a specific map by player ID
-transform!(groupby(data, [:mirrors_id, :map_name]), 
-           :match_id => length => :n_matches_map)
-```
