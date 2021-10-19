@@ -5,7 +5,30 @@ date: `j import Dates; Dates.Date(Dates.now())`
 ---
 
 # Summary 
-The following script explores the data used for the analyses presented in "title". We plot the distributions of the raw and transformed variables for predators and prey. We then use a principal component analysis to explore the correlations between the hunting behaviors. We further investigate the distributions of player experience, and look at the correlations between player experience metrics.
+The following script explores the data used for the analyses presented in "title". We plot the distributions of the raw and transformed variables for predators and prey. We then use a principal component analysis to explore the correlations between the hunting behaviors. We further investigate the distributions of player experience, and look at the correlations between player experience metrics. The data is structured like a longitudinal dataset with repeated individual measurements. The prey behaviors were calculated using the average or the sum of values of the 4 prey within a match. There is thus one observations per match for each predator player.
+
+The predator behaviors :
+
+    - average speed (m/s)
+    - space covered (amount of tiles visited)
+    - time spent ambushing (s)
+    - latency before the first prey capture (s)
+
+The prey behaviors :
+
+    - average speed (m/s)
+    - average space covered (amount of tiles visited)
+    - total amount of times the prey healed another player
+    - total amount of times prey rescued another player
+
+The player experience metrics :
+
+    - cumulative sum of all matches (as a predator and as a prey)
+    - total matches played (as a predator and as a prey)
+    - cumulative sum of matches as the predator
+    - total matches played as the predator
+
+\pagebreak
 
 # 1. Prepare the data
 
@@ -32,7 +55,7 @@ data = DataFrame(CSV.File(joinpath(path, "03_final-data",
 
 ## 2.1 Distribution of predator behavior
 
-In this section, we will inspect the distribution of the different predator behaviors. We provide the distribution of the raw variables and their transformations. 
+In this section, we will inspect the distribution of the different predator behaviors.
 
 The transformations include :
 
@@ -112,7 +135,7 @@ plot(a2, b2, c2, d2, layout = 4)
 
 ## 2.2 Distribution of prey behavior
 
-We now inspect the distribution of the prey behaviors. The prey behaviors were calculated using the average values of the 4 prey within a match. We provide the distribution of the raw variables and their transformations.
+We now inspect the distribution of the prey behaviors.
 
 The transformations include :
 
@@ -192,4 +215,7 @@ plot(f2, g2, h2, i2, layout = 4)
 ```
 
 
-# 3. Transformed-variables selected for the analyse
+
+## 2.3 Distribution of player experience metrics
+
+# 3. Transformed-variables selected for the analyses
