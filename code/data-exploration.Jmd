@@ -117,8 +117,6 @@ The transformations include :
     - square root
     - log
 
-\pagebreak
-
 ### 2.2.1 Raw variables
 
 ```julia
