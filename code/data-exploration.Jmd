@@ -149,18 +149,18 @@ plot(f, g, h, i, layout = 4)
 # Prey behavior
 f1 = histogram(sqrt.(data.prey_avg_speed),
                 bins = 40, 
-                label = "prey speed")
+                label = "(prey speed)²")
 g1 = histogram(sqrt.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
-                label = "prey space covered")
+                label = "(prey space covered)²")
 
 h1 = histogram(sqrt.(data.prey_total_heal_count),
                 bins = 40, 
-                label = "prey heal count")
+                label = "(prey heal count)²")
 
 i1 = histogram(sqrt.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
-                label = "prey rescue count")                
+                label = "(prey rescue count)²")                
 
 plot(f1, g1, h1, i1, layout = 4)
 ```
