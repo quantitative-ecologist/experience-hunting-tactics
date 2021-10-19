@@ -64,24 +64,26 @@ In this section, we will inspect the distribution of the different predator beha
 ### 2.1.1 Raw variables
 
 ```julia
-# Predator behavior
 a = histogram(data.pred_speed,
               bins = 40, 
               label = "speed",
               color = :firebrick3)
 b = histogram(data.pred_amount_tiles_visited,
               bins = 40, 
-              label = "space covered")
+              label = "space covered",
+              color = :firebrick3)
 c = histogram(data.ambush_time_close,
               bins = 40, 
-              label = "ambush time")
+              label = "ambush time",
+              color = :firebrick3)
 d = histogram(data.latency_1st_capture,
               bins = 40, 
-              label = "latency 1st capture")
-
+              label = "latency 1st capture",
+              color = :firebrick3)
 e = histogram(data.total_chase_duration,
               bins = 40, 
-              label = "chase duration")
+              label = "chase duration",
+              color = :firebrick3)
 
 plot(a, b, c, d, layout = 4)
 ```
@@ -91,19 +93,22 @@ plot(a, b, c, d, layout = 4)
 ### 2.1.2 Square root-transformed variables
 
 ```julia
-# Square root of predator behavior
 a1 = histogram(sqrt.(data.pred_speed),
                 bins = 40, 
-                label = "(speed)²")
+                label = "(speed)²",
+                color = :firebrick3)
 b1 = histogram(sqrt.(data.pred_amount_tiles_visited), 
                 bins = 40,
-                label = "(space covered)²")
+                label = "(space covered)²",
+                color = :firebrick3)
 c1 = histogram(sqrt.(data.ambush_time_close), 
                 bins = 40,
-                label = "(ambush time)²")
+                label = "(ambush time)²",
+                color = :firebrick3)
 d1 = histogram(sqrt.(data.latency_1st_capture),
                 bins = 40,
-                label = "(latency 1st capture)².")
+                label = "(latency 1st capture)².",
+                color = :firebrick3)
 
 plot(a1, b1, c1, d1, layout = 4)
 ```
@@ -113,18 +118,21 @@ plot(a1, b1, c1, d1, layout = 4)
 ### 2.1.3 Log-transformed variables
 
 ```julia
-# Log of predator behavior
 a2 = histogram(log.(data.pred_speed),
                 bins = 40,
-                label = "log(speed)")
+                label = "log(speed)",
+                color = :firebrick3)
 b2 = histogram(log.(data.pred_amount_tiles_visited),
                 bins = 40,
-                label = "log(space covered)")
+                label = "log(space covered)",
+                color = :firebrick3)
 c2 = histogram(log.(data.ambush_time_close),
                 bins = 40, 
-                label = "log(ambush time)")
+                label = "log(ambush time)",
+                color = :firebrick3)
 d2 = histogram(log.(data.latency_1st_capture), bins = 40, 
-                label = "log(latency 1st capture)")
+                label = "log(latency 1st capture)",
+                color = :firebrick3)
 
 plot(a2, b2, c2, d2, layout = 4)
 ```
@@ -140,25 +148,22 @@ We now inspect the distribution of the prey behaviors.
 ### 2.2.1 Raw variables
 
 ```julia
-# Prey behavior
 f = histogram(data.prey_avg_speed,
                 bins = 40, 
                 label = "prey speed",
-                color = :dodgerblue)
+                color = :dodgerblue1)
 g = histogram(data.prey_avg_amount_tiles_visited,
                 bins = 40, 
                 label = "prey space covered",
                 color = :dodgerblue1)
-
 h = histogram(data.prey_total_heal_count,
                 bins = 40, 
                 label = "prey heal count",
-                color = :dodgerblue2)
-
+                color = :dodgerblue1)
 i = histogram(data.prey_avg_amount_tiles_visited,
                 bins = 40, 
                 label = "prey rescue count",
-                color = :dodgerblue3)                
+                color = :dodgerblue1)                
 
 plot(f, g, h, i, layout = 4)
 ```
@@ -168,21 +173,22 @@ plot(f, g, h, i, layout = 4)
 ### 2.2.2 Square root-transformed variables
 
 ```julia
-# Prey behavior
 f1 = histogram(sqrt.(data.prey_avg_speed),
                 bins = 40, 
-                label = "(prey speed)²")
+                label = "(prey speed)²",
+                color = :dodgerblue1)
 g1 = histogram(sqrt.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
-                label = "(prey space covered)²")
-
+                label = "(prey space covered)²",
+                color = :dodgerblue1)
 h1 = histogram(sqrt.(data.prey_total_heal_count),
                 bins = 40, 
-                label = "(prey heal count)²")
-
+                label = "(prey heal count)²",
+                color = :dodgerblue1)
 i1 = histogram(sqrt.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
-                label = "(prey rescue count)²")                
+                label = "(prey rescue count)²",
+                color = :dodgerblue1)                
 
 plot(f1, g1, h1, i1, layout = 4)
 ```
@@ -192,32 +198,33 @@ plot(f1, g1, h1, i1, layout = 4)
 ### 2.2.3 Log-transformed variables
 
 ```julia
-# Prey behavior
 f2 = histogram(log.(data.prey_avg_speed),
                 bins = 40, 
-                label = "log(prey speed)")
+                label = "log(prey speed)",
+                color = :dodgerblue1)
 g2 = histogram(log.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
-                label = "log(prey space covered)")
-
+                label = "log(prey space covered)",
+                color = :dodgerblue1)
 h2 = histogram(log.(data.prey_total_heal_count),
                 bins = 40, 
-                label = "log(prey heal count)")
-
+                label = "log(prey heal count)",
+                color = :dodgerblue1)
 i2 = histogram(log.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
-                label = "log(prey rescue count)")                
+                label = "log(prey rescue count)",
+                color = :dodgerblue1)                
 
 plot(f2, g2, h2, i2, layout = 4)
 ```
 
-
+\pagebreak
 
 ## 2.3 Distribution of player experience
 
 We now investigate the distribution of the cumulative and total player experience.
+
 ```julia
-# Prey behavior
 j = histogram(log.(data.cumul_xp_total),
                 bins = 40, 
                 label = "cumulative xp",
@@ -226,12 +233,10 @@ k = histogram(log.(data.cumul_xp_role),
                 bins = 40, 
                 label = "cumulative xp as the predator",
                 color = :darkgray)
-
 l = histogram(unique(data.total_matches),
                 bins = 40, 
                 label = "total matches",
                 color = :darkgray)
-
 m = histogram(unique(data.total_matches_killer),
                 bins = 40, 
                 label = "total predator matches",
@@ -239,7 +244,5 @@ m = histogram(unique(data.total_matches_killer),
 
 plot(j, k, l, m, layout = 4)
 ```
-
-
 
 # 3. Transformed-variables selected for the analyses
