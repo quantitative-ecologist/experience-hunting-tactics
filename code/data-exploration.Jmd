@@ -5,7 +5,17 @@ date: `j import Dates; Dates.Date(Dates.now())`
 ---
 
 # Summary 
-The following script explores the data used for the analyses presented in "title". We plot the distributions of the raw and transformed variables for predators and prey. We then use a principal component analysis to explore the correlations between the hunting behaviors. We further investigate the distributions of player experience, and look at the correlations between player experience metrics. The data is structured like a longitudinal dataset with repeated individual measurements. The prey behaviors were calculated using the average or the sum of values of the 4 prey within a match. There is thus one observations per match for each predator player.
+The following script explores the data used for the analyses presented in "title". We plot the distributions of the raw and transformed (log and square root) variables for predators and prey. We then use a principal component analysis to explore the covariances between the hunting behaviors. We further investigate the distributions of player experience, and look at the correlations between player experience variables. The data is structured like a longitudinal dataset with repeated individual measurements. The prey behaviors were calculated using the average or the sum of values of the 4 prey within a match. There is thus one observations per match for each predator player.
+
+\pagebreak
+
+# 1. Prepare the data
+
+```julia; echo = false; results = "hidden"
+path = "C:\\Users\\maxim\\UQAM\\Montiglio, Pierre-Olivier - Data Behaviour"
+```
+
+## 1.1 Variable definitions
 
 The predator behaviors :
 
@@ -28,21 +38,13 @@ The player experience metrics :
     - cumulative sum of matches as the predator
     - total matches played as the predator
 
-\pagebreak
-
-# 1. Prepare the data
-
-```julia; echo = false; results = "hidden"
-path = "C:\\Users\\maxim\\UQAM\\Montiglio, Pierre-Olivier - Data Behaviour"
-```
-
-## 1.1 Load the required packages
+## 1.2 Load the required packages
 
 ```julia
 using Pkg, Weave, CSV, DataFrames, Plots
 ```
 
-## 1.2 Import the data
+## 1.3 Import the data
 
 ```julia; results = "hidden"
 data = DataFrame(CSV.File(joinpath(path, "03_final-data",
@@ -51,18 +53,13 @@ data = DataFrame(CSV.File(joinpath(path, "03_final-data",
 
 ```
 
+\pagebreak
+
 # 2. Inspect the data
 
 ## 2.1 Distribution of predator behavior
 
 In this section, we will inspect the distribution of the different predator behaviors.
-
-The transformations include :
-
-    - square root
-    - log
-
-\pagebreak
 
 ### 2.1.1 Raw variables
 
@@ -137,11 +134,6 @@ plot(a2, b2, c2, d2, layout = 4)
 
 We now inspect the distribution of the prey behaviors.
 
-The transformations include :
-
-    - square root
-    - log
-
 \pagebreak
 
 ### 2.2.1 Raw variables
@@ -150,7 +142,8 @@ The transformations include :
 # Prey behavior
 f = histogram(data.prey_avg_speed,
                 bins = 40, 
-                label = "prey speed")
+                label = "prey speed",
+                color=:darkgray)
 g = histogram(data.prey_avg_amount_tiles_visited,
                 bins = 40, 
                 label = "prey space covered")
@@ -216,6 +209,29 @@ plot(f2, g2, h2, i2, layout = 4)
 
 
 
-## 2.3 Distribution of player experience metrics
+## 2.3 Distribution of player experience
+
+We now investigate the distribution of the cumulative and total player experience.
+```julia
+# Prey behavior
+j = histogram(log.(data.cumul_xp_total),
+                bins = 40, 
+                label = "cumulative xp")
+k = histogram(log.(data.cumul_xp_role),
+                bins = 40, 
+                label = "cumulative xp as the predator")
+
+l = histogram(unique(data.total_matches),
+                bins = 40, 
+                label = "total matches")
+
+m = histogram(unique(data.total_matches_killer),
+                bins = 40, 
+                label = "total predator matches")                
+
+plot(j, k, l, m, layout = 4)
+```
+
+
 
 # 3. Transformed-variables selected for the analyses
