@@ -147,18 +147,18 @@ plot(f, g, h, i, layout = 4)
 
 ```julia
 # Prey behavior
-f1 = histogram(sqrt(data.prey_avg_speed),
+f1 = histogram(sqrt.(data.prey_avg_speed),
                 bins = 40, 
                 label = "prey speed")
-g1 = histogram(sqrt(data.prey_avg_amount_tiles_visited),
+g1 = histogram(sqrt.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
                 label = "prey space covered")
 
-h1 = histogram(sqrt(data.prey_total_heal_count),
+h1 = histogram(sqrt.(data.prey_total_heal_count),
                 bins = 40, 
                 label = "prey heal count")
 
-i1 = histogram(sqrt(data.prey_avg_amount_tiles_visited),
+i1 = histogram(sqrt.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
                 label = "prey rescue count")                
 
@@ -171,18 +171,18 @@ plot(f1, g1, h1, i1, layout = 4)
 
 ```julia
 # Prey behavior
-f2 = histogram(log(data.prey_avg_speed),
+f2 = histogram(log.(data.prey_avg_speed),
                 bins = 40, 
                 label = "log(prey speed)")
-g2 = histogram(log(data.prey_avg_amount_tiles_visited),
+g2 = histogram(log.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
                 label = "log(prey space covered)")
 
-h2 = histogram(log(data.prey_total_heal_count),
+h2 = histogram(log.(data.prey_total_heal_count),
                 bins = 40, 
                 label = "log(prey heal count)")
 
-i2 = histogram(log(data.prey_avg_amount_tiles_visited),
+i2 = histogram(log.(data.prey_avg_amount_tiles_visited),
                 bins = 40, 
                 label = "log(prey rescue count)")                
 
