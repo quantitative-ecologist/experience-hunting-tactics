@@ -1,11 +1,12 @@
 # Import package
 using Weave
 
+# Folder path
+path = pwd()
+
 # To weave all the Jmd documents
 #jmd_files = filter(endswith("Jmd"), readdir())
 #weave.(jmd_files)
-
-directory = pwd()
 
 # Weave each document seperately
 weave("code/data-exploration.Jmd", 
@@ -13,11 +14,6 @@ weave("code/data-exploration.Jmd",
         doctype = "pandoc2pdf",
         fig_ext = ".png",
         pandoc_options = ["--toc"])
-
-#weave("code/experience-metrics.Jmd",
-#        fig_path = "experience-metrics-figs",
-#        doctype = "pandoc2pdf",
-#        fig_ext = ".png")
 
 #weave("code/figure1.Jmd", 
 #        fig_path = "/figures/figure1",
