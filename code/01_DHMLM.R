@@ -259,9 +259,9 @@ mv_model <- brm(speed_novice +
                 ambush_novice +
                 ambush_intermediate +
                 ambush_advanced +
-              #  latency_novice +
-              #  latency_intermediate +
-              #  latency_advanced +
+                latency_novice +
+                latency_intermediate +
+                latency_advanced +
                 prey_speed_novice +
                 prey_speed_intermediate +
                 prey_speed_advanced + 
