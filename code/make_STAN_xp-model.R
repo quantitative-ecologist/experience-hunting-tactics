@@ -1,39 +1,116 @@
-##########################################################################
+# =======================================================================
 
-#               Make STAN code for the Multivariate model                #
+#                     Run a multivariate model                          #
+#               that tests the effect of xp on tactics                  #
 
-##########################################################################
+# =======================================================================
 
-# expérience comme effet aléatoire. Mirrors_id serait niché dans experience
-# car certains sont expérimentés alors que d'autres ne le sont pas.
+
+
 
 
 # =======================================================================
 # 1. Load libraries, and import dataset
 # =======================================================================
-# Load libraries
+
+
+
+# Detect number of cores ------------------------------------------------
+options(mc.cores = parallel::detectCores())
+
+
+
+# Load libraries --------------------------------------------------------
+
 library(data.table)
 library(brms)
+library(parallel)
 
 
-data <- fread("./data/merged_data.csv")
 
-# notes sur comment calculer l'experience sur les donnees et importer ici
-# call julia? not great because maybe I can't load the environment
-# run julia script that creates the varianles here
+# Import the data -------------------------------------------------------
+
+data <- fread("./data/final-data.csv")
+
+# To run the model on a subsample of players
+#set.seed(123)
+#chosen <- sample(unique(data$player_encode_id), 15)
+#dat1 <- subset(data, player_encode_id %in% chosen)
 
 # =======================================================================
-# 2. Prepare variables for the model
 # =======================================================================
 
-# Normalize sqrt variables (Z-scores)
+
+
+
+
+# =======================================================================
+# 2. Prepare the data for the model
+# =======================================================================
+
+# Here we prepare the data so the model can estimate trait combinations
+# at different levels of experience
+
+# Experience will thus be a random factor with 3 levels. All traits will
+# then need to be computed as variables at these levels of experience
+
+
+
+# Create dummy variables ------------------------------------------------
+
+# This is done so the model can subsample the rows
+data[, sub1 := ifelse(cumul_xp_pred_bins == "novice", 1, 0)]
+data[, sub2 := ifelse(cumul_xp_pred_bins == "intermediate", 1, 0)]
+data[, sub3 := ifelse(cumul_xp_pred_bins == "advanced", 1, 0)]
+
+
+
+# Transform variables ---------------------------------------------------
+
+# Selected variables from the data-exploration file
+# raw speed
+# raw space covered
+# sqrt ambush
+# log latency
+# raw prey speed
+
+data[, ":=" (sqrt_ambush_time_close = sqrt(ambush_time_close),
+             log_latency_1st_capture = log(latency_1st_capture)) ]
+
+
+
+# Standardise the variables (Z-scores) ----------------------------------
+
 standardize <- function (x) {(x - mean(x)) / sd(x)}
 
-data[, c("Zsqrtspeed", "Zsqrtspace_covered_rate", "Zsqrtprox_mid_guard",
-         "Zsqrthook_start_time", "Zsqrtsurv_speed", 
-         "Zsqrtsurv_space_covered_rate") :=
-                lapply(.SD, standardize), 
-                .SDcols = c(6:11)]
+# Apply the function and create new columns
+# The function standardizes the variables by group :
+# in this case, by level of experience
+
+data[, c("Zspeed_group", "Zspace_group", 
+         "Zambush_group", "Zlatency_group",
+         "Zprey_speed_group") :=
+       lapply(.SD, standardize), 
+       .SDcols = c(16, 18, 43, 44, 19),
+       by = cumul_xp_pred_bins]
+
+# Compute the new columns separated by experience
+
+data[, ":=" (Zspeed_novice        = ifelse(cumul_xp_pred_bins == "novice", Zspeed_group, NA),
+             Zspace_novice        = ifelse(cumul_xp_pred_bins == "novice", Zspace_group, NA),
+             Zambush_novice       = ifelse(cumul_xp_pred_bins == "novice", Zambush_group, NA),
+             Zlatency_novice      = ifelse(cumul_xp_pred_bins == "novice", Zlatency_group, NA),
+             Zprey_speed_novice   = ifelse(cumul_xp_pred_bins == "novice", Zprey_speed_group, NA),
+             Zspeed_interm        = ifelse(cumul_xp_pred_bins == "intermediate", Zspeed_group, NA),
+             Zspace_interm        = ifelse(cumul_xp_pred_bins == "intermediate", Zspace_group, NA),
+             Zambush_interm       = ifelse(cumul_xp_pred_bins == "intermediate", Zambush_group, NA),
+             Zlatency_interm      = ifelse(cumul_xp_pred_bins == "intermediate", Zlatency_group, NA),
+             Zprey_speed_interm   = ifelse(cumul_xp_pred_bins == "intermediate", Zprey_speed_group, NA),
+             Zspeed_advanced      = ifelse(cumul_xp_pred_bins == "advanced", Zspeed_group, NA),
+             Zspace_advanced      = ifelse(cumul_xp_pred_bins == "advanced", Zspace_group, NA),
+             Zambush_advanced     = ifelse(cumul_xp_pred_bins == "advanced", Zambush_group, NA),
+             Zlatency_advanced    = ifelse(cumul_xp_pred_bins == "advanced", Zlatency_group, NA),
+             Zprey_speed_advanced = ifelse(cumul_xp_pred_bins == "advanced", Zprey_speed_group, NA))]
 
 # =======================================================================
 # =======================================================================
@@ -46,72 +123,160 @@ data[, c("Zsqrtspeed", "Zsqrtspace_covered_rate", "Zsqrtprox_mid_guard",
 # 3. Build the multivariate model 
 # =======================================================================
 
-# Formula for each response variable
-# Each model will fit a seperate var-cov matrix for each random effect
-speed_form <- bf(Zsqrtspeed ~
-                  Zsqrtsurv_speed +
-                  Zsqrtsurv_space_covered_rate +
-                  Zsqrtsurv_unhooks +
-                  (1 |a| map_name) +
-                  (1 |b| character_name) +
-                  (1 |c| mirrors_id)) +
-                  gaussian()
+# We first compute submodels for each level of experience
+# These submodels will be added in a joint model that
+# will estimate all the covariances
 
-space_form <- bf(Zsqrtspace_covered_rate ~
-                  Zsqrtsurv_speed +
-                  Zsqrtsurv_space_covered_rate +
-                  Zsqrtsurv_unhooks +
-                  (1 |a| map_name) +
-                  (1 |b| character_name) +
-                  (1 |c| mirrors_id)) +
-                  gaussian()
 
-guard_form <- bf(Zsqrtprox_mid_guard ~
-                  Zsqrtsurv_speed +
-                  Zsqrtsurv_space_covered_rate +
-                  Zsqrtsurv_unhooks +
-                  (1 |a| map_name) +
-                  (1 |b| character_name) +
-                  (1 |c| mirrors_id)) +
-                  gaussian()
 
-hook_form <- bf(Zsqrthook_start_time ~
-                  Zsqrtsurv_speed +
-                  Zsqrtsurv_space_covered_rate +
-                  Zsqrtsurv_unhooks +
-                  (1 |a| map_name) +
-                  (1 |b| character_name) +
-                  (1 |c| mirrors_id)) +
-                  gaussian()
+# Speed at three levels of experience -----------------------------------
 
-# priors
+speed_novice <-       bf(Zspeed_novice | subset(sub1) ~
+                          game_duration +
+                          (1 |a| player_encode_id)) +
+                      gaussian()
+
+speed_intermediate <- bf(Zspeed_interm | subset(sub2) ~
+                          game_duration +
+                          (1 |b| player_encode_id)) +
+                      gaussian()
+
+speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
+                          game_duration +
+                          (1 |c| player_encode_id)) +
+                      gaussian()
+
+
+# Space covered at three levels of experience ---------------------------
+
+#space_novice <-       bf(Zspace | subset(sub1) ~
+#                          game_duration +
+#                          (1 |a| player_encode_id)) +
+#                      gaussian()
+#
+#space_intermediate <- bf(Zspace | subset(sub2) ~
+#                          game_duration +
+#                          (1 |b| player_encode_id)) +
+#                      gaussian()
+#
+#space_advanced <-     bf(Zspace | subset(sub3) ~
+#                          game_duration +
+#                          (1 |c| player_encode_id)) +
+#                      gaussian()
+
+
+# Ambush at three levels of experience ----------------------------------
+
+ambush_novice <-        bf(Zambush | subset(sub1) ~
+                            game_duration +
+                            (1 |a| player_encode_id)) +
+                       gaussian()
+
+ambush_intermediate <- bf(Zambush | subset(sub2) ~
+                            game_duration +
+                            (1 |b| player_encode_id)) +
+                       gaussian()
+
+ambush_advanced <-     bf(Zambush | subset(sub3) ~
+                             game_duration +
+                             (1 |c| player_encode_id)) +
+                       gaussian()
+
+
+# Latency for the 1st capture at three levels of experience -------------
+
+latency_novice <-       bf(Zlatency | subset(sub1) ~
+                            game_duration +
+                            (1 |a| player_encode_id)) +
+                        gaussian()
+
+latency_intermediate <- bf(Zlatency | subset(sub2) ~
+                            game_duration +
+                            (1 |b| player_encode_id)) +
+                        gaussian()
+
+latency_advanced <-     bf(Zlatency | subset(sub3) ~
+                            game_duration +
+                            (1 |c| player_encode_id)) +
+                        gaussian()
+
+
+# Prey speed at three levels of experience ------------------------------
+
+prey_speed_novice <-       bf(Zprey_speed_novice | subset(sub1) ~
+                                game_duration +
+                                (1 |a| player_encode_id), 
+                              sigma ~ 
+                                game_duration + 
+                                (1 |a| player_encode_id)) +
+                           gaussian()
+
+prey_speed_intermediate <- bf(Zprey_speed_interm | subset(sub2) ~
+                                game_duration +
+                                (1 |b| player_encode_id), 
+                              sigma ~ 
+                                game_duration + 
+                                (1 |b| player_encode_id)) +
+                           gaussian()
+
+prey_speed_advanced <-     bf(Zprey_speed_advanced | subset(sub3) ~
+                                game_duration +
+                                (1 |c| player_encode_id), 
+                              sigma ~ 
+                                game_duration + 
+                                (1 |c| player_encode_id)) +
+                           gaussian()
+
+
+
+# priors ----------------------------------------------------------------
+
 priors <- c(
-  set_prior("normal(0, 5)", 
-            class = "b",
-            coef = "Zsqrtsurv_speed",
-            resp = c("Zsqrtspeed", "Zsqrtspacecoveredrate", 
-                     "Zsqrtproxmidguard", "Zsqrthookstarttime")),
-  set_prior("normal(0, 5)", 
-            class = "b",
-            coef = "Zsqrtsurv_space_covered_rate",
-            resp = c("Zsqrtspeed", "Zsqrtspacecoveredrate", 
-                     "Zsqrtproxmidguard", "Zsqrthookstarttime")),
   set_prior("lkj(2)", 
             class = "cor",
-            group = "character_name"),
-  set_prior("lkj(2)", 
-            class = "cor",
-            group = "map_name"),
-  set_prior("lkj(2)", 
-            class = "cor",
-            group = "mirrors_id"))
+            group = "player_encode_id")
+            )
 
-make_stancode(speed_form +
-              space_form +
-              guard_form +
-              hook_form,
-              set_rescor(TRUE),
-              data = data,
+# =======================================================================
+# =======================================================================
+
+
+
+
+
+# =======================================================================
+# 4. Run the multivariate model 
+# =======================================================================
+
+# ( nitt - burnin ) / thin = 1000
+mv_model <- brm(speed_novice +
+                speed_intermediate +
+                speed_advanced +
+              #  space_novice +
+              #  space_intermediate +
+              #  space_advanced +
+                ambush_novice +
+                ambush_intermediate +
+                ambush_advanced +
+              #  latency_novice +
+              #  latency_intermediate +
+              #  latency_advanced +
+                prey_speed_novice +
+                prey_speed_intermediate +
+                prey_speed_advanced + 
+                set_rescor(FALSE),
+              warmup = 300, 
+              iter = 8300,
+              thin = 2,
+              chains = 4, 
+              inits = "0",
               threads = threading(10),
-              backend = "cmdstanr"
-              )
+              backend = "cmdstanr",
+              seed = 123,
+              prior = priors,
+              control = list(adapt_delta = 0.95),
+              save_pars = save_pars(all = TRUE),
+              data = data)
+
+# =======================================================================
+# =======================================================================
