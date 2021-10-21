@@ -30,7 +30,8 @@ library(parallel)
 
 # Import the data -------------------------------------------------------
 
-data <- fread("./data/final-data.csv")
+data <- fread("/home/maxime11/projects/def-monti/maxime11/data/final-data.csv",
+              stringsAsFactors = TRUE)
 
 # To run the model on a subsample of players
 #set.seed(123)
@@ -267,7 +268,7 @@ mv_model <- brm(speed_novice +
                 set_rescor(FALSE),
               warmup = 300, 
               iter = 8300,
-              thin = 2,
+              thin = 8,
               chains = 4, 
               inits = "0",
               threads = threading(10),
@@ -277,6 +278,8 @@ mv_model <- brm(speed_novice +
               control = list(adapt_delta = 0.95),
               save_pars = save_pars(all = TRUE),
               data = data)
+
+saveRDS(mv_model, file = "multivariate_model.rds")
 
 # =======================================================================
 # =======================================================================
