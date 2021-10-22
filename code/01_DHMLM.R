@@ -31,7 +31,30 @@ library(parallel)
 # Import the data -------------------------------------------------------
 
 data <- fread("/home/maxime11/projects/def-monti/maxime11/data/final-data.csv",
+              select = c("player_encode_id", "match_encode_id", 
+                          "game_duration", "hook_count",
+                         "hunting_success", "cumul_xp_pred_bins",
+                         "pred_speed", "pred_amount_tiles_visited",
+                         "ambush_time_close", "latency_1st_capture",
+                         "prey_avg_speed", "prey_avg_amount_tiles_visited", 
+                         "prey_total_heal_count", "prey_total_unhook_count"),
               stringsAsFactors = TRUE)
+
+#data <- fread("C:/Users/maxim/UQAM/Montiglio, Pierre-Olivier - Data Behaviour/03_final-data/#03_final-data_2021/final-data.csv",
+#              select = c("player_encode_id", "match_encode_id", 
+#                          "game_duration", "hook_count",
+#                         "hunting_success", "cumul_xp_pred_bins",
+#                         "pred_speed", "pred_amount_tiles_visited",
+#                         "ambush_time_close", "latency_1st_capture",
+#                         "prey_avg_speed", "prey_avg_amount_tiles_visited", 
+#                         "prey_total_heal_count", "prey_total_unhook_count"),
+#              stringsAsFactors = TRUE)
+
+
+# There are 40 NaN observatinos for prey_avg_speed 
+# and prey_avg_amount_tiles_visited
+
+# These observations are removed from the model
 
 # To run the model on a subsample of players
 #set.seed(123)
@@ -76,13 +99,17 @@ data[, sub3 := ifelse(cumul_xp_pred_bins == "advanced", 1, 0)]
 # raw prey speed
 
 data[, ":=" (sqrt_ambush_time_close = sqrt(ambush_time_close),
-             log_latency_1st_capture = log(latency_1st_capture)) ]
+             log_latency_1st_capture = log(latency_1st_capture + 1)) ]
+
+# There is 1 value of latency in the dataset that is of 0
+# Maybe remove it if it adds weight to the model? (probably not)
 
 
 
 # Standardise the variables (Z-scores) ----------------------------------
 
-standardize <- function (x) {(x - mean(x)) / sd(x)}
+# Create the function
+standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)}
 
 # Apply the function and create new columns
 # The function standardizes the variables by group :
@@ -92,11 +119,12 @@ data[, c("Zspeed_group", "Zspace_group",
          "Zambush_group", "Zlatency_group",
          "Zprey_speed_group") :=
        lapply(.SD, standardize), 
-       .SDcols = c(16, 18, 43, 44, 19),
+       .SDcols = c("pred_speed", "pred_amount_tiles_visited", 
+                   "ambush_time_close", "log_latency_1st_capture", 
+                   "prey_avg_speed"),
        by = cumul_xp_pred_bins]
 
 # Compute the new columns separated by experience
-
 data[, ":=" (Zspeed_novice        = ifelse(cumul_xp_pred_bins == "novice", Zspeed_group, NA),
              Zspace_novice        = ifelse(cumul_xp_pred_bins == "novice", Zspace_group, NA),
              Zambush_novice       = ifelse(cumul_xp_pred_bins == "novice", Zambush_group, NA),
@@ -271,8 +299,8 @@ mv_model <- brm(speed_novice +
               thin = 8,
               chains = 4, 
               inits = "0",
-              threads = threading(10),
-              backend = "cmdstanr",
+            #  threads = threading(10),
+            #  backend = "cmdstanr",
               seed = 123,
               prior = priors,
               control = list(adapt_delta = 0.95),
