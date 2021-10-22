@@ -168,17 +168,17 @@ speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
 
 # Ambush at three levels of experience ----------------------------------
 
-ambush_novice <-        bf(Zambush | subset(sub1) ~
+ambush_novice <-        bf(Zambush_novice | subset(sub1) ~
                             game_duration +
                             (1 |a| player_encode_id)) +
                        gaussian()
 
-ambush_intermediate <- bf(Zambush | subset(sub2) ~
+ambush_intermediate <- bf(Zambush_interm | subset(sub2) ~
                             game_duration +
                             (1 |b| player_encode_id)) +
                        gaussian()
 
-ambush_advanced <-     bf(Zambush | subset(sub3) ~
+ambush_advanced <-     bf(Zambush_advanced | subset(sub3) ~
                              game_duration +
                              (1 |c| player_encode_id)) +
                        gaussian()
@@ -186,17 +186,17 @@ ambush_advanced <-     bf(Zambush | subset(sub3) ~
 
 # Latency for the 1st capture at three levels of experience -------------
 
-latency_novice <-       bf(Zlatency | subset(sub1) ~
+latency_novice <-       bf(Zlatency_novice | subset(sub1) ~
                             game_duration +
                             (1 |a| player_encode_id)) +
                         gaussian()
 
-latency_intermediate <- bf(Zlatency | subset(sub2) ~
+latency_intermediate <- bf(Zlatency_interm | subset(sub2) ~
                             game_duration +
                             (1 |b| player_encode_id)) +
                         gaussian()
 
-latency_advanced <-     bf(Zlatency | subset(sub3) ~
+latency_advanced <-     bf(Zlatency_advanced | subset(sub3) ~
                             game_duration +
                             (1 |c| player_encode_id)) +
                         gaussian()
