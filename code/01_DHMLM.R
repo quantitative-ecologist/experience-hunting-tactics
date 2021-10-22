@@ -106,7 +106,7 @@ data[, ":=" (sqrt_ambush_time_close = sqrt(ambush_time_close),
 
 
 
-# Standardise the variables (Z-scores) ----------------------------------
+# Standardize the variables (Z-scores) ----------------------------------
 
 # Create the function
 standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)}
