@@ -6,4 +6,5 @@ code/*.tex
 code/*.aux
 data
 tests
+outputs/multivariate_model.rds
 .Rproj.user
