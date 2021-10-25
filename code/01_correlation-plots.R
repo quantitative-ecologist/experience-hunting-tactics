@@ -5,8 +5,12 @@
 
 # =======================================================================
 
-# Code to produce Figure 2
+# Code to produce Figure x
 # Powerpoint was used to produce the final adjustements
+
+# Activate project environment
+renv::activate()
+
 # -----------------------------------------------------------------------
 
 
@@ -196,61 +200,161 @@ cor_tab[, xp_group := c("novice", "novice", "novice",
 
 
 # =======================================================================
-# 4. Variance-correlation  matrixes
+# 4. Variance-correlation matrixes
 # =======================================================================
 
+
 # Novice ----------------------------------------------------------------
+
 novice_cor <- cor_tab[xp_group %in% "novice", .(group, mean)]
 
 # ICC values are on the diagonals
 speed <- c(
       as.numeric(icc_tab[1,2]),
-      as.numeric(cor_tab[1,2]),
-      as.numeric(cor_tab[2,2]),
-      as.numeric(cor_tab[4,2])
+      as.numeric(novice_cor[1,2]),
+      as.numeric(novice_cor[2,2]),
+      as.numeric(novice_cor[3,2]),
+      as.numeric(novice_cor[4,2])
 )
 
 ambush <- c(
-      as.numeric(cor_tab[8,2]),
-      as.numeric(cor_tab[9,2]),
-      as.numeric(icc_tab[3,2]),
-      as.numeric(cor_tab[6,2])
+      NA,
+      as.numeric(icc_tab[2,2]),
+      as.numeric(novice_cor[5,2]),
+      as.numeric(novice_cor[6,2]),
+      as.numeric(novice_cor[7,2])
 )
 
 latency <- c(
-      as.numeric(cor_tab[10,2]),
-      as.numeric(cor_tab[11,2]),
-      as.numeric(cor_tab[12,2]),
-      as.numeric(icc_tab[4,2])
+      NA,
+      NA,
+      as.numeric(icc_tab[3,2]),
+      as.numeric(novice_cor[8,2]),
+      as.numeric(novice_cor[9,2])
 )
 
-prey_speed <- c(
-      as.numeric(cor_tab[10,2]),
-      as.numeric(cor_tab[11,2]),
-      as.numeric(cor_tab[12,2]),
-      "")
+prey_avg_speed <- c(
+      NA,
+      NA,
+      NA,
+      NA,
+      NA
 )
 
-prey_sigmaspeed <- c(
-      as.numeric(cor_tab[10,2]),
-      as.numeric(cor_tab[11,2]),
-      as.numeric(cor_tab[12,2]),
-      "")
+prey_var_speed <- c(
+      NA,
+      NA,
+      NA,
+      NA,
+      NA
 )
 
-cor_matrix_novice <- cbind(speed, ambush, latency, prey_speed, prey_sigmaspeed)
-rownames(id_cor_matrix) <- c("speed", "time ambush", "latency 1st cap.")
-colnames(id_cor_matrix) <- c("speed", "time ambush", "latency 1st cap.")
+cor_matrix_novice <- cbind(speed, ambush, latency, prey_avg_speed, prey_var_speed)
+rownames(cor_matrix_novice) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
+colnames(cor_matrix_novice) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
 
 
 
 # Intermediate ----------------------------------------------------------
 
+interm_cor <- cor_tab[xp_group %in% "interm", .(group, mean)]
+
+# ICC values are on the diagonals
+speed <- c(
+      as.numeric(icc_tab[4,2]),
+      as.numeric(interm_cor[1,2]),
+      as.numeric(interm_cor[2,2]),
+      as.numeric(interm_cor[3,2]),
+      as.numeric(interm_cor[4,2])
+)
+
+ambush <- c(
+      NA,
+      as.numeric(icc_tab[5,2]),
+      as.numeric(interm_cor[5,2]),
+      as.numeric(interm_cor[6,2]),
+      as.numeric(interm_cor[7,2])
+)
+
+latency <- c(
+      NA,
+      NA,
+      as.numeric(icc_tab[6,2]),
+      as.numeric(interm_cor[8,2]),
+      as.numeric(interm_cor[9,2])
+)
+
+prey_avg_speed <- c(
+      NA,
+      NA,
+      NA,
+      NA,
+      NA
+)
+
+prey_var_speed <- c(
+      NA,
+      NA,
+      NA,
+      NA,
+      NA
+)
+
+cor_matrix_interm <- cbind(speed, ambush, latency, prey_avg_speed, prey_var_speed)
+rownames(cor_matrix_interm) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
+colnames(cor_matrix_interm) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
 
 
 
 # Advanced --------------------------------------------------------------
 
+advanced_cor <- cor_tab[xp_group %in% "advanced", .(group, mean)]
+
+# ICC values are on the diagonals
+speed <- c(
+      as.numeric(icc_tab[7,2]),
+      as.numeric(advanced_cor[1,2]),
+      as.numeric(advanced_cor[2,2]),
+      as.numeric(advanced_cor[3,2]),
+      as.numeric(advanced_cor[4,2])
+)
+
+ambush <- c(
+      NA,
+      as.numeric(icc_tab[8,2]),
+      as.numeric(advanced_cor[5,2]),
+      as.numeric(advanced_cor[6,2]),
+      as.numeric(advanced_cor[7,2])
+)
+
+latency <- c(
+      NA,
+      NA,
+      as.numeric(icc_tab[9,2]),
+      as.numeric(advanced_cor[8,2]),
+      as.numeric(advanced_cor[9,2])
+)
+
+prey_avg_speed <- c(
+      NA,
+      NA,
+      NA,
+      NA,
+      NA
+)
+
+prey_var_speed <- c(
+      NA,
+      NA,
+      NA,
+      NA,
+      NA
+)
+
+cor_matrix_advanced <- cbind(speed, ambush, latency, prey_avg_speed, prey_var_speed)
+rownames(cor_matrix_advanced) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
+colnames(cor_matrix_advanced) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
+
 # =======================================================================
 # =======================================================================
 
@@ -259,66 +363,42 @@ colnames(id_cor_matrix) <- c("speed", "time ambush", "latency 1st cap.")
 
 
 # =======================================================================
-# 3. Create different correlation plots and save in figure 2
+# 3. Create different correlation plots
 # =======================================================================
 
 # --------------------------------------------------
 # Version with colors
 # --------------------------------------------------
-corrplot(id_cor_matrix, type = "full", method = "ellipse", 
+
+# Novice
+corrplot(cor_matrix_novice, type = "lower", method = "ellipse", 
                         cl.pos = "r", cl.cex = .85, tl.pos = "lt", tl.col = "black", 
                         tl.cex = 1.1, tl.srt = 45, number.digits = 3,
                         addCoef.col = "black", 
                         col = RColorBrewer::brewer.pal(n = 10, name = "RdBu"), 
                         mar = c(0,0,0,0))
-graph2ppt(file = "./outputs/04_figure2.pptx", 
+graph2ppt(file = "./outputs/trait-correlations.pptx", 
           width = 10, height = 6)
 
-corrplot(map_cor_matrix, type = "lower", method = "ellipse", 
+# Intermediate
+corrplot(cor_matrix_interm, type = "lower", method = "ellipse", 
                         cl.pos = "r", cl.cex = .85, tl.pos = "lt", tl.col = "black", 
                         tl.cex = 1.1, tl.srt = 45, number.digits = 3,
                         addCoef.col = "black", 
                         col = RColorBrewer::brewer.pal(n = 10, name = "RdBu"), 
                         mar = c(0,0,0,0))
-graph2ppt(file = "./outputs/04_figure2.pptx", 
+graph2ppt(file = "./outputs/trait-correlations.pptx", 
           width = 10, height = 6, append = TRUE)
 
-corrplot(char_cor_matrix, type = "lower", method = "ellipse", 
+# Advanced
+corrplot(cor_matrix_advanced, type = "lower", method = "ellipse", 
                         cl.pos = "r", cl.cex = .85, tl.pos = "lt", tl.col = "black", 
                         tl.cex = 1.1, tl.srt = 45, number.digits = 3,
                         addCoef.col = "black", 
                         col = RColorBrewer::brewer.pal(n = 10, name = "RdBu"), 
                         mar = c(0,0,0,0))
-graph2ppt(file = "./outputs/04_figure2.pptx", 
+graph2ppt(file = "./outputs/trait-correlations.pptx", 
           width = 10, height = 6, append = TRUE)
-# --------------------------------------------------
-# --------------------------------------------------
-
-
-
-# --------------------------------------------------
-# Black and gray version
-# --------------------------------------------------
-corrplot(id_cor_matrix, type = "full", method = "ellipse", 
-         cl.pos = "r", cl.cex = .85, tl.pos = "lt", tl.col = "black", 
-         tl.cex = 1.1, tl.srt = 45, number.digits = 3,
-         addCoef.col = "#7e7c7c", 
-         col = c("black", "lightgray"), 
-         mar = c(0,0,0,0))
-graph2ppt(file = "./outputs/04_figure2.pptx", 
-          width = 10, height = 6, append = TRUE)
-
-corrplot(map_cor_matrix, type = "full", method = "ellipse", 
-         cl.pos = "r", cl.cex = .85, tl.pos = "lt", tl.col = "black", 
-         tl.cex = 1.1, tl.srt = 45, number.digits = 3,
-         addCoef.col = "#7e7c7c", 
-         col = c("black", "lightgray"), 
-         mar = c(0,0,0,0))
-graph2ppt(file = "./outputs/04_figure2.pptx", 
-          width = 10, height = 6, append = TRUE)
-
-# --------------------------------------------------
-# --------------------------------------------------
 
 # =======================================================================
 # =======================================================================
