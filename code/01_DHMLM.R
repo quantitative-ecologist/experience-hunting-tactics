@@ -176,6 +176,7 @@ speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
                       gaussian()
 
 
+
 # Space covered at three levels of experience ---------------------------
 
 #space_novice <-       bf(Zspace | subset(sub1) ~
@@ -192,6 +193,7 @@ speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
 #                          game_duration +
 #                          (1 |c| player_encode_id)) +
 #                      gaussian()
+
 
 
 # Ambush at three levels of experience ----------------------------------
@@ -212,6 +214,7 @@ ambush_advanced <-     bf(Zambush_advanced | subset(sub3) ~
                        gaussian()
 
 
+
 # Latency for the 1st capture at three levels of experience -------------
 
 latency_novice <-       bf(Zlatency_novice | subset(sub1) ~
@@ -228,6 +231,7 @@ latency_advanced <-     bf(Zlatency_advanced | subset(sub3) ~
                             game_duration +
                             (1 |c| player_encode_id)) +
                         gaussian()
+
 
 
 # Prey speed at three levels of experience ------------------------------

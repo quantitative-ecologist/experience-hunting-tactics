@@ -1,0 +1,135 @@
+---
+title: Principal component analysis
+author: Anonymous
+date: `j import Dates; Dates.Date(Dates.now())`
+---
+
+# 1. Setting up
+
+```julia; echo = false; results = "hidden"
+
+path = "C:\\Users\\maxim\\UQAM\\Montiglio, Pierre-Olivier - Data Behaviour"
+
+```
+
+
+## 1.1 Load the required packages
+
+```julia
+
+using Pkg, Weave, CSV, DataFrames, Plots, MultivariateStats, Statistics
+
+```
+
+
+## 1.2 Import the data
+
+```julia; results = "hidden"
+
+data = DataFrame(CSV.File(joinpath(path, "03_final-data",
+                                         "03_final-data_2021",
+                                         "final-data.csv")))
+
+```
+
+
+## 1.3 Transform variables
+
+```julia; results = "hidden"
+
+# Square root of ambush time and chase duration
+data[:, :sqrt_ambush_time] = sqrt.(data[:, :ambush_time_close])
+data[:, :sqrt_total_chase_duration] = sqrt.(data[:, :total_chase_duration])
+
+# Log+1 of the latency and chase count
+data[:, :log_latency_1st_capture] = log1p.(data[:, :latency_1st_capture])
+data[:, :log_chase_count] = log1p.(data[:, :chase_count])
+
+```
+
+
+## 1.4 Select the variables and rearrange the table
+```julia; results = "hidden"
+
+# Subset the columns used for the analysis
+select!(data, [:pred_speed, :pred_amount_tiles_visited,
+               :sqrt_ambush_time, :log_latency_1st_capture,
+               :log_chase_count, :sqrt_total_chase_duration])
+
+# Re-arrange the table in wide format
+data_matrix = Array(data)'
+
+```
+
+
+# 2. Run the principal component analysis
+
+
+## 2.1 Run the PCA on the data matrix
+
+```julia
+
+# Fit the pca to the data matrix
+pca = fit(PCA, data_matrix; pratio = 1, maxoutdim = 4)
+
+```
+
+
+## 2.2 Check some diagnostics
+
+```julia
+
+# Total variance
+principalvars(pca)
+
+# % of variance
+principalvars(pca) ./ tvar(pca) * 100
+
+```
+
+
+## 2.3 Transform observations to principal components
+
+```julia
+
+transformed = projection(pca)' * (data_matrix .- mean(pca))
+
+```
+
+
+
+# 3. Plot the principal component analysis
+
+## 3.1 Biplot of PC1 and PC2
+
+```julia; results = "hidden"
+
+# Compute the plot
+biplot = plot(transformed[1, :], 
+              transformed[2, :], 
+              seriestype = :scatter, 
+              label = "")
+
+# Format the plot
+plot!(xlabel = "PC1",
+      ylabel = "PC2", 
+      framestyle = :box)
+
+```
+
+```julia
+
+# Compute the projection matrix
+proj = projection(pca)
+
+# Add arrows (variables) to the biplot
+for i = 1:6; plot!([0, proj[i, 1]], 
+                   [0, proj[i, 2]],
+                   arrow = true, 
+                   label = names(data)[i], 
+                   legend = :bottomleft); 
+end
+
+display(biplot)
+
+```

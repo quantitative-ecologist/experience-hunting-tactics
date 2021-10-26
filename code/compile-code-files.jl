@@ -15,6 +15,12 @@ weave("code/data-exploration.Jmd",
         fig_ext = ".png",
         pandoc_options = ["--toc"])
 
+weave("code/01_PCA.Jmd", 
+        fig_path = "PCA-figs",
+        doctype = "pandoc2pdf",
+        fig_ext = ".png",
+        pandoc_options = ["--toc"])
+
 #weave("code/figure1.Jmd", 
 #        fig_path = "/figures/figure1",
 #        fig_ext = ".png")
