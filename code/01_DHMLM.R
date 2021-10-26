@@ -340,7 +340,7 @@ mv_model <- brm(speed_novice +
                 prey_speed_advanced + 
                 set_rescor(FALSE),
               warmup = 300, 
-              iter = 8300,
+              iter = 10300,
               thin = 8,
               chains = 4, 
               inits = "0",
