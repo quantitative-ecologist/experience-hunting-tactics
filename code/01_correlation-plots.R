@@ -377,7 +377,7 @@ corrplot(cor_matrix_novice, type = "lower", method = "ellipse",
                         addCoef.col = "black", 
                         col = RColorBrewer::brewer.pal(n = 10, name = "RdBu"), 
                         mar = c(0,0,0,0))
-graph2ppt(file = "./outputs/trait-correlations.pptx", 
+graph2ppt(file = "./figures/trait-correlations.pptx", 
           width = 10, height = 6)
 
 # Intermediate
@@ -387,7 +387,7 @@ corrplot(cor_matrix_interm, type = "lower", method = "ellipse",
                         addCoef.col = "black", 
                         col = RColorBrewer::brewer.pal(n = 10, name = "RdBu"), 
                         mar = c(0,0,0,0))
-graph2ppt(file = "./outputs/trait-correlations.pptx", 
+graph2ppt(file = "./figures/trait-correlations.pptx", 
           width = 10, height = 6, append = TRUE)
 
 # Advanced
@@ -397,7 +397,7 @@ corrplot(cor_matrix_advanced, type = "lower", method = "ellipse",
                         addCoef.col = "black", 
                         col = RColorBrewer::brewer.pal(n = 10, name = "RdBu"), 
                         mar = c(0,0,0,0))
-graph2ppt(file = "./outputs/trait-correlations.pptx", 
+graph2ppt(file = "./figures/trait-correlations.pptx", 
           width = 10, height = 6, append = TRUE)
 
 # =======================================================================

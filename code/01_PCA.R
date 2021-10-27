@@ -19,8 +19,6 @@ renv::activate()
 # 1. Load libraries
 # =========================================================================
 
-
-
 library(data.table)
 library(ggcorrplot)
 library(factoextra)
@@ -50,10 +48,10 @@ data <- fread("C:/Users/maxim/UQAM/Montiglio, Pierre-Olivier - Data Behaviour/03
 # Divide the data by match duration ----------------------------------------
 
 data[, pred_amount_tiles_visited := pred_amount_tiles_visited/game_duration]
-data[, chase_count := chase_count/game_duration]
-data[, total_chase_duration := total_chase_duration/game_duration]
-data[, latency_1st_capture := latency_1st_capture/game_duration]
-data[, ambush_time_close := ambush_time_close/game_duration]
+#data[, chase_count := chase_count/game_duration]
+#data[, total_chase_duration := total_chase_duration/game_duration]
+#data[, latency_1st_capture := latency_1st_capture/game_duration]
+#data[, ambush_time_close := ambush_time_close/game_duration]
 
 
 
@@ -140,7 +138,8 @@ full_cor_plot <- ggpubr::ggpar(full_cor_plot,
 
 # FactoMineR method : singular value decomposition ------------------------
 
-pca <- PCA(data, graph = FALSE, scale.unit = FALSE)
+#pca <- PCA(data, graph = FALSE, scale.unit = FALSE)
+pca <- PCA(data[,1:4], graph = FALSE, scale.unit = FALSE)
 
 # spectral decomposition (gives the same results)
 #PCA_fullZ1 <- princomp(full_Zmatrix, cor = FALSE, scores = TRUE)
@@ -229,13 +228,10 @@ biplot12 <- fviz_pca_biplot(pca,
                             geom.ind = "point",
                             pointshape = 16,
                             pointsize = 1,
-                            labelsize = 6,
-                            select.var = list(contrib = 13),
+                            labelsize = 6,,
                             repel = TRUE) + # no text overlap
-  #scale_y_continuous(breaks = seq(-7.5, 7.5, 2.5), limits = c(-8.5, 8.5)) +
-  #scale_x_continuous(breaks = seq(-7.5, 7.5, 2.5), limits = c(-9, 8.5)) +
-  #scale_y_continuous(breaks = seq(-10, 10, 5), limits = c(-10, 10)) +
-  #scale_x_continuous(breaks = seq(-10, 10, 5), limits = c(-10, 10)) +
+  scale_y_continuous(breaks = seq(-5, 5, 2.5), limits = c(-5, 5)) +
+  scale_x_continuous(breaks = seq(-7.5, 5, 2.5), limits = c(-8, 5)) +
   background_grid(major = "none") +
   theme(panel.border = element_rect(fill = NA, size = 0.95),
         axis.text.x = element_text(face = "plain", size = 14, color = "black"),
@@ -245,8 +241,8 @@ biplot12 <- fviz_pca_biplot(pca,
         plot.margin = margin(0.1, 0.5, 0.2, 0.3, "cm"))
 
 biplot12 <- ggpubr::ggpar(biplot12,
-                          xlab = "\nPC1 (36.9.0% of explained variance)",
-                          ylab = "PC2 (27.3% of explained variance)\n",
+                          xlab = "\nPC1 (44.0% of explained variance)",
+                          ylab = "PC2 (28.6% of explained variance)\n",
                           title = "",
                           font.x = c(15, "plain"),
                           font.y = c(15, "plain"))
@@ -255,20 +251,17 @@ biplot12 <- ggpubr::ggpar(biplot12,
 
 biplot23 <- fviz_pca_biplot(pca,
                             col.var = "black",
-                            axes = c(2,3),
+                            axes = c(2, 3),
                             col.ind = "dimgray", # firebrick3
                             alpha.ind = 0.2,
                             arrowsize = 1,
                             geom.ind = "point",
                             pointshape = 16,
                             pointsize = 1,
-                            labelsize = 6,
-                            select.var = list(contrib = 13),
+                            labelsize = 6,,
                             repel = TRUE) + # no text overlap
-  #scale_y_continuous(breaks = seq(-5, 5, 2.5), limits = c(-6, 5)) +
-  #scale_x_continuous(breaks = seq(-7.5, 5, 2.5), limits = c(-8.5, 7)) +
-  #scale_y_continuous(breaks = seq(-10, 10, 5), limits = c(-10, 10)) +
-  #scale_x_continuous(breaks = seq(-10, 10, 5), limits = c(-10, 10)) +
+  scale_y_continuous(breaks = seq(-5, 5, 2.5), limits = c(-5.5, 5)) +
+  scale_x_continuous(breaks = seq(-5, 5, 2.5), limits = c(-5, 5)) +
   background_grid(major = "none") +
   theme(panel.border = element_rect(fill = NA, size = 0.95),
         axis.text.x = element_text(face = "plain", size = 14, color = "black"),
@@ -278,8 +271,8 @@ biplot23 <- fviz_pca_biplot(pca,
         plot.margin = margin(0.1, 0.5, 0.2, 0.5, "cm"))
 
 biplot23 <- ggpubr::ggpar(biplot23,
-                          xlab = "\nPC2 (27.3% of explained variance)",
-                          ylab = "PC3 (17.7% of explained variance)\n",
+                          xlab = "\nPC2 (28.6% of explained variance)",
+                          ylab = "PC3 (15.2% of explained variance)\n",
                           title = "",
                           font.x = c(15, "plain"),
                           font.y = c(15, "plain"))
@@ -334,7 +327,7 @@ PCA_figure <- ggarrange(biplot12,
                         ncol = 2, 
                         nrow = 1)
 
-ggexport(PCA_figure, filename = "./outputs/01_PCA-biplot.tiff", 
+ggexport(PCA_figure, filename = "./figures/01_PCA-biplot.tiff", 
          width = 4000, height = 1800, res = 300)
 
 
