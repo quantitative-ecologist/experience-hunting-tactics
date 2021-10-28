@@ -99,8 +99,8 @@ data[, sub3 := ifelse(cumul_xp_pred_bins == "advanced", 1, 0)]
 #data[, pred_amount_tiles_visited := pred_amount_tiles_visited/game_duration]
 #data[, chase_count := chase_count/game_duration]
 #data[, total_chase_duration := total_chase_duration/game_duration]
-data[, latency_1st_capture := latency_1st_capture/game_duration]
-data[, ambush_time_close := ambush_time_close/game_duration]
+#data[, latency_1st_capture := latency_1st_capture/game_duration]
+#data[, ambush_time_close := ambush_time_close/game_duration]
 
 # Selected variables from the data-exploration file
 # raw speed
@@ -357,8 +357,9 @@ mv_model <- brm(speed_novice +
               save_pars = save_pars(all = TRUE),
               data = data)
 
-#saveRDS(mv_model, file = "multivariate_model.rds")
-saveRDS(mv_model, file = "multivariate_model1.rds")
+#saveRDS(mv_model, file = "multivariate_model.rds") # included game_duration as covariate
+#saveRDS(mv_model, file = "multivariate_model1.rds") # values divided by game_duration / no covariates
+saveRDS(mv_model, file = "multivariate_model2.rds") # no covariates
 
 # =======================================================================
 # =======================================================================
