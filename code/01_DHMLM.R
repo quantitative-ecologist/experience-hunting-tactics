@@ -110,7 +110,8 @@ data[, sub3 := ifelse(cumul_xp_pred_bins == "advanced", 1, 0)]
 # raw prey speed
 
 data[, ":=" (sqrt_ambush_time_close = sqrt(ambush_time_close),
-             log_latency_1st_capture = log(latency_1st_capture + 1)) ]
+             log_latency_1st_capture = log(latency_1st_capture + 1),
+             sqrt_game_duration = sqrt(game_duration)) ]
 
 # There is 1 value of latency in the dataset that is of 0
 # Maybe remove it if it adds weight to the model? (probably not)
@@ -128,11 +129,11 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)}
 
 data[, c("Zspeed_group", "Zspace_group", 
          "Zambush_group", "Zlatency_group",
-         "Zprey_speed_group") :=
+         "Zprey_speed_group", "Zgame_duration") :=
        lapply(.SD, standardize), 
        .SDcols = c("pred_speed", "pred_amount_tiles_visited", 
                    "sqrt_ambush_time_close", "log_latency_1st_capture", 
-                   "prey_avg_speed"),
+                   "prey_avg_speed", "sqrt_game_duration"),
        by = cumul_xp_pred_bins]
 
 # Compute the new columns separated by experience
@@ -171,32 +172,32 @@ data[, ":=" (Zspeed_novice        = ifelse(cumul_xp_pred_bins == "novice", Zspee
 
 # Speed at three levels of experience -----------------------------------
 
-#speed_novice <-       bf(Zspeed_novice | subset(sub1) ~
-#                          game_duration +
-#                          (1 |a| player_encode_id)) +
-#                      gaussian()
-#
-#speed_intermediate <- bf(Zspeed_interm | subset(sub2) ~
-#                          game_duration +
-#                          (1 |b| player_encode_id)) +
-#                      gaussian()
-#
-#speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
-#                          game_duration +
-#                          (1 |c| player_encode_id)) +
-#                      gaussian()
-
 speed_novice <-       bf(Zspeed_novice | subset(sub1) ~
-                          1 + (1 |a| player_encode_id)) +
+                          Zgame_duration +
+                          (1 |a| player_encode_id)) +
                       gaussian()
 
 speed_intermediate <- bf(Zspeed_interm | subset(sub2) ~
-                          1 + (1 |b| player_encode_id)) +
+                          Zgame_duration +
+                          (1 |b| player_encode_id)) +
                       gaussian()
 
 speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
-                          1 + (1 |c| player_encode_id)) +
+                          Zgame_duration +
+                          (1 |c| player_encode_id)) +
                       gaussian()
+
+#speed_novice <-       bf(Zspeed_novice | subset(sub1) ~
+#                          1 + (1 |a| player_encode_id)) +
+#                      gaussian()
+#
+#speed_intermediate <- bf(Zspeed_interm | subset(sub2) ~
+#                          1 + (1 |b| player_encode_id)) +
+#                      gaussian()
+#
+#speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
+#                          1 + (1 |c| player_encode_id)) +
+#                      gaussian()
 
 
 # Space covered at three levels of experience ---------------------------
@@ -220,97 +221,117 @@ speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
 
 # Ambush at three levels of experience ----------------------------------
 
-#ambush_novice <-        bf(Zambush_novice | subset(sub1) ~
-#                            game_duration +
-#                            (1 |a| player_encode_id)) +
-#                       gaussian()
-#
-#ambush_intermediate <- bf(Zambush_interm | subset(sub2) ~
-#                            game_duration +
-#                            (1 |b| player_encode_id)) +
-#                       gaussian()
-#
-#ambush_advanced <-     bf(Zambush_advanced | subset(sub3) ~
-#                             game_duration +
-#                             (1 |c| player_encode_id)) +
-#                       gaussian()
-
 ambush_novice <-        bf(Zambush_novice | subset(sub1) ~
-                            1 + (1 |a| player_encode_id)) +
+                            Zgame_duration +
+                            (1 |a| player_encode_id)) +
                        gaussian()
 
 ambush_intermediate <- bf(Zambush_interm | subset(sub2) ~
-                            1 + (1 |b| player_encode_id)) +
+                            Zgame_duration +
+                            (1 |b| player_encode_id)) +
                        gaussian()
 
 ambush_advanced <-     bf(Zambush_advanced | subset(sub3) ~
-                             1 + (1 |c| player_encode_id)) +
+                             Zgame_duration +
+                             (1 |c| player_encode_id)) +
                        gaussian()
+
+#ambush_novice <-        bf(Zambush_novice | subset(sub1) ~
+#                            1 + (1 |a| player_encode_id)) +
+#                       gaussian()
+#
+#ambush_intermediate <- bf(Zambush_interm | subset(sub2) ~
+#                            1 + (1 |b| player_encode_id)) +
+#                       gaussian()
+#
+#ambush_advanced <-     bf(Zambush_advanced | subset(sub3) ~
+#                             1 + (1 |c| player_encode_id)) +
+#                       gaussian()
 
 
 # Latency for the 1st capture at three levels of experience -------------
 
 latency_novice <-       bf(Zlatency_novice | subset(sub1) ~
-                            1 + (1 |a| player_encode_id)) +
+                            Zgame_duration + 
+                            (1 |a| player_encode_id)) +
                         gaussian()
 
 latency_intermediate <- bf(Zlatency_interm | subset(sub2) ~
-                            1 + (1 |b| player_encode_id)) +
+                            Zgame_duration +
+                            (1 |b| player_encode_id)) +
                         gaussian()
 
 latency_advanced <-     bf(Zlatency_advanced | subset(sub3) ~
-                            1 + (1 |c| player_encode_id)) +
+                            Zgame_duration +
+                            (1 |c| player_encode_id)) +
                         gaussian()
+
+
+#latency_novice <-       bf(Zlatency_novice | subset(sub1) ~
+#                            1 + (1 |a| player_encode_id)) +
+#                        gaussian()
+#
+#latency_intermediate <- bf(Zlatency_interm | subset(sub2) ~
+#                            1 + (1 |b| player_encode_id)) +
+#                        gaussian()
+#
+#latency_advanced <-     bf(Zlatency_advanced | subset(sub3) ~
+#                            1 + (1 |c| player_encode_id)) +
+#                        gaussian()
 
 
 
 # Prey speed at three levels of experience ------------------------------
 
-#prey_speed_novice <-       bf(Zprey_speed_novice | subset(sub1) ~
-#                                game_duration +
-#                                (1 |a| player_encode_id), 
-#                              sigma ~ 
-#                                game_duration + 
-#                                (1 |a| player_encode_id)) +
-#                           gaussian()
-#
-#prey_speed_intermediate <- bf(Zprey_speed_interm | subset(sub2) ~
-#                                game_duration +
-#                                (1 |b| player_encode_id), 
-#                              sigma ~ 
-#                                game_duration + 
-#                                (1 |b| player_encode_id)) +
-#                           gaussian()
-#
-#prey_speed_advanced <-     bf(Zprey_speed_advanced | subset(sub3) ~
-#                                game_duration +
-#                                (1 |c| player_encode_id), 
-#                              sigma ~ 
-#                                game_duration + 
-#                                (1 |c| player_encode_id)) +
-#                           gaussian()
-
 prey_speed_novice <-       bf(Zprey_speed_novice | subset(sub1) ~
-                                1 + (1 |a| player_encode_id), 
+                                Zgame_duration +
+                                (1 |a| player_encode_id), 
                               sigma ~ 
                                 1 + (1 |a| player_encode_id)) +
                            gaussian()
 
 prey_speed_intermediate <- bf(Zprey_speed_interm | subset(sub2) ~
-                                1 + (1 |b| player_encode_id), 
+                                Zgame_duration +
+                                (1 |b| player_encode_id), 
                               sigma ~ 
                                 1 + (1 |b| player_encode_id)) +
                            gaussian()
 
 prey_speed_advanced <-     bf(Zprey_speed_advanced | subset(sub3) ~
-                                1 + (1 |c| player_encode_id), 
+                                Zgame_duration +
+                                (1 |c| player_encode_id), 
                               sigma ~ 
                                 1 + (1 |c| player_encode_id)) +
                            gaussian()
 
+#prey_speed_novice <-       bf(Zprey_speed_novice | subset(sub1) ~
+#                                1 + (1 |a| player_encode_id), 
+#                              sigma ~ 
+#                                1 + (1 |a| player_encode_id)) +
+#                           gaussian()
+#
+#prey_speed_intermediate <- bf(Zprey_speed_interm | subset(sub2) ~
+#                                1 + (1 |b| player_encode_id), 
+#                              sigma ~ 
+#                                1 + (1 |b| player_encode_id)) +
+#                           gaussian()
+#
+#prey_speed_advanced <-     bf(Zprey_speed_advanced | subset(sub3) ~
+#                                1 + (1 |c| player_encode_id), 
+#                              sigma ~ 
+#                                1 + (1 |c| player_encode_id)) +
+#                           gaussian()
+
 # priors ----------------------------------------------------------------
 
 priors <- c(
+  set_prior("normal(0, 3)", 
+            class = "b",
+            coef = "Zgame_duration",
+            resp = c("Zspeed_novice", "Zspeed_interm", "Zspeed_advanced",
+                     "Zambush_novice", "Zambush_interm", "Zambush_advanced",
+                     "Zlatency_novice", "Zlatency_interm", "Zlatency_advanced",
+                     "Zprey_speed_novice", "Zprey_speed_interm", "Zprey_speed_advanced")),
   set_prior("lkj(2)", 
             class = "cor",
             group = "player_encode_id")
@@ -359,7 +380,8 @@ mv_model <- brm(speed_novice +
 
 #saveRDS(mv_model, file = "multivariate_model.rds") # included game_duration as covariate
 #saveRDS(mv_model, file = "multivariate_model1.rds") # values divided by game_duration / no covariates
-saveRDS(mv_model, file = "multivariate_model2.rds") # no covariates
+#saveRDS(mv_model, file = "multivariate_model2.rds") # no covariates / raw variables
+saveRDS(mv_model, file = "multivariate_model3.rds") # Zgame_duration covariate only mean part / raw variables
 
 # =======================================================================
 # =======================================================================
