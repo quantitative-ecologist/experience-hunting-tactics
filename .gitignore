@@ -7,4 +7,5 @@ code/*.aux
 data
 tests
 outputs/multivariate_model.rds
+outputs/multivariate_model1.rds
 .Rproj.user

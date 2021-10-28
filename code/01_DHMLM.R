@@ -14,8 +14,13 @@
 # =======================================================================
 
 
+# When working on my local computer
+# renv::activate()
+
+
 
 # Detect number of cores ------------------------------------------------
+
 options(mc.cores = parallel::detectCores())
 
 
