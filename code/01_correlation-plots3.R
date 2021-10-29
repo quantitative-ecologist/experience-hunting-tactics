@@ -44,7 +44,7 @@ data <- fread("C:/Users/maxim/UQAM/Montiglio, Pierre-Olivier - Data Behaviour/03
               stringsAsFactors = TRUE)
 
 # Load model
-model <- readRDS("./outputs/multivariate_model1.rds")
+model <- readRDS("./outputs/multivariate_model3.rds")
 
 # =======================================================================
 # =======================================================================
@@ -65,7 +65,7 @@ draws_tab <- data.table(as_draws_df(model,
                                     regex = TRUE))
 
 # Remove parameters that I don't need
-draws_tab[, c(46:48, 61:894) := NULL]
+draws_tab[, c(58:60, 61:894) := NULL]
 
 
 
@@ -77,26 +77,26 @@ draws_tab[, c(1:4, 6:9, 11:14) :=
             .SDcols = c(1:4, 6:9, 11:14)]
 
 # Player ID sigma variance component
-draws_tab[, c(5, 10, 15, 55, 56, 57) := 
+draws_tab[, c(5, 10, 15, 46, 47, 48) := 
           lapply(.SD, function(x) {exp(x^2)}),
-            .SDcols = c(5, 10, 15, 55, 56, 57)]
+            .SDcols = c(5, 10, 15, 46, 47, 48)]
 
 
 
 # Compute total variance ------------------------------------------------       
 
-draws_tab[, ":=" (speednovice_var_total        = rowSums(draws_tab[, c(1, 46)]),
-                  ambushnovice_var_total       = rowSums(draws_tab[, c(2, 49)]),
-                  latencynovice_var_total      = rowSums(draws_tab[, c(3, 52)]),
-                  prey_speednovice_var_total   = rowSums(draws_tab[, c(4, 55)]),
-                  speedinterm_var_total        = rowSums(draws_tab[, c(6, 47)]),
-                  ambushinterm_var_total       = rowSums(draws_tab[, c(7, 50)]),
-                  latencyinterm_var_total      = rowSums(draws_tab[, c(8, 53)]),
-                  prey_speedinterm_var_total   = rowSums(draws_tab[, c(9, 56)]),
-                  speedadvanced_var_total      = rowSums(draws_tab[, c(11, 48)]),
-                  ambushadvanced_var_total     = rowSums(draws_tab[, c(12, 51)]),
-                  latencyadvanced_var_total    = rowSums(draws_tab[, c(13, 54)]),
-                  prey_speedadvanced_var_total = rowSums(draws_tab[, c(14, 57)]))]
+draws_tab[, ":=" (speednovice_var_total        = rowSums(draws_tab[, c(1, 49)]),
+                  ambushnovice_var_total       = rowSums(draws_tab[, c(2, 52)]),
+                  latencynovice_var_total      = rowSums(draws_tab[, c(3, 55)]),
+                  prey_speednovice_var_total   = rowSums(draws_tab[, c(4, 46)]),
+                  speedinterm_var_total        = rowSums(draws_tab[, c(6, 50)]),
+                  ambushinterm_var_total       = rowSums(draws_tab[, c(7, 53)]),
+                  latencyinterm_var_total      = rowSums(draws_tab[, c(8, 56)]),
+                  prey_speedinterm_var_total   = rowSums(draws_tab[, c(9, 47)]),
+                  speedadvanced_var_total      = rowSums(draws_tab[, c(11, 51)]),
+                  ambushadvanced_var_total     = rowSums(draws_tab[, c(12, 54)]),
+                  latencyadvanced_var_total    = rowSums(draws_tab[, c(13, 57)]),
+                  prey_speedadvanced_var_total = rowSums(draws_tab[, c(14, 48)]))]
 
 
 
@@ -303,8 +303,8 @@ prey_var_speed <- c(
 )
 
 cor_matrix_novice <- cbind(speed, ambush, latency, prey_avg_speed, prey_var_speed)
-rownames(cor_matrix_novice) <- c("speed", "ambush", "latency", "avg. prey speed", "cv. prey speed")
-colnames(cor_matrix_novice) <- c("speed", "ambush", "latency", "avg. prey speed", "cv. prey speed")
+rownames(cor_matrix_novice) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
+colnames(cor_matrix_novice) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
 
 
 
@@ -354,8 +354,8 @@ prey_var_speed <- c(
 )
 
 cor_matrix_interm <- cbind(speed, ambush, latency, prey_avg_speed, prey_var_speed)
-rownames(cor_matrix_interm) <- c("speed", "ambush", "latency", "avg. prey speed", "cv. prey speed")
-colnames(cor_matrix_interm) <- c("speed", "ambush", "latency", "avg. prey speed", "cv. prey speed")
+rownames(cor_matrix_interm) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
+colnames(cor_matrix_interm) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
 
 
 
@@ -405,8 +405,8 @@ prey_var_speed <- c(
 )
 
 cor_matrix_advanced <- cbind(speed, ambush, latency, prey_avg_speed, prey_var_speed)
-rownames(cor_matrix_advanced) <- c("speed", "ambush", "latency", "avg. prey speed", "cv. prey speed")
-colnames(cor_matrix_advanced) <- c("speed", "ambush", "latency", "avg. prey speed", "cv. prey speed")
+rownames(cor_matrix_advanced) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
+colnames(cor_matrix_advanced) <- c("speed", "ambush", "latency", "avg. prey speed", "var. prey speed")
 
 # =======================================================================
 # =======================================================================
@@ -430,7 +430,7 @@ corrplot(cor_matrix_novice, type = "lower", method = "ellipse",
                         addCoef.col = "black", 
                         col = RColorBrewer::brewer.pal(n = 10, name = "RdBu"), 
                         mar = c(0,0,0,0))
-graph2ppt(file = "./figures/trait-correlations1.pptx", 
+graph2ppt(file = "./figures/trait-correlations3.pptx", 
           width = 10, height = 6)
 
 # Intermediate
@@ -440,7 +440,7 @@ corrplot(cor_matrix_interm, type = "lower", method = "ellipse",
                         addCoef.col = "black", 
                         col = RColorBrewer::brewer.pal(n = 10, name = "RdBu"), 
                         mar = c(0,0,0,0))
-graph2ppt(file = "./figures/trait-correlations1.pptx", 
+graph2ppt(file = "./figures/trait-correlations3.pptx", 
           width = 10, height = 6, append = TRUE)
 
 # Advanced
@@ -450,7 +450,7 @@ corrplot(cor_matrix_advanced, type = "lower", method = "ellipse",
                         addCoef.col = "black", 
                         col = RColorBrewer::brewer.pal(n = 10, name = "RdBu"), 
                         mar = c(0,0,0,0))
-graph2ppt(file = "./figures/trait-correlations1.pptx", 
+graph2ppt(file = "./figures/trait-correlations3.pptx", 
           width = 10, height = 6, append = TRUE)
 
 # =======================================================================
