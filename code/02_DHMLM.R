@@ -45,26 +45,26 @@ data <- fread("/home/maxime11/projects/def-monti/maxime11/data/final-data.csv",
                           "prey_total_heal_count", "prey_total_unhook_count"),
               stringsAsFactors = TRUE)
 
-data <- fread("C:/Users/maxim/UQAM/Montiglio, Pierre-Olivier - Data Behaviour/03_final-data/03_final-data_2021/final-data.csv",
-              select = c("player_encode_id", "match_encode_id", 
-                          "game_duration", "hook_count",
-                         "hunting_success", "cumul_xp_pred_bins",
-                         "pred_speed", "pred_amount_tiles_visited",
-                         "ambush_time_close", "latency_1st_capture",
-                         "prey_avg_speed", "prey_avg_amount_tiles_visited", 
-                         "prey_total_heal_count", "prey_total_unhook_count"),
-              stringsAsFactors = TRUE)
+#data <- fread("C:/Users/maxim/UQAM/Montiglio, Pierre-Olivier - Data Behaviour/03_final-data/03_final-data_2021/final-data.csv",
+#              select = c("player_encode_id", "match_encode_id", 
+#                          "game_duration", "hook_count",
+#                         "hunting_success", "cumul_xp_pred_bins",
+#                         "pred_speed", "pred_amount_tiles_visited",
+#                         "ambush_time_close", "latency_1st_capture",
+#                         "prey_avg_speed", "prey_avg_amount_tiles_visited", 
+#                         "prey_total_heal_count", "prey_total_unhook_count"),
+#              stringsAsFactors = TRUE)
 
 
-# There are 40 NaN observatinos for prey_avg_speed 
+# There are 40 NaN observations for prey_avg_speed 
 # and prey_avg_amount_tiles_visited
 
 # These observations are removed from the model
 
 # To run the model on a subsample of players
-set.seed(123)
-chosen <- sample(unique(data$player_encode_id), 15)
-data <- subset(data, player_encode_id %in% chosen)
+#set.seed(123)
+#chosen <- sample(unique(data$player_encode_id), 15)
+#data <- subset(data, player_encode_id %in% chosen)
 
 # =======================================================================
 # =======================================================================
@@ -373,6 +373,11 @@ mv_model <- brm(speed_novice +
               data = data)
 
 saveRDS(mv_model, file = "multivariate_model-mixture.rds")
+
+# Save session info for reproducibility
+session <- sessionInfo()
+capture.output(session, file = "02_sessioninfo.txt")
+
 
 # =======================================================================
 # =======================================================================
