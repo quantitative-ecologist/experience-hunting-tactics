@@ -245,4 +245,40 @@ plot(j, k, l, m, layout = 4)
 
 \pagebreak
 
+```julia; echo = false; results = "hidden"
+k = histogram(data.cumul_xp_role,
+                bins = 40, 
+                label = "",
+                color = :darkgray)           
+
+plot(k, dpi = 300, 
+     grid = false, tickfontsize = 12,
+     yformatter = identity,
+     xlabel = "Cumulative matches as the predator")
+```
+
+```julia; echo = false; results = "hidden"
+l = histogram(unique(data.total_matches),
+                bins = 40, 
+                label = "",
+                color = :darkgray)      
+
+plot(l, dpi = 300, 
+     grid = false, tickfontsize = 12,
+     xlabel = "Total matches played")
+```
+
+
+```julia; echo = false; results = "hidden"
+m = histogram(unique(data.total_matches_killer),
+                bins = 40, 
+                label = "",
+                color = :darkgray)                
+
+plot(m, dpi = 300, 
+     grid = false, tickfontsize = 12,
+     xlabel = "Total matches played as the predator")
+```
+
+
 # 3. Transformed-variables selected for the analyses
