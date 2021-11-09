@@ -346,9 +346,9 @@ mv_model <- brm(speed_novice +
               #  space_novice +
               #  space_intermediate +
               #  space_advanced +
-                ambush_novice +
-                ambush_intermediate +
-                ambush_advanced +
+              #  ambush_novice +
+              #  ambush_intermediate +
+              #  ambush_advanced +
                 latency_novice +
                 latency_intermediate +
                 latency_advanced +
@@ -364,8 +364,8 @@ mv_model <- brm(speed_novice +
               thin = 8,
               chains = 4, 
               inits = "0",
-              #threads = threading(10),
-              #backend = "cmdstanr",
+              threads = threading(10),
+              backend = "cmdstanr",
               seed = 123,
               prior = priors,
               control = list(adapt_delta = 0.95),
