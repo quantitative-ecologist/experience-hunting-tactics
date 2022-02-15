@@ -12,3 +12,4 @@ outputs/multivariate_model2.rds
 outputs/multivariate_model3.rds
 outputs/multivariate_model-mixture.rds
 .Rproj.user
+Chapter3.code-workspace
