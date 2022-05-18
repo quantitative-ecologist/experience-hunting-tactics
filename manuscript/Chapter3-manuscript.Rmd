@@ -10,18 +10,6 @@ csl: american-naturalist.csl
 
 \newpage
 # Abstract {.unnumbered}
-Key points in this study:
-
-- How experience shapes individual specialisation
-  - H1: experience increases the range of behaviors and plasticity by reducing costs to swithing
-  - H2: optimizing/refinement process - specialize with time - increase success)
-
-- Prey predictability shapes individual foraging specialization
-  - H1: prey predictability is positively correlated to behavioral predictability
-
-- Specialist hunters will fare better on short timescales, when prey predictability is higher
-- Generalist hunters will fare better on longer timescales, as they follow prey fluctuations
-- Both types of hunters will thus achieve similar hunting success over the sampling period
 
 Keywords: foraging behaviour, individual specialization, experience, learning, prey predictability, online videogames
 
@@ -29,9 +17,11 @@ Keywords: foraging behaviour, individual specialization, experience, learning, p
 \newpage
 # Introduction {.unnumbered}
 
-Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [sources].
+Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [@limaPuttingPredatorsBack2002, @schreiberCommunityEffectsPhenotypic2011, @pettorelliChapterTwoIndividual2015]. Studies report for many predator species that populations are often comprised of an assemblage of individuals specialising in different foraging strategies or resources []. 
+
 *Ideas* : 
 - * usually measured at the population level*
+- *effets de l'âge, blablabla*
 - * we now have metrics that enable the quantification of individual specialization*
 
 A potential consequence of among-individual differences in foraging behavior is that they can lead to individual differences in the type of prey captured (i.e. individual niche specialization) [Woo et al., 2008, sources]. There may thus exist a functional relationship linking individual foraging specialisation to specialisation in resource consumption [sources: Toscano et al. 2016, etc, michalko et gibbons, Kerr, Tinker, Bowen]. This would imply that predators need to develop foraging tactics that are fine tuned to specific prey attributes or prey types [sources: Phillips, Woo, etc.]. *ICI GARDER LES IDÉES MAIS METTRE L'ACCENT SUR LE FAIT QUE C'EST LES PROIES DISPONIBLES AU LIEU DES PROIES MANGÉES*
@@ -41,13 +31,12 @@ For instance, predators species often use stereotyped hunting techniques require
 (travailler ceci) An important question that remains unanswered is how can generalist and specialist individuals coexist within predator populations. If foraging and resource specialisation can help maintain community stability by promoting species coexistence [sources: bolnick, araujo, wolf, etc], it is crucial that we develop studies that integrate the causes and consequences of these two individual components.
  
 Hunting experience has been proposed as a potential major driver of the relationship between foraging specialisation and resource use [sources]. Learning how to hunt is crucial for young predators to reach adulthood and survive. (check Urszan et al)
-
-A number of long-term studies observed that generalist and specialist individuals can achieve similar fitness [sources: à partir de Woo]. An emerging explanation is that temporal fluctuations in the predictability of resources (abundance, availability, behaviour) may favor one or the other strategy depending on time scales [sources : Woo, Phillips, Ceia, etc, Courbin, Chang]. The resource-predictability hypothesis advances that when resources are predictable, particularly on short time-scales, individual specialists should benefit from higher fitness returns. The rationale is that individuals should have higher prey delivery rates when they repeatedly employ the same foraging technique, as it is easier to assess prey predictability over shorter time-scales. In contrast, individual generalists should be advantaged over longer time scales, as resource parameters are expected to fluctuate. [revoir ceia et ramos pour les sources]
-
 (learning optimises return rates or foraging success)
 (apprentissage, search images, prior information)
 (par contre, décomposer l'âge de l'expérience est difficile, et particulièrement chez des espèces sur le terrain puisque ça peut impliquer des techniques invasives)
 (parler des études qui ont montré que certains spécialistes étaient meilleurs, mais que c'était confondu par l'âge)
+
+A number of long-term studies observed that generalist and specialist individuals can achieve similar fitness [sources: à partir de Woo]. An emerging explanation is that temporal fluctuations in the predictability of resources (abundance, availability, behaviour) may favor one or the other strategy depending on time scales [sources : Woo, Phillips, Ceia, etc, Courbin, Chang]. The resource-predictability hypothesis advances that when resources are predictable, particularly on short time-scales, individual specialists should benefit from higher fitness returns. The rationale is that individuals should have higher prey delivery rates when they repeatedly employ the same foraging technique, as it is easier to assess prey predictability over shorter time-scales. In contrast, individual generalists should be advantaged over longer time scales, as resource parameters are expected to fluctuate. [revoir ceia et ramos pour les sources]
 
 
 Several studies have shown that individual specialists can outperform
