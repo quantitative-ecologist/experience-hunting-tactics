@@ -17,15 +17,16 @@ Keywords: foraging behaviour, individual specialization, experience, learning, p
 \newpage
 # Introduction {.unnumbered}
 
-Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [@limaPuttingPredatorsBack2002, @schreiberCommunityEffectsPhenotypic2011, @pettorelliChapterTwoIndividual2015, @Michalko.Pekar2016]. Indeed, predator populations are often comprised of an assemblage of individuals that specialize in different foraging strategies or resources [@ceiaIndividualSpecializationForaging2015, @phillipsCausesConsequencesIndividual2017]. Sexual and age related differences are common proximate factors underlying such among-individual variation, while environmental heterogeneity is known as a prevailing external factor [].
+Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [@limaPuttingPredatorsBack2002, @schreiberCommunityEffectsPhenotypic2011, @pettorelliChapterTwoIndividual2015, @Michalko.Pekar2016]. Indeed, predator populations are often composed of an assemblage of individuals that specialize in different foraging strategies or resources [@estesIndividualVariationPrey2003, tinkerFoodLimitationLeads2008, kernaleguenDeterminantsIndividualForaging2015, @phillipsCausesConsequencesIndividual2017]. It is now well established that such individual specialization cannot be attributed exclusively to sexual, morphological, or age-related differences [@estesIndividualVariationPrey2003, bolnickEcologyIndividualsIncidence2003, Woo.etal2008, bolnickWhyIntraspecificTrait2011]. Indeed, a growing body of evidence suggests that ecological interactions may act as the major drivers of individual foraging specialization [@araujoEcologicalCausesIndividual2011, @toscanoPersonalityForagingBehavior2016]. For instance, competition, cooperation, and predation, are all expected to shape the foraging preferences of interacting individuals []. Yet, we have very limited knowledge on how intrinsic factors and ecological interactions reciprocally affect foraging specialization, and the underlying consequences of such among-individual differences for natural populations. *phillips 2017*
 
+*on connait peu sur l'interaction entre facteurs internes et externes, et encore moins les consequences de ces interactions (fitness, etc)*
 
-*les drivers connus (age, sex, etc.), mais quand on contrôle on voit que la spécxialisation est toujours là!!* *(finir en mettant l'accent sur le fait que les interactions modulent aussi, mais qu'on sait très peu comment ça interagit avec les facteurs proximaux)*
+sexual, morphological, or age-related differences, while environmental heterogeneity is a prevailing external factor [@Weimerskirch2007, @ceiaIndividualSpecializationForaging2015, @phillipsCausesConsequencesIndividual2017, @Patrick.etal2021]. 
+
+*les drivers connus (age, sex, etc.), mais quand on contrôle on voit que la spécialisation est toujours là!! (bolnick, araujo, woo)* *(finir en mettant l'accent sur le fait que les interactions modulent aussi, mais qu'on sait très peu comment ça interagit avec les facteurs proximaux)*
 
 *Ideas* : 
-- * usually measured at the population level*
-- *effets de l'âge, blablabla*
-- * we now have metrics that enable the quantification of individual specialization*
+- * we now have metrics that enable the quantification of individual specialization (cleasby)*
 
 A potential consequence of among-individual differences in foraging behavior is that they can lead to individual differences in the type of prey captured (i.e. individual niche specialization) [Woo et al., 2008, sources]. There may thus exist a functional relationship linking individual foraging specialisation to specialisation in resource consumption [sources: Toscano et al. 2016, etc, michalko et gibbons, Kerr, Tinker, Bowen]. This would imply that predators need to develop foraging tactics that are fine tuned to specific prey attributes or prey types [sources: Phillips, Woo, etc.]. *ICI GARDER LES IDÉES MAIS METTRE L'ACCENT SUR LE FAIT QUE C'EST LES PROIES DISPONIBLES AU LIEU DES PROIES MANGÉES*
 
