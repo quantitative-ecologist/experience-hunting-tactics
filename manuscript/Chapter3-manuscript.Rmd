@@ -17,7 +17,10 @@ Keywords: foraging behaviour, individual specialization, experience, learning, p
 \newpage
 # Introduction {.unnumbered}
 
-Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [@limaPuttingPredatorsBack2002, @schreiberCommunityEffectsPhenotypic2011, @pettorelliChapterTwoIndividual2015]. Studies report for many predator species that populations are often comprised of an assemblage of individuals specialising in different foraging strategies or resources []. 
+Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [@limaPuttingPredatorsBack2002, @schreiberCommunityEffectsPhenotypic2011, @pettorelliChapterTwoIndividual2015, @Michalko.Pekar2016]. Indeed, predator populations are often comprised of an assemblage of individuals that specialize in different foraging strategies or resources [@ceiaIndividualSpecializationForaging2015, @phillipsCausesConsequencesIndividual2017]. Sexual and age related differences are common proximate factors underlying such among-individual variation, while environmental heterogeneity is known as a prevailing external factor [].
+
+
+*les drivers connus (age, sex, etc.), mais quand on contrôle on voit que la spécxialisation est toujours là!!* *(finir en mettant l'accent sur le fait que les interactions modulent aussi, mais qu'on sait très peu comment ça interagit avec les facteurs proximaux)*
 
 *Ideas* : 
 - * usually measured at the population level*
