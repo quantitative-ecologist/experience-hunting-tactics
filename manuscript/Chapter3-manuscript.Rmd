@@ -1,10 +1,10 @@
 ---
-title: "Hunting experience and prey predictability jointly shape individual foraging specialisation in a predator-prey videogame"
+title: "Hunting experience and prey variability jointly shape individual foraging specialisation in a predator-prey videogame"
 output: 
   word_document:
     reference_docx: Chapter3-styles.docx
 bibliography: references.bib
-csl: american-naturalist.csl
+csl: e-letters.csl
 ---
 
 
@@ -19,19 +19,7 @@ Keywords: foraging behaviour, individual specialization, experience, learning, p
 
 Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [@limaPuttingPredatorsBack2002;@schreiberCommunityEffectsPhenotypic2011;@pettorelliChapterTwoIndividual2015;@Michalko.Pekar2016]. Indeed, predator populations are often composed of assemblages of individuals specializing in different foraging strategies or resources [@estesIndividualVariationPrey2003;@tinkerFoodLimitationLeads2008;@kernaleguenDeterminantsIndividualForaging2015;@Phillips.etal2017]. It is now well established that individual foraging specialization cannot be attributed exclusively to intrinsic factors such as sexual, morphological, or age-related differences [@bolnickEcologyIndividualsIncidence2003;@bolnickWhyIntraspecificTrait2011]. A growing body of evidence suggests that ecological interactions, such as predator-prey interactions, may instead act as the major drivers of individual foraging specialization [@araujoEcologicalCausesIndividual2011;@toscanoPersonalityForagingBehavior2016]. For instance, predators species often use hunting techniques that are fine-tuned to the type of prey that they encounter [@Davoren.etal2003;@estesIndividualVariationPrey2003;@Woo.etal2008;@courbinShorttermPreyField2018], and their capacity to learn how to effectively use them is essential to maintain foraging success. Yet, we have very limited knowledge on how predator foraging specialization develops through experience and interactions with prey, and the resulting ecological consequences of such among individual behavioural differences for predator-prey interactions.
 
-Learning how to hunt prey is crucial for young predators to reach adulthood and survive [@Phillips.etal2017;@heithausFeedingStrategiesTactics2018]. Theory predicts that specialization through learning may be driven by past experiences as well as a limited ability to retain multiple complex hunting skills [@Tinker.etal2009]. Empirical studies show that learning enables predators to optimize the efficiency (e.g. search and handling times, return rates) of their foraging tactics potentially via associative images or reliance on prey and environmental cues [@edwardsRoleExperienceDevelopment1994;@morseEffectExperienceHunting2000;@reidLearningHuntRole2010;@wilson-rankinLevelExperienceModulates2015]. Such optimization may thus reinforce the use of the same tactic (i.e. specialization) if its success is constant through repeated attempts. *parler des couts d'apprendre de quoi d'autre*
-
-*expliquer comment ça optimise*
-*expliquer comment ça peut mener aussi à de la plasticité*
-*parler des coûts*
-*pt dire en haut que ça optimise directement et mène à la spécialisation*
-
-(apprentissage, search images, prior information)
-(par contre, décomposer l'âge de l'expérience est difficile, et particulièrement chez des espèces sur le terrain puisque ça peut impliquer des techniques invasives)
-(parler des études qui ont montré que certains spécialistes étaient meilleurs, mais que c'était confondu par l'âge)
-[*références learning : phillips, Haage(minks = learn mène à plasticité), Tinker (théorique), Weimerskirch (only suggest memory)*] *[courbin = switch souvent possiblement avec learn, Zango = suggère, Woo = suggère, Estes = suggère.]*
-
-*Wilson-Rankin: Because resources and their distribution vary both in time and space, foraging strategies must allow for the detection and response to fluctuations in resource levels* (Ishii et Shimada : learning = plasticity)
+Learning how to hunt prey is crucial for young predators to reach adulthood and survive [@Phillips.etal2017;@heithausFeedingStrategiesTactics2018]. Theory predicts that learning may promote foraging specialization via past experiences, extensive practice, as well as a limited ability to retain multiple complex hunting skills [@Tinker.etal2009;@Dukas2019]. From this perspective, learning is an optimizing process that enables foraging specialization. Empirical studies show that learning allows predators to optimize the efficiency (e.g. search and handling times, return rates) of their foraging tactics potentially via associative images or reliance on prey and environmental cues [@edwardsRoleExperienceDevelopment1994;@morseEffectExperienceHunting2000;@reidLearningHuntRole2010;@wilson-rankinLevelExperienceModulates2015]. Such optimization may thus reinforce the use of the same tactic (i.e. specialization) if its success is constant each time a prey is encountered. It may also be costly to attempt different hunting tactics when prey are scarce or highly unpredictable [@estesIndividualVariationPrey2003;@Mery.Burns2010]. An alternative mechanism is that learning may offset the costs/risks of switching foraging tactics as individuals gain experience and information on their prey or their environment, leading to increased individual foraging flexibility [@Ishii.Shimada2010;@Mery.Burns2010;@Snell-Rood2013]. In this case, switching between foraging tactics would be advantageous when resources are variable, as behavioural flexibility is often key for survival in novel environments [reviewed in @Snell-Rood2013]. If learning is the mechanism leading to individual specialization, then it wouldn't explain why field studies often find that foraging specialists and generalists have similar hunting success irrespective of their age [@Woo.etal2008]. *(ne peut pas être séparé de l'interaction car c'ets ce qui drive l'apprentissage)*
 
 *un autre truc que je pourrais parler est le fait que si on assume que les individus deviennent meilleurs avec l'expertise (Dukas), on voit pourtant dans les études marines que les individus de groupes d'âges variés performent souvent de manière similaire. Ça amènerait bien l'autre paragraphe pour montrer que les interactions écologiques ont un rôle clé!!*
 
@@ -40,9 +28,10 @@ A number of long-term studies observed that generalist and specialist individual
 
 sources générales sur heterogeneité[@Weimerskirch2007;@ceiaIndividualSpecializationForaging2015;@Phillips.etal2017;@Patrick.etal2021]. 
 
-(travailler ceci) An important question that remains unanswered is how can generalist and specialist individuals coexist within predator populations. If foraging and resource specialisation can help maintain community stability by promoting species coexistence [sources: bolnick, araujo, wolf, etc], it is crucial that we develop studies that integrate the causes and consequences of these two individual components. Several studies have shown that individual specialists can outperform. *[ici je crois que je vais changer un peu cela. C'est surtout des idées. Ici on veut souligner l'importance des deux mais rappeler comme d'habitude que c'est difficile à mesurer à travers le temps blabla. J'introduis ensuite le jeu vidéo]*
+(travailler ceci) An important question that remains unanswered is how can generalist and specialist individuals coexist within predator populations. If foraging and resource specialisation can help maintain community stability by promoting species coexistence [sources: bolnick, araujo, wolf, etc], it is crucial that we develop studies that integrate the causes and consequences of these two individual components. Several studies have shown that individual specialists can outperform. *[ici je crois que je vais changer un peu cela. C'est surtout des idées. Ici on veut souligner l'importance des deux mais rappeler comme d'habitude que c'est difficile à mesurer à travers le temps blabla. J'introduis ensuite le jeu vidéo]* *vidfeogames offer a good alternative to lab studies because proche de wild = observational*
+*(idéee: par contre, décomposer l'âge de l'expérience est difficile, et particulièrement chez des espèces sur le terrain puisque ça peut impliquer des techniques invasives)*
 
-Here, we collected individual behavioural data from players in *Dead by Daylight* to investigate how hunting experience and the behavioural variation in prey encountered shaped predator foraging specialization. This enabled us to have a high degree of precision on the interaction as both the behaviour of the predator and the four prey were measured simultaneously in each trial. First, we hypothesize that individual predator behaviour will change with hunting experience. If experience reduces the costs of switching between hunting tactics, then predators should become more flexible through time. Alternatively, if experience enables the refinement of the hunting tactics, then individuals may instead specialize through time. Second, we hypothesize that prey behaviour will shape the developmental trajectories of the predator hunting tactics. Whether predators specialize or not with experience may depend on the behaviour of their prey, for instance, as it may be harder to specialize on prey that are more variable. Third, if individuals differ in their degree of foraging specialization, then we expect that the success of foraging specialists and generalists will be equal. Specialist hunters should fare better when prey variability is lower, while flexible hunters should fare better when prey variability is higher.
+Here, we collected individual behavioural data from players in *Dead by Daylight* to investigate how hunting experience and the behavioural variation in prey encountered shaped predator foraging specialization. This enabled us to have a high degree of precision on the interaction as both the behaviour of the predator and the four prey were measured simultaneously in each trial. First, we hypothesize that individual predator behaviour will change with hunting experience. If experience reduces the costs of switching between hunting tactics, then predators should become more flexible through time. Alternatively, if experience enables the refinement of the hunting tactics, then individuals may instead specialize through time. Second, we hypothesize that prey behaviour will shape the developmental trajectories of the predator hunting tactics. Whether predators specialize or not with experience may depend on the behaviour of their prey, for instance, as it may be harder to specialize when encounters with prey are more variable. Third, if individuals differ in their degree of foraging specialization, then we expect that the success of foraging specialists and generalists will be equal. Specialist hunters should fare better when prey variability is lower, while flexible hunters should fare better when prey variability is higher.
 
 # Squelette de l'intro
 
@@ -62,4 +51,12 @@ Here, we collected individual behavioural data from players in *Dead by Daylight
 
 *Ideas* : 
 - * we now have metrics that enable the quantification of individual specialization (cleasby)*
+
+*Ideas* : integrate the hypotheses of Glaudas et al. ?????
+
+
+\newpage
+# Litterature cited {.unnumbered}
+
+<div id="refs"></div>
 
