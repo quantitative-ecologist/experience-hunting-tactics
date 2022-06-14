@@ -6,5 +6,6 @@ code/*.tex
 code/*.aux
 data
 tests
+plan
 outputs/model_outputs
 .Rproj.user
