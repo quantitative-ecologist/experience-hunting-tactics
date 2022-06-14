@@ -7,5 +7,6 @@ code/*.aux
 data
 tests
 plan
+dump
 outputs/model_outputs
 .Rproj.user
