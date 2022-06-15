@@ -1,2 +1,22 @@
 maybe look how behavior changes with the rate of learning?
 How could I calculate that?
+
+
+
+# Discussion Julien B.
+
+fit modele avec :
+1. Shared smooth
+2. Shared trend
+3. different trend and smoothness
+3. baseline
+
+
+
+
+model_formula <- brmsformula(hunting_success | vint(4) ~
+                                        s(Zcumul_xp, by = covariate) +
+                                        Zgame_duration +
+                                        (1 | predator_id))
+
+or something. le by est la covariable pour l'interaction

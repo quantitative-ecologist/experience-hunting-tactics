@@ -104,7 +104,32 @@ model_formula <- brmsformula(hunting_success | vint(4) ~
                                         (1 | predator_id))
 
 
-# Run model ----------------------------------------------------------------
+
+# Define priors ------------------------------------------------------------
+
+priors <- c(
+  # priors on fixed effects
+  set_prior("normal(0, 2)",
+            class = "b",
+            coef = "Zgame_duration"),
+  set_prior("normal(0, 2)",
+            class = "b",
+            coef = "sZcumul_xp_1"),          
+  # priors on var. parameters (brms automatically detects half-normal)
+  set_prior("normal(0, 1)",
+            class = "sd") # applies to all variance parameters
+            )
+
+# ==========================================================================
+# ==========================================================================
+
+
+
+
+
+# ==========================================================================
+# 3. Run the model
+# ==========================================================================
 
 base_model <- brm(formula = model_formula,
                   family = beta_binomial2,
@@ -115,7 +140,8 @@ base_model <- brm(formula = model_formula,
                   cores = 4,
                   inits = "0", 
                   seed = 123,
-                  #prior = priors,
+                  prior = priors,
+                  sample_prior = TRUE,
                   control = list(adapt_delta = 0.95),
                   data = data,
                   stanvars = stanvars)
@@ -130,7 +156,7 @@ saveRDS(base_model, file = "01a_GAMM.rds")
 
 
 # ==========================================================================
-# 3. Perform PSIS-LOO
+# 4. Perform PSIS-LOO
 # ==========================================================================
 
 
