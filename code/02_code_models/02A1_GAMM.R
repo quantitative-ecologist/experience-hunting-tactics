@@ -96,6 +96,7 @@ stan_funs <- "
 stanvars <- stanvar(scode = stan_funs, block = "functions")
 
 
+
 # Model formula ------------------------------------------------------------
 
 model_formula <- brmsformula(hunting_success | vint(4) ~
@@ -114,10 +115,15 @@ priors <- c(
             coef = "Zgame_duration"),
   set_prior("normal(0, 2)",
             class = "b",
-            coef = "sZcumul_xp_1"),          
-  # priors on var. parameters (brms automatically detects half-normal)
+            coef = "sZcumul_xp_1"),
+  # priors on smooth terms
+  set_prior("normal(0, 2)",
+            class = "b",
+            coef = "s(Zcumul_xp)"),
+  # priors on var. parameters
+  # (brms automatically detects half-normal)
   set_prior("normal(0, 1)",
-            class = "sd") # applies to all variance parameters
+            class = "sd")
             )
 
 # ==========================================================================
