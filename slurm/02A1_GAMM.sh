@@ -13,4 +13,4 @@ module load r-bundle-bioconductor/3.14
 module load r/4.1.2
 
 #export R_LIBS=~/.local/R/$EBVERSIONR/
-Rscript --no-save --no-restore tests_gamm.R
+Rscript --no-save --no-restore 02A1_GAMM.R
