@@ -55,7 +55,7 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) /
 data[, c("Zgame_duration",
          "Zspeed",
          "Zcumul_xp") := lapply(.SD, standardize), 
-       .SDcols = c(3:5)]
+       .SDcols = c(2:4)]
 
 # ==========================================================================
 # ==========================================================================
@@ -120,7 +120,7 @@ priors <- c(
             coef = "sZcumul_xp_1"),
   # priors on smooth terms
   set_prior("normal(0, 2)",
-            class = "b",
+            class = "sds",
             coef = "s(Zcumul_xp)"),
   # priors on var. parameters
   # (brms automatically detects half-normal)
