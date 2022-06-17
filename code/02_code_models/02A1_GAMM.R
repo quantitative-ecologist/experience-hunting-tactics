@@ -154,7 +154,7 @@ model_g <- brm(formula = model_formula,
                data = data,
                stanvars = stanvars)
 
-saveRDS(model_g, file = "01a_GAMM.rds")
+saveRDS(model_g, file = "02A1_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================
@@ -208,7 +208,7 @@ posterior_epred_beta_binomial2 <- function(prep) {
 
 # Method 2 including other criteria
 model_g <- add_criterion(model_g, c("loo", "bayes_R2"))
-saveRDS(model_g, file = "01a_GAMM.rds")
+saveRDS(model_g, file = "02A1_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================
