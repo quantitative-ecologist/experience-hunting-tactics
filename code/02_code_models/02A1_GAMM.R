@@ -171,7 +171,7 @@ saveRDS(model_g, file = "02A1_GAMM.rds")
 
 # Post processing preparations for custom family ---------------------------
 
-expose_functions(fit, vectorize = TRUE)
+expose_functions(model_g, vectorize = TRUE)
 
 # Define the log likelihood function
 log_lik_beta_binomial2 <- function(i, prep) {
