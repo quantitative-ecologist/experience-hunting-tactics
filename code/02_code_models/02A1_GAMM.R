@@ -136,7 +136,7 @@ priors <- c(
             class = "sd"),
   # priors on phi
   set_prior("normal(2, 1)",
-            class = "phi"),
+            class = "phi")
             )
 
 # ==========================================================================
