@@ -40,6 +40,13 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
                          "cumul_xp_killer",
                          "hunting_success"))
 
+data <- fread("./data/FraserFrancoetalXXXX-data.csv",
+              select = c("predator_id",
+                         "pred_game_duration",
+                         "pred_speed",
+                         "cumul_xp_killer",
+                         "hunting_success"))
+
 data <- unique(data)
 
 # Predator id as factor
@@ -142,7 +149,7 @@ priors <- c(
 model_g <- brm(formula = model_formula,
                family = beta_binomial2,
                warmup = 500, 
-               iter = 2000,
+               iter = 2500,
                thin = 8,
                chains = 4,
                cores = 4,
