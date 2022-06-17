@@ -32,7 +32,7 @@ library(parallel)
 folder <- file.path("/home", "maxime11", "projects", "def-monti", 
                     "maxime11", "phd_project", "data")
 
-# Load data
+# Load data on compute canada
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
                          "pred_game_duration",
@@ -40,12 +40,13 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
                          "cumul_xp_killer",
                          "hunting_success"))
 
-data <- fread("./data/FraserFrancoetalXXXX-data.csv",
-              select = c("predator_id",
-                         "pred_game_duration",
-                         "pred_speed",
-                         "cumul_xp_killer",
-                         "hunting_success"))
+# Project path for testing
+#data <- fread("./data/FraserFrancoetalXXXX-data.csv",
+#              select = c("predator_id",
+#                         "pred_game_duration",
+#                         "pred_speed",
+#                         "cumul_xp_killer",
+#                         "hunting_success"))
 
 data <- unique(data)
 
