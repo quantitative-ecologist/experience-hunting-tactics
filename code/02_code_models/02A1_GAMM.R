@@ -132,7 +132,10 @@ priors <- c(
   # priors on var. parameters
   # (brms automatically detects half-normal)
   set_prior("normal(0, 1)",
-            class = "sd")
+            class = "sd"),
+  # priors on phi
+  set_prior("normal(2, 1)",
+            class = "phi"),
             )
 
 # ==========================================================================
@@ -157,7 +160,7 @@ model_g <- brm(formula = model_formula,
                seed = 123,
                prior = priors,
                sample_prior = TRUE,
-               control = list(adapt_delta = 0.95),
+               control = list(adapt_delta = 0.99),
                data = data,
                stanvars = stanvars)
 
