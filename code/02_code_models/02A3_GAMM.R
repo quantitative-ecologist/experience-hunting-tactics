@@ -1,7 +1,7 @@
 # ==========================================================================
 
-#                 GAMM model G no.1 - single common smoother
-#                     Variance in prey not controlled for
+#                  GAMM model GS - group-level smoother
+#                  Variance in prey not controlled for
 
 # ==========================================================================
 
@@ -33,11 +33,12 @@ library(parallel)
 folder <- file.path("/home", "maxime11", "projects", "def-monti", 
                     "maxime11", "phd_project", "data")
 
-# Load data on compute canada
+# Load data
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
                          "pred_game_duration",
                          "pred_speed",
+                         "prey_avg_speed"
                          "cumul_xp_killer",
                          "hunting_success"))
 
@@ -46,6 +47,7 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
 #              select = c("predator_id",
 #                         "pred_game_duration",
 #                         "pred_speed",
+#                         "prey_avg_speed",
 #                         "cumul_xp_killer",
 #                         "hunting_success"))
 
@@ -63,8 +65,9 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) /
 
 data[, c("Zgame_duration",
          "Zspeed",
+         "Zprey_avg_speed",
          "Zcumul_xp") := lapply(.SD, standardize), 
-       .SDcols = c(2:4)]
+       .SDcols = c(2:5)]
 
 # ==========================================================================
 # ==========================================================================
@@ -112,7 +115,7 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 
 model_formula <- brmsformula(hunting_success | vint(4) ~
                                         s(Zcumul_xp) +
-                                        s(predator_id, bs = "re") +
+                                        s(Zcumul_xp, predator_id, bs = "fs") +
                                         Zgame_duration)
 
 
@@ -126,11 +129,15 @@ priors <- c(
             coef = "Zgame_duration"),
   set_prior("normal(0, 2)",
             class = "b",
-            coef = "sZcumul_xp_1"),
+            coef = "sZcumul_xp_1"),         
   # priors on smooth terms
   set_prior("normal(0, 2)",
             class = "sds",
             coef = "s(Zcumul_xp)"),
+  # priors on var. parameters
+  # (brms automatically detects half-normal)
+  set_prior("normal(0, 1)",
+            class = "sd"),
   # priors on phi
   set_prior("normal(2, 1)",
             class = "phi")
@@ -147,22 +154,22 @@ priors <- c(
 # 3. Run the model
 # ==========================================================================
 
-model_g <- brm(formula = model_formula,
-               family = beta_binomial2,
-               warmup = 500, 
-               iter = 2500,
-               thin = 8,
-               chains = 4,
-               cores = 4,
-               inits = "0", 
-               seed = 123,
-               prior = priors,
-               sample_prior = TRUE,
-               control = list(adapt_delta = 0.99),
-               data = data,
-               stanvars = stanvars)
+model_gs <- brm(formula = model_formula,
+                family = beta_binomial2,
+                warmup = 500, 
+                iter = 2500,
+                thin = 8,
+                chains = 4,
+                cores = 4,
+                inits = "0", 
+                seed = 123,
+                prior = priors,
+                sample_prior = TRUE,
+                control = list(adapt_delta = 0.99),
+                data = data,
+                stanvars = stanvars)
 
-saveRDS(model_g, file = "02A1_GAMM.rds")
+saveRDS(model_gs, file = "02A3_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================
@@ -179,7 +186,7 @@ saveRDS(model_g, file = "02A1_GAMM.rds")
 
 # Post processing preparations for custom family ---------------------------
 
-expose_functions(model_g, vectorize = TRUE)
+expose_functions(model_gs, vectorize = TRUE)
 
 # Define the log likelihood function
 log_lik_beta_binomial2 <- function(i, prep) {
@@ -211,12 +218,12 @@ posterior_epred_beta_binomial2 <- function(prep) {
 # Perform PSIS-LOO ---------------------------------------------------------
 
 # Method 1
-#loo_model_g <- loo(model_g)
-#saveRDS(loo_model_g, file = "01a_loo")
+#loo_model_gs <- loo(model_gs)
+#saveRDS(loo_model_gs, file = "02A2_loo")
 
 # Method 2 including other criteria
-model_g <- add_criterion(model_g, c("loo", "bayes_R2"))
-saveRDS(model_g, file = "02A1_GAMM.rds")
+model_gs <- add_criterion(model_gs, c("loo", "bayes_R2"))
+saveRDS(model_gs, file = "02A3_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================
