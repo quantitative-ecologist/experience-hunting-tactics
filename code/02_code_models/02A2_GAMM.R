@@ -1,7 +1,6 @@
 # ==========================================================================
 
-#                GAMM model G no.2 - single common smoother
-#                  Control for variance in prey behavior
+#                   GAMM model GS - group-level smoother
 
 # ==========================================================================
 
@@ -36,11 +35,10 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
+                         "hunting_success"
                          "pred_game_duration",
                          "pred_speed",
-                         "prey_avg_speed"
-                         "cumul_xp_killer",
-                         "hunting_success"))
+                         "cumul_xp_killer"))
 
 # Project path for testing
 #data <- fread("./data/FraserFrancoetalXXXX-data.csv",
@@ -65,9 +63,8 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) /
 
 data[, c("Zgame_duration",
          "Zspeed",
-         "Zprey_avg_speed",
          "Zcumul_xp") := lapply(.SD, standardize), 
-       .SDcols = c(2:5)]
+       .SDcols = c(3:5)]
 
 # ==========================================================================
 # ==========================================================================
@@ -114,11 +111,10 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 # Model formula ------------------------------------------------------------
 
 model_formula <- brmsformula(
-  hunting_success | vint(4) ~
-      s(Zcumul_xp) +
-      s(predator_id, bs = "re") +
-      Zprey_avg_speed +
-      Zgame_duration
+    hunting_success | vint(4) ~
+        s(Zcumul_xp) +
+        s(Zcumul_xp, predator_id, bs = "fs") + 
+        Zgame_duration
 )
 
 
@@ -130,9 +126,6 @@ priors <- c(
   set_prior("normal(0, 2)",
             class = "b",
             coef = "Zgame_duration"),
-  set_prior("normal(0, 2)",
-            class = "b",
-            coef = "Zprey_avg_speed"),
   set_prior("normal(0, 2)",
             class = "b",
             coef = "sZcumul_xp_1"),       

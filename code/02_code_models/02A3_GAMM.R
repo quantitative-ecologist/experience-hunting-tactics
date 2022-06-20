@@ -1,7 +1,7 @@
 # ==========================================================================
 
 #                  GAMM model GS - group-level smoother
-#                  Variance in prey not controlled for
+#            Test for among ID differences in prey encountered
 
 # ==========================================================================
 
@@ -36,11 +36,11 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
+                         "hunting_success"
                          "pred_game_duration",
                          "pred_speed",
-                         "prey_avg_speed"
                          "cumul_xp_killer",
-                         "hunting_success"))
+                         "prey_avg_speed"))
 
 # Project path for testing
 #data <- fread("./data/FraserFrancoetalXXXX-data.csv",
@@ -65,9 +65,9 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) /
 
 data[, c("Zgame_duration",
          "Zspeed",
-         "Zprey_avg_speed",
-         "Zcumul_xp") := lapply(.SD, standardize), 
-       .SDcols = c(2:5)]
+         "Zcumul_xp",
+         "Zprey_avg_speed") := lapply(.SD, standardize), 
+       .SDcols = c(3:6)]
 
 # ==========================================================================
 # ==========================================================================
@@ -117,7 +117,8 @@ model_formula <- brmsformula(
     hunting_success | vint(4) ~
         s(Zcumul_xp) +
         s(Zcumul_xp, predator_id, bs = "fs") + 
-        Zgame_duration
+        Zgame_duration,
+        Zprey_avg_speed ~ 1 + (1 | predator_id)
 )
 
 
@@ -136,6 +137,9 @@ priors <- c(
   set_prior("normal(0, 2)",
             class = "sds",
             coef = "s(Zcumul_xp)"),
+  # prior on variance parameter
+  set_prior("normal(0, 1)",
+            class = "sd"),
   # priors on phi
   set_prior("normal(2, 1)",
             class = "phi")

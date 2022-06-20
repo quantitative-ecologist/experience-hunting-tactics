@@ -1,7 +1,6 @@
 # ==========================================================================
 
-#                 GAMM model G no.1 - single common smoother
-#                     Variance in prey not controlled for
+#                   GAMM model G - single common smoother
 
 # ==========================================================================
 
@@ -36,18 +35,18 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data on compute canada
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
+                         "hunting_success"
                          "pred_game_duration",
                          "pred_speed",
-                         "cumul_xp_killer",
-                         "hunting_success"))
+                         "cumul_xp_killer"))
 
 # Project path for testing
 #data <- fread("./data/FraserFrancoetalXXXX-data.csv",
 #              select = c("predator_id",
+#                         "hunting_success",
 #                         "pred_game_duration",
 #                         "pred_speed",
-#                         "cumul_xp_killer",
-#                         "hunting_success"))
+#                         "cumul_xp_killer"))
 
 data <- unique(data)
 
@@ -64,7 +63,7 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) /
 data[, c("Zgame_duration",
          "Zspeed",
          "Zcumul_xp") := lapply(.SD, standardize), 
-       .SDcols = c(2:4)]
+       .SDcols = c(3:5)]
 
 # ==========================================================================
 # ==========================================================================
@@ -213,12 +212,12 @@ posterior_epred_beta_binomial2 <- function(prep) {
 # Perform PSIS-LOO ---------------------------------------------------------
 
 # Method 1
-#loo_model_g <- loo(model_g)
-#saveRDS(loo_model_g, file = "01a_loo")
+loo_model_g <- loo(model_g)
+saveRDS(loo_model_g, file = "02A1_loo")
 
 # Method 2 including other criteria
-model_g <- add_criterion(model_g, c("loo", "bayes_R2"))
-saveRDS(model_g, file = "02A1_GAMM.rds")
+#model_g <- add_criterion(model_g, c("loo", "bayes_R2"))
+#saveRDS(model_g, file = "02A1_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================
