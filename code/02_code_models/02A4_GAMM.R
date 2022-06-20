@@ -117,7 +117,9 @@ model_formula <- brmsformula(hunting_success | vint(4) ~
                                         s(Zcumul_xp) +
                                         s(Zcumul_xp, predator_id, bs = "fs") +
                                         Zprey_avg_speed +
-                                        Zgame_duration)
+                                        Zgame_duration,
+                             Zprey_avg_speed ~ 
+                                        1 + (1 | predator_id))
 
 # si j'ajoute prey_avg_speed ~ (1 | predator_id), est-ce que je pourrais
 # plot chaque joueur en fonction de la moyenne estimée et comparer les courbes?
