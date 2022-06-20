@@ -110,10 +110,12 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 
 # Model formula ------------------------------------------------------------
 
-model_formula <- brmsformula(hunting_success | vint(4) ~
-                                        s(Zcumul_xp) +
-                                        s(predator_id, bs = "re") +
-                                        Zgame_duration)
+model_formula <- brmsformula(
+  hunting_success | vint(4) ~
+      s(Zcumul_xp) +
+      s(predator_id, bs = "re") +
+      Zgame_duration
+)
 
 
 
