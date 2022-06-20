@@ -35,36 +35,39 @@ library(parallel)
 
 # Import the data -------------------------------------------------------
 
-data <- fread("/home/maxime11/projects/def-monti/maxime11/data/final-data.csv",
-              select = c("player_encode_id", "match_encode_id", 
-                          "game_duration", "hook_count",
-                          "hunting_success", "cumul_xp_pred_bins",
-                          "pred_speed", "pred_amount_tiles_visited",
-                          "ambush_time_close", "latency_1st_capture",
-                          "prey_avg_speed", "prey_avg_amount_tiles_visited", 
-                          "prey_total_heal_count", "prey_total_unhook_count"),
-              stringsAsFactors = TRUE)
+# Folder path Compute Canada
+folder <- file.path("/home", "maxime11", "projects", "def-monti", 
+                    "maxime11", "phd_project", "data")
 
-#data <- fread("C:/Users/maxim/UQAM/Montiglio, Pierre-Olivier - Data Behaviour/03_final-data/#03_final-data_2021/final-data.csv",
-#              select = c("player_encode_id", "match_encode_id", 
-#                          "game_duration", "hook_count",
-#                         "hunting_success", "cumul_xp_pred_bins",
-#                         "pred_speed", "pred_amount_tiles_visited",
-#                         "ambush_time_close", "latency_1st_capture",
-#                         "prey_avg_speed", "prey_avg_amount_tiles_visited", 
-#                         "prey_total_heal_count", "prey_total_unhook_count"),
-#              stringsAsFactors = TRUE)
+# Load data on compute canada
+data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
+              select = c("predator_id",
+                         "hunting_success",
+                         "cumul_xp_killer",
+                         "pred_game_duration",
+                         "pred_speed",
+                         "total_chase_duration",
+                         "prey_avg_speed"))
 
-
-# There are 40 NaN observatinos for prey_avg_speed 
-# and prey_avg_amount_tiles_visited
-
-# These observations are removed from the model
+# Project path for testing
+data <- fread("./data/FraserFrancoetalXXXX-data.csv",
+              select = c("predator_id",
+                         "hunting_success",
+                         "cumul_xp_killer",
+                         "pred_game_duration",
+                         "pred_speed",
+                         "total_chase_duration",
+                         "prey_avg_speed"))
 
 # To run the model on a subsample of players
 #set.seed(123)
 #chosen <- sample(unique(data$player_encode_id), 15)
 #dat1 <- subset(data, player_encode_id %in% chosen)
+
+data <- unique(data)
+
+# Predator id as factor
+data[, predator_id := as.factor(predator_id)]
 
 # =======================================================================
 # =======================================================================
@@ -80,41 +83,38 @@ data <- fread("/home/maxime11/projects/def-monti/maxime11/data/final-data.csv",
 # Here we prepare the data so the model can estimate trait combinations
 # at different levels of experience
 
-# Experience will thus be a random factor with 3 levels. All traits will
-# then need to be computed as variables at these levels of experience
+# Experience will thus be a random factor with 3 levels.
+# The random factor is assigned based on the results of the gamm model.
+# See figure X for reference ***
+
+# Here :
+  # Novice = 0 to 100
+  # Intermediate = >101 to 350
+  # Expert = 351 to 500
 
 
 
-# Create dummy variables ------------------------------------------------
+# Create dummy variable ------------------------------------------------
 
-# This is done so the model can subsample the rows
-data[, sub1 := ifelse(cumul_xp_pred_bins == "novice", 1, 0)]
-data[, sub2 := ifelse(cumul_xp_pred_bins == "intermediate", 1, 0)]
-data[, sub3 := ifelse(cumul_xp_pred_bins == "advanced", 1, 0)]
+# This is done so the model can estimate effects by experience
+data[cumul_xp_killer <= 100,
+     xp_level := "novice"]
+
+data[cumul_xp_killer %between% c(101, 350),
+     xp_level := "intermediate"]
+
+data[cumul_xp_killer > 350,
+     xp_level := "expert"]
+
+# Encode the variable as a factor
+data[, xp_level := as.factor(xp_level)]
 
 
 
 # Transform variables ---------------------------------------------------
 
-#data[, pred_amount_tiles_visited := pred_amount_tiles_visited/game_duration]
-#data[, chase_count := chase_count/game_duration]
-#data[, total_chase_duration := total_chase_duration/game_duration]
-#data[, latency_1st_capture := latency_1st_capture/game_duration]
-#data[, ambush_time_close := ambush_time_close/game_duration]
-
-# Selected variables from the data-exploration file
-# raw speed
-# raw space covered
-# sqrt ambush
-# log latency
-# raw prey speed
-
-data[, ":=" (sqrt_ambush_time_close = sqrt(ambush_time_close),
-             log_latency_1st_capture = log(latency_1st_capture + 1),
-             sqrt_game_duration = sqrt(game_duration)) ]
-
-# There is 1 value of latency in the dataset that is of 0
-# Maybe remove it if it adds weight to the model? (probably not)
+data[, ":=" (sqrt_total_chase_duration = sqrt(total_chase_duration),
+             sqrt_game_duration = sqrt(pred_game_duration)) ]
 
 
 
@@ -127,31 +127,16 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)}
 # The function standardizes the variables by group :
 # in this case, by level of experience
 
-data[, c("Zspeed_group", "Zspace_group", 
-         "Zambush_group", "Zlatency_group",
-         "Zprey_speed_group", "Zgame_duration") :=
+data[, c("Zpred_speed",
+         "Zsqrt_total_chase_duration",
+         "Zprey_avg_speed",
+         "Zsqrt_game_duration") :=
        lapply(.SD, standardize), 
-       .SDcols = c("pred_speed", "pred_amount_tiles_visited", 
-                   "sqrt_ambush_time_close", "log_latency_1st_capture", 
-                   "prey_avg_speed", "sqrt_game_duration"),
-       by = cumul_xp_pred_bins]
-
-# Compute the new columns separated by experience
-data[, ":=" (Zspeed_novice        = ifelse(cumul_xp_pred_bins == "novice", Zspeed_group, NA),
-             Zspace_novice        = ifelse(cumul_xp_pred_bins == "novice", Zspace_group, NA),
-             Zambush_novice       = ifelse(cumul_xp_pred_bins == "novice", Zambush_group, NA),
-             Zlatency_novice      = ifelse(cumul_xp_pred_bins == "novice", Zlatency_group, NA),
-             Zprey_speed_novice   = ifelse(cumul_xp_pred_bins == "novice", Zprey_speed_group, NA),
-             Zspeed_interm        = ifelse(cumul_xp_pred_bins == "intermediate", Zspeed_group, NA),
-             Zspace_interm        = ifelse(cumul_xp_pred_bins == "intermediate", Zspace_group, NA),
-             Zambush_interm       = ifelse(cumul_xp_pred_bins == "intermediate", Zambush_group, NA),
-             Zlatency_interm      = ifelse(cumul_xp_pred_bins == "intermediate", Zlatency_group, NA),
-             Zprey_speed_interm   = ifelse(cumul_xp_pred_bins == "intermediate", Zprey_speed_group, NA),
-             Zspeed_advanced      = ifelse(cumul_xp_pred_bins == "advanced", Zspeed_group, NA),
-             Zspace_advanced      = ifelse(cumul_xp_pred_bins == "advanced", Zspace_group, NA),
-             Zambush_advanced     = ifelse(cumul_xp_pred_bins == "advanced", Zambush_group, NA),
-             Zlatency_advanced    = ifelse(cumul_xp_pred_bins == "advanced", Zlatency_group, NA),
-             Zprey_speed_advanced = ifelse(cumul_xp_pred_bins == "advanced", Zprey_speed_group, NA))]
+       .SDcols = c("pred_speed",
+                   "sqrt_total_chase_duration",
+                   "prey_avg_speed",
+                   "sqrt_game_duration"),
+       by = xp_level]
 
 # =======================================================================
 # =======================================================================
@@ -161,181 +146,63 @@ data[, ":=" (Zspeed_novice        = ifelse(cumul_xp_pred_bins == "novice", Zspee
 
 
 # =======================================================================
-# 3. Build the multivariate model 
+# 3. Build the multivariate model equations
 # =======================================================================
-
-# We first compute submodels for each level of experience
-# These submodels will be added in a joint model that
-# will estimate all the covariances
 
 
 
 # Speed at three levels of experience -----------------------------------
 
-speed_novice <-       bf(Zspeed_novice | subset(sub1) ~
-                          Zgame_duration +
-                          (1 |a| player_encode_id)) +
-                      gaussian()
-
-speed_intermediate <- bf(Zspeed_interm | subset(sub2) ~
-                          Zgame_duration +
-                          (1 |b| player_encode_id)) +
-                      gaussian()
-
-speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
-                          Zgame_duration +
-                          (1 |c| player_encode_id)) +
-                      gaussian()
-
-#speed_novice <-       bf(Zspeed_novice | subset(sub1) ~
-#                          1 + (1 |a| player_encode_id)) +
-#                      gaussian()
-#
-#speed_intermediate <- bf(Zspeed_interm | subset(sub2) ~
-#                          1 + (1 |b| player_encode_id)) +
-#                      gaussian()
-#
-#speed_advanced <-     bf(Zspeed_advanced | subset(sub3) ~
-#                          1 + (1 |c| player_encode_id)) +
-#                      gaussian()
-
-
-# Space covered at three levels of experience ---------------------------
-
-#space_novice <-       bf(Zspace | subset(sub1) ~
-#                          game_duration +
-#                          (1 |a| player_encode_id)) +
-#                      gaussian()
-#
-#space_intermediate <- bf(Zspace | subset(sub2) ~
-#                          game_duration +
-#                          (1 |b| player_encode_id)) +
-#                      gaussian()
-#
-#space_advanced <-     bf(Zspace | subset(sub3) ~
-#                          game_duration +
-#                          (1 |c| player_encode_id)) +
-#                      gaussian()
+pred_speed <- bf(
+  Zpred_speed ~
+      1 +
+      Zgame_duration + 
+      (1 |a| gr(predator_id, by = xp_level)),
+  sigma ~ 1 + (1 |a| gr(player_encode_id, by = xp_level))
+) + gaussian()
 
 
 
-# Ambush at three levels of experience ----------------------------------
+# Total chase duration at three levels of experience --------------------
 
-ambush_novice <-        bf(Zambush_novice | subset(sub1) ~
-                            Zgame_duration +
-                            (1 |a| player_encode_id)) +
-                       gaussian()
-
-ambush_intermediate <- bf(Zambush_interm | subset(sub2) ~
-                            Zgame_duration +
-                            (1 |b| player_encode_id)) +
-                       gaussian()
-
-ambush_advanced <-     bf(Zambush_advanced | subset(sub3) ~
-                             Zgame_duration +
-                             (1 |c| player_encode_id)) +
-                       gaussian()
-
-#ambush_novice <-        bf(Zambush_novice | subset(sub1) ~
-#                            1 + (1 |a| player_encode_id)) +
-#                       gaussian()
-#
-#ambush_intermediate <- bf(Zambush_interm | subset(sub2) ~
-#                            1 + (1 |b| player_encode_id)) +
-#                       gaussian()
-#
-#ambush_advanced <-     bf(Zambush_advanced | subset(sub3) ~
-#                             1 + (1 |c| player_encode_id)) +
-#                       gaussian()
-
-
-# Latency for the 1st capture at three levels of experience -------------
-
-latency_novice <-       bf(Zlatency_novice | subset(sub1) ~
-                            Zgame_duration + 
-                            (1 |a| player_encode_id)) +
-                        gaussian()
-
-latency_intermediate <- bf(Zlatency_interm | subset(sub2) ~
-                            Zgame_duration +
-                            (1 |b| player_encode_id)) +
-                        gaussian()
-
-latency_advanced <-     bf(Zlatency_advanced | subset(sub3) ~
-                            Zgame_duration +
-                            (1 |c| player_encode_id)) +
-                        gaussian()
-
-
-#latency_novice <-       bf(Zlatency_novice | subset(sub1) ~
-#                            1 + (1 |a| player_encode_id)) +
-#                        gaussian()
-#
-#latency_intermediate <- bf(Zlatency_interm | subset(sub2) ~
-#                            1 + (1 |b| player_encode_id)) +
-#                        gaussian()
-#
-#latency_advanced <-     bf(Zlatency_advanced | subset(sub3) ~
-#                            1 + (1 |c| player_encode_id)) +
-#                        gaussian()
+#chase_duration <- bf(
+#  Zchase_duration ~
+#      1 +
+#      Zgame_duration +
+#      (1 |a| gr(player_encode_id, by = xp_level))
+#) + gaussian()
 
 
 
 # Prey speed at three levels of experience ------------------------------
 
-prey_speed_novice <-       bf(Zprey_speed_novice | subset(sub1) ~
-                                Zgame_duration +
-                                (1 |a| player_encode_id), 
-                              sigma ~ 
-                                1 + (1 |a| player_encode_id)) +
-                           gaussian()
+prey_speed <- bf(
+  Zprey_avg_speed ~
+      1 +
+      Zgame_duration +
+      (1 |a| gr(player_encode_id, by = xp_level)),
+  sigma ~ 1 + (1 |a| gr(player_encode_id, by = xp_level))
+) + gaussian()
 
-prey_speed_intermediate <- bf(Zprey_speed_interm | subset(sub2) ~
-                                Zgame_duration +
-                                (1 |b| player_encode_id), 
-                              sigma ~ 
-                                1 + (1 |b| player_encode_id)) +
-                           gaussian()
 
-prey_speed_advanced <-     bf(Zprey_speed_advanced | subset(sub3) ~
-                                Zgame_duration +
-                                (1 |c| player_encode_id), 
-                              sigma ~ 
-                                1 + (1 |c| player_encode_id)) +
-                           gaussian()
-
-#prey_speed_novice <-       bf(Zprey_speed_novice | subset(sub1) ~
-#                                1 + (1 |a| player_encode_id), 
-#                              sigma ~ 
-#                                1 + (1 |a| player_encode_id)) +
-#                           gaussian()
-#
-#prey_speed_intermediate <- bf(Zprey_speed_interm | subset(sub2) ~
-#                                1 + (1 |b| player_encode_id), 
-#                              sigma ~ 
-#                                1 + (1 |b| player_encode_id)) +
-#                           gaussian()
-#
-#prey_speed_advanced <-     bf(Zprey_speed_advanced | subset(sub3) ~
-#                                1 + (1 |c| player_encode_id), 
-#                              sigma ~ 
-#                                1 + (1 |c| player_encode_id)) +
-#                           gaussian()
 
 # priors ----------------------------------------------------------------
 
 priors <- c(
-  set_prior("normal(0, 3)", 
+  # priors on game duration
+  set_prior("normal(0, 2)", 
             class = "b",
             coef = "Zgame_duration",
-            resp = c("Zspeednovice", "Zspeedinterm", "Zspeedadvanced",
-                     "Zambushnovice", "Zambushinterm", "Zambushadvanced",
-                     "Zlatencynovice", "Zlatencyinterm", "Zlatencyadvanced",
-                     "Zpreyspeednovice", "Zpreyspeedinterm", "Zpreyspeedadvanced")),
+            resp = c("Zpredspeed", "Zpreyavgspeed")),
+  # priors on var. parameters (brms automatically detects half-normal)
+  set_prior("normal(0, 1)",
+            class = "sd", # applies to all variance parameters
+            resp = c("Zpredspeed", "Zpreyavgspeed")),
+  # prior on covariance matrices
   set_prior("lkj(2)", 
             class = "cor",
-            group = "player_encode_id")
-            )
+            group = "predator_id")
+)
 
 # =======================================================================
 # =======================================================================
@@ -349,39 +216,24 @@ priors <- c(
 # =======================================================================
 
 # ( nitt - burnin ) / thin = 1000
-mv_model <- brm(speed_novice +
-                speed_intermediate +
-                speed_advanced +
-              #  space_novice +
-              #  space_intermediate +
-              #  space_advanced +
-                ambush_novice +
-                ambush_intermediate +
-                ambush_advanced +
-                latency_novice +
-                latency_intermediate +
-                latency_advanced +
-                prey_speed_novice +
-                prey_speed_intermediate +
-                prey_speed_advanced + 
+mv_model <- brm(pred_speed +
+                prey_speed +
                 set_rescor(FALSE),
-              warmup = 300, 
-              iter = 10300,
-              thin = 8,
-              chains = 4, 
-              inits = "0",
-              threads = threading(10),
-              backend = "cmdstanr",
-              seed = 123,
-              prior = priors,
-              control = list(adapt_delta = 0.95),
-              save_pars = save_pars(all = TRUE),
-              data = data)
+                warmup = 500, 
+                iter = 1500,
+                thin = 4,
+                chains = 4, 
+                inits = "0",
+                threads = threading(10),
+                backend = "cmdstanr",
+                seed = 123,
+                prior = priors,
+                sample_prior = TRUE,
+                control = list(adapt_delta = 0.99),
+                #save_pars = save_pars(all = TRUE),
+                data = data)
 
-#saveRDS(mv_model, file = "multivariate_model.rds") # included game_duration as covariate
-#saveRDS(mv_model, file = "multivariate_model1.rds") # values divided by game_duration / no covariates
-#saveRDS(mv_model, file = "multivariate_model2.rds") # no covariates / raw variables
-saveRDS(mv_model, file = "multivariate_model3.rds") # Zgame_duration covariate only mean part / raw variables
+saveRDS(mv_model, file = "02B1_DHMLM.rds") 
 
 # =======================================================================
 # =======================================================================
