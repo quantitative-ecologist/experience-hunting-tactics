@@ -149,22 +149,22 @@ priors <- c(
 # 3. Run the model
 # ==========================================================================
 
-model_g <- brm(formula = model_formula,
-               family = beta_binomial2,
-               warmup = 500, 
-               iter = 2500,
-               thin = 8,
-               chains = 4,
-               cores = 4,
-               inits = "0", 
-               seed = 123,
-               prior = priors,
-               sample_prior = TRUE,
-               control = list(adapt_delta = 0.99),
-               data = data,
-               stanvars = stanvars)
+model_gs <- brm(formula = model_formula,
+                family = beta_binomial2,
+                warmup = 500, 
+                iter = 2500,
+                thin = 8,
+                chains = 4,
+                cores = 4,
+                inits = "0", 
+                seed = 123,
+                prior = priors,
+                sample_prior = TRUE,
+                control = list(adapt_delta = 0.99),
+                data = data,
+                stanvars = stanvars)
 
-saveRDS(model_g, file = "02A2_GAMM.rds")
+saveRDS(model_gs, file = "02A2_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================
@@ -181,7 +181,7 @@ saveRDS(model_g, file = "02A2_GAMM.rds")
 
 # Post processing preparations for custom family ---------------------------
 
-expose_functions(model_g, vectorize = TRUE)
+expose_functions(model_gs, vectorize = TRUE)
 
 # Define the log likelihood function
 log_lik_beta_binomial2 <- function(i, prep) {
@@ -213,12 +213,12 @@ posterior_epred_beta_binomial2 <- function(prep) {
 # Perform PSIS-LOO ---------------------------------------------------------
 
 # Method 1
-#loo_model_gs <- loo(model_gs)
-#saveRDS(loo_model_gs, file = "02A2_loo")
+loo_model_gs <- loo(model_gs)
+saveRDS(loo_model_gs, file = "02A2_loo")
 
 # Method 2 including other criteria
-model_g <- add_criterion(model_g, c("loo", "bayes_R2"))
-saveRDS(model_g, file = "02A2_GAMM.rds")
+#model_g <- add_criterion(model_g, c("loo", "bayes_R2"))
+#saveRDS(model_g, file = "02A2_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================
