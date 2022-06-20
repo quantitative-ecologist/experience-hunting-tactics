@@ -220,12 +220,12 @@ posterior_epred_beta_binomial2 <- function(prep) {
 # Perform PSIS-LOO ---------------------------------------------------------
 
 # Method 1
-#loo_model_gs <- loo(model_gs)
-#saveRDS(loo_model_gs, file = "02A2_loo")
+loo_model_gs <- loo(model_gs)
+saveRDS(loo_model_gs, file = "02A3_loo")
 
 # Method 2 including other criteria
-model_gs <- add_criterion(model_gs, c("loo", "bayes_R2"))
-saveRDS(model_gs, file = "02A3_GAMM.rds")
+#model_gs <- add_criterion(model_gs, c("loo", "bayes_R2"))
+#saveRDS(model_gs, file = "02A3_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================
