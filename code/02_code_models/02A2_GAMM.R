@@ -114,8 +114,9 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 # Model formula ------------------------------------------------------------
 
 model_formula <- brmsformula(hunting_success | vint(4) ~
-                                        s(Zcumul_xp, by = Zpred_avg_speed) +
+                                        s(Zcumul_xp) +
                                         s(predator_id, bs = "re") +
+                                        Zprey_avg_speed +
                                         Zgame_duration)
 
 
@@ -127,6 +128,9 @@ priors <- c(
   set_prior("normal(0, 2)",
             class = "b",
             coef = "Zgame_duration"),
+  set_prior("normal(0, 2)",
+            class = "b",
+            coef = "Zprey_avg_speed"),
   set_prior("normal(0, 2)",
             class = "b",
             coef = "sZcumul_xp_1"),       

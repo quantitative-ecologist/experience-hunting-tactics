@@ -134,10 +134,6 @@ priors <- c(
   set_prior("normal(0, 2)",
             class = "sds",
             coef = "s(Zcumul_xp)"),
-  # priors on var. parameters
-  # (brms automatically detects half-normal)
-  set_prior("normal(0, 1)",
-            class = "sd"),
   # priors on phi
   set_prior("normal(2, 1)",
             class = "phi")
