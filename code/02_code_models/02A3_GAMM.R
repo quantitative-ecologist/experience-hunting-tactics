@@ -36,7 +36,7 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
-                         "hunting_success"
+                         "hunting_success",
                          "pred_game_duration",
                          "pred_speed",
                          "cumul_xp_killer",
