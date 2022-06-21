@@ -152,10 +152,11 @@ priors <- c(
 model_gs <- brm(formula = model_formula,
                 family = beta_binomial2,
                 warmup = 500, 
-                iter = 2500,
-                thin = 8,
+                iter = 1500,
+                thin = 4,
                 chains = 4,
-                cores = 4,
+                threads = threading(10),
+                backend = "cmdstanr",
                 inits = "0", 
                 seed = 123,
                 prior = priors,
@@ -181,40 +182,40 @@ saveRDS(model_gs, file = "02A2_GAMM.rds")
 
 # Post processing preparations for custom family ---------------------------
 
-expose_functions(model_gs, vectorize = TRUE)
+#expose_functions(model_gs, vectorize = TRUE)
 
 # Define the log likelihood function
-log_lik_beta_binomial2 <- function(i, prep) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  phi <- brms::get_dpar(prep, "phi", i = i)
-  trials <- prep$data$vint1[i]
-  y <- prep$data$Y[i]
-  beta_binomial2_lpmf(y, mu, phi, trials)
-}
+#log_lik_beta_binomial2 <- function(i, prep) {
+#  mu <- brms::get_dpar(prep, "mu", i = i)
+#  phi <- brms::get_dpar(prep, "phi", i = i)
+#  trials <- prep$data$vint1[i]
+#  y <- prep$data$Y[i]
+#  beta_binomial2_lpmf(y, mu, phi, trials)
+#}
 
 # Define function for posterior_predict
-posterior_predict_beta_binomial2 <- function(i, prep, ...) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  phi <- brms::get_dpar(prep, "phi", i = i)
-  trials <- prep$data$vint1[i]
-  beta_binomial2_rng(mu, phi, trials)
-}
+#posterior_predict_beta_binomial2 <- function(i, prep, ...) {
+#  mu <- brms::get_dpar(prep, "mu", i = i)
+#  phi <- brms::get_dpar(prep, "phi", i = i)
+#  trials <- prep$data$vint1[i]
+#  beta_binomial2_rng(mu, phi, trials)
+#}
 
 # Define function for posterior_epred
-posterior_epred_beta_binomial2 <- function(prep) {
-  mu <- brms::get_dpar(prep, "mu")
-  trials <- prep$data$vint1
-  trials <- matrix(trials, nrow = nrow(mu), ncol = ncol(mu), byrow = TRUE)
-  mu * trials
-}
+#posterior_epred_beta_binomial2 <- function(prep) {
+#  mu <- brms::get_dpar(prep, "mu")
+#  trials <- prep$data$vint1
+#  trials <- matrix(trials, nrow = nrow(mu), ncol = ncol(mu), byrow = TRUE)
+#  mu * trials
+#}
 
 
 
 # Perform PSIS-LOO ---------------------------------------------------------
 
 # Method 1
-loo_model_gs <- loo(model_gs)
-saveRDS(loo_model_gs, file = "02A2_loo")
+#loo_model_gs <- loo(model_gs)
+#saveRDS(loo_model_gs, file = "02A2_loo")
 
 # Method 2 including other criteria
 #model_g <- add_criterion(model_g, c("loo", "bayes_R2"))
