@@ -18,6 +18,7 @@
 
 library(data.table)
 library(brms)
+library(ggpubr)
 
 
 
@@ -105,6 +106,32 @@ mean2 <- pp_check(mod2, type = "stat", stat = "mean")
 e_scat1 <- pp_check(mod1, type = "error_scatter_avg")
 e_scat2 <- pp_check(mod2, type = "error_scatter_avg")
 
+
+
+# Save plots as figure --------------------------------------------------
+
+# Arrange a figure
+stat_fig1 <- ggarrange(pp1,
+                       pp2,
+                       stat1,
+                       stat2,
+                       ncol = 2, nrow = 2)
+
+stat_fig2 <- ggarrange(mean1,
+                       mean2,
+                       e_scat1,
+                       e_scat2,
+                       ncol = 2, nrow = 2)
+
+# Export the figure
+ggexport(stat_fig1,
+         filename = "./outputs/03_outputs_model-validation/03_GAMM-diagnostics1.png",
+         width = 3000, height = 2500, res = 300) # more 
+
+ggexport(stat_fig2,
+         filename = "./outputs/03_outputs_model-validation/03_GAMM-diagnostics2.png",
+         width = 3000, height = 2500, res = 300) # more 
+
 # =======================================================================
 # =======================================================================
 
@@ -133,12 +160,15 @@ saveRDS(loo2,
 
 # Compare models --------------------------------------------------------
 
+# Compare models
 loo_tab <- loo_compare(loo1, loo2)
 
-print(loo_tab, simplify = FALSE)
+# Compute table with complete information
+loo_table <- print(loo_tab, simplify = FALSE)
 
-saveRDS(loo_tab,
-        file = "./outputs/03_outputs_model-validation/loo_table_GAMM.rds")
+# Save table
+saveRDS(loo_table,
+        file = "./outputs/03_outputs_model-validation/03_GAMM-lootable.rds")
 
 # =======================================================================
 # =======================================================================
