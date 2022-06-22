@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=40
 #SBATCH --mem=32000M
-#SBATCH --time=2-16:00
+#SBATCH --time=1-10:00
 #SBATCH --mail-user=fraser_franco.maxime@courrier.uqam.ca
 #SBATCH --mail-type=ALL
 
