@@ -5,18 +5,20 @@
 
 # =======================================================================
 
+# notes
+# need :
+#   1. covariance between sigma prey sigma pred = interaction pred-proie
 
+#   Les relations 2 et 3 devraient changer avec l'expérience 
+#   2. covariance between sigma prey and hunting success = proie variable -> moins succès?
+#   3. covariance between prey mean and hunting success = vitesse proie -> succès?
 
+#   4. covariance between sigma pred and hunting success = quelle stratégie est meilleure?
 
 
 # =======================================================================
 # 1. Load libraries, and import dataset
 # =======================================================================
-
-
-# When working on my local computer
-# renv::activate()
-
 
 
 # Detect number of cores ------------------------------------------------
@@ -158,7 +160,7 @@ pred_speed <- bf(
       1 +
       Zgame_duration + 
       (1 |a| gr(predator_id, by = xp_level)),
-  sigma ~ 1 + (1 |a| gr(player_encode_id, by = xp_level))
+  sigma ~ 1 + (1 |a| gr(predator_id, by = xp_level))
 ) + gaussian()
 
 
@@ -180,8 +182,8 @@ prey_speed <- bf(
   Zprey_avg_speed ~
       1 +
       Zgame_duration +
-      (1 |a| gr(player_encode_id, by = xp_level)),
-  sigma ~ 1 + (1 |a| gr(player_encode_id, by = xp_level))
+      (1 |a| gr(predator_id, by = xp_level)),
+  sigma ~ 1 + (1 |a| gr(predator_id, by = xp_level))
 ) + gaussian()
 
 
