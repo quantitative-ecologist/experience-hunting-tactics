@@ -115,8 +115,7 @@ data[, xp_level := as.factor(xp_level)]
 
 # Transform variables ---------------------------------------------------
 
-data[, ":=" (sqrt_total_chase_duration = sqrt(total_chase_duration),
-             sqrt_game_duration = sqrt(pred_game_duration)) ]
+data[, sqrt_total_chase_duration := sqrt(total_chase_duration) ]
 
 
 
@@ -132,12 +131,12 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)}
 data[, c("Zpred_speed",
          "Zsqrt_total_chase_duration",
          "Zprey_avg_speed",
-         "Zsqrt_game_duration") :=
+         "Zgame_duration") :=
        lapply(.SD, standardize), 
        .SDcols = c("pred_speed",
                    "sqrt_total_chase_duration",
                    "prey_avg_speed",
-                   "sqrt_game_duration"),
+                   "pred_game_duration"),
        by = xp_level]
 
 # =======================================================================
