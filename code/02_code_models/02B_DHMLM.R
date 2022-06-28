@@ -347,7 +347,7 @@ mv_model <- brm(speed_novice +
                 #save_pars = save_pars(all = TRUE),
                 data = data)
 
-saveRDS(mv_model, file = "02B1_DHMLM.rds")
+saveRDS(mv_model, file = "02B_DHMLM.rds")
 
 # =======================================================================
 # =======================================================================
