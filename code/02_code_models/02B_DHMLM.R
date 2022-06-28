@@ -222,7 +222,7 @@ prey_speed_expert <- bf(
       (1 |c| predator_id),
   sigma ~  
       1 + Zgame_duration +
-      (1 |b| predator_id)
+      (1 |c| predator_id)
 ) + gaussian()
 
 
@@ -333,8 +333,8 @@ mv_model <- brm(speed_novice +
                 success_expert +
                 set_rescor(FALSE),
                 warmup = 500, 
-                iter = 1500,
-                thin = 4,
+                iter = 2500,
+                thin = 8,
                 chains = 4, 
                 inits = "0",
                 threads = threading(10),
