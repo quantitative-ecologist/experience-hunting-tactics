@@ -72,9 +72,9 @@ data[, predator_id := as.factor(predator_id)]
 # =======================================================================
 
 # Here we prepare the data so the model can estimate trait combinations
-# at different levels of experience
+# at different levels of expertise
 
-# Experience will thus be a random factor with 3 levels.
+# Expertise will thus be a random factor with 3 levels.
 # The random factor is assigned based on the results of the gamm model.
 # See figure X for reference ***
 
@@ -84,12 +84,12 @@ data[, predator_id := as.factor(predator_id)]
   # Expert = 351 to 500
 
 # All traits will then need to be computed as variables 
-# at these levels of experience
+# at these levels of expertise
 
 
 # Create dummy variable ------------------------------------------------
 
-# This is done so the model can estimate effects by experience
+# This is done so the model can estimate effects by expertise
 data[cumul_xp_killer <= 100,
      xp_level := "novice"]
 
