@@ -170,7 +170,9 @@ data[, ":=" (Zspeed_novice      = ifelse(xp_level == "novice", Zspeed_group, NA)
 speed_novice <- bf(
   Zspeed_novice | subset(sub1) ~
       1 + Zgame_duration +
-      (1 |a| predator_id),
+      (1 |a| predator_id) +
+      (1 | environment_id) +
+      (1 | predator_avatar_id),
   sigma ~  
       1 + Zgame_duration +
       (1 |a| predator_id)
@@ -179,19 +181,23 @@ speed_novice <- bf(
 speed_intermediate <- bf(
   Zspeed_interm | subset(sub2) ~
       1 + Zgame_duration +
-      (1 |b| predator_id),
+      (1 |a| predator_id) +
+      (1 | environment_id) +
+      (1 | predator_avatar_id),
   sigma ~  
       1 + Zgame_duration +
-      (1 |b| predator_id)
+      (1 |a| predator_id)
 ) + gaussian()
 
 speed_expert <- bf(
   Zspeed_expert | subset(sub3) ~
       1 + Zgame_duration +
-      (1 |c| predator_id),
+      (1 |a| predator_id) +
+      (1 | environment_id) +
+      (1 | predator_avatar_id),
   sigma ~  
       1 + Zgame_duration +
-      (1 |c| predator_id)
+      (1 |a| predator_id)
 ) + gaussian()
 
 
@@ -210,19 +216,19 @@ prey_speed_novice <- bf(
 prey_speed_intermediate <- bf(
   Zprey_speed_interm | subset(sub2) ~
       1 + Zgame_duration +
-      (1 |b| predator_id),
+      (1 |a| predator_id),
   sigma ~ 
       1 + Zgame_duration +
-      (1 |b| predator_id)
+      (1 |a| predator_id)
 ) + gaussian()
 
 prey_speed_expert <- bf(
   Zprey_speed_expert | subset(sub3) ~
       1 + Zgame_duration +
-      (1 |c| predator_id),
+      (1 |a| predator_id),
   sigma ~  
       1 + Zgame_duration +
-      (1 |c| predator_id)
+      (1 |a| predator_id)
 ) + gaussian()
 
 
@@ -260,13 +266,13 @@ success_novice <- bf(
 success_interm <- bf(
   success_interm | vint(4) + subset(sub2) ~
       1 + Zgame_duration +
-      (1 |b| predator_id)
+      (1 |a| predator_id)
 ) + beta_binomial2
 
 success_expert <- bf(
   success_expert | vint(4) + subset(sub3) ~
       1 + Zgame_duration +
-      (1 |c| predator_id)
+      (1 |a| predator_id)
 ) + beta_binomial2
 
 
