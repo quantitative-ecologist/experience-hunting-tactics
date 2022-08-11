@@ -4,6 +4,7 @@ code/*.log
 code/*.out
 code/*.tex
 code/*.aux
+manuscript/dump_ideas.txt
 data
 tests
 plan
