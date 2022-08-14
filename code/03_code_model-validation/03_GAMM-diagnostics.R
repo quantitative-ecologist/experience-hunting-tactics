@@ -28,6 +28,15 @@ library(ggpubr)
 mod1 <- readRDS("./outputs/02_outputs_models/02A1_GAMM.rds")
 mod2 <- readRDS("./outputs/02_outputs_models/02A2_GAMM.rds")
 
+# Check object size
+print(object.size(mod1), units = "MB")
+print(object.size(mod2), units = "MB")
+
+
+# Read saved loo outputs
+loo1 <- readRDS("./outputs/03_outputs_model-validation/02A1_loo.rds")
+loo2 <- readRDS("./outputs/03_outputs_model-validation/02A2_loo.rds")
+
 # =======================================================================
 # =======================================================================
 
@@ -112,14 +121,14 @@ e_scat2 <- pp_check(mod2, type = "error_scatter_avg")
 
 # Arrange a figure
 stat_fig1 <- ggarrange(pp1,
-                       pp2,
                        stat1,
-                       stat2,
+                       mean1,
+                       e_scat1,
                        ncol = 2, nrow = 2)
 
-stat_fig2 <- ggarrange(mean1,
+stat_fig2 <- ggarrange(pp2,    
+                       stat2,
                        mean2,
-                       e_scat1,
                        e_scat2,
                        ncol = 2, nrow = 2)
 
