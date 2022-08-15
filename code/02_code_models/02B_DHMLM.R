@@ -1,7 +1,7 @@
 # =======================================================================
 
 #                     Run a multivariate model                          #
-#               that tests the effect of xp on tactics                  #
+#               to evaluate how tactics change with XP                  #
 
 # =======================================================================
 
@@ -72,32 +72,44 @@ data[, predator_id := as.factor(predator_id)]
 # =======================================================================
 
 # Here we prepare the data so the model can estimate trait combinations
-# at different levels of expertise
+# at different levels of experience
 
-# Expertise will thus be a random factor with 3 levels.
+# Experience will thus be a random factor with 3 levels.
 # The random factor is assigned based on the results of the gamm model.
 # See figure X for reference ***
 
 # Here :
   # Novice = 0 to 100
   # Intermediate = >101 to 350
-  # Expert = 351 to 500
+  # advanced = 351 to 500
 
 # All traits will then need to be computed as variables 
-# at these levels of expertise
+# at these levels of experience
 
 
 # Create dummy variable ------------------------------------------------
 
-# This is done so the model can estimate effects by expertise
-data[cumul_xp_killer <= 100,
+# This is done so the model partition the covariances by experience
+
+# This is before when I had fewer data
+#data[cumul_xp_killer <= 100,
+#     xp_level := "novice"]
+#
+#data[cumul_xp_killer %between% c(101, 350),
+#     xp_level := "intermediate"]
+#
+#data[cumul_xp_killer > 350,
+#     xp_level := "advanced"]
+
+# This is before when I had fewer data
+data[cumul_xp_killer < 150,
      xp_level := "novice"]
 
-data[cumul_xp_killer %between% c(101, 350),
+data[cumul_xp_killer %between% c(150, 299),
      xp_level := "intermediate"]
 
-data[cumul_xp_killer > 350,
-     xp_level := "expert"]
+data[cumul_xp_killer >= 300,
+     xp_level := "advanced"]
 
 # Encode the variable as a factor
 data[, xp_level := as.factor(xp_level)]
@@ -106,7 +118,7 @@ data[, xp_level := as.factor(xp_level)]
 # This is done so the model can subsample the rows
 data[, sub1 := ifelse(xp_level == "novice", 1, 0)]
 data[, sub2 := ifelse(xp_level == "intermediate", 1, 0)]
-data[, sub3 := ifelse(xp_level == "expert", 1, 0)]
+data[, sub3 := ifelse(xp_level == "advanced", 1, 0)]
 
 
 
@@ -143,9 +155,9 @@ data[, ":=" (Zspeed_novice      = ifelse(xp_level == "novice", Zspeed_group, NA)
              Zspeed_interm      = ifelse(xp_level == "intermediate", Zspeed_group, NA),
              Zprey_speed_interm = ifelse(xp_level == "intermediate", Zprey_speed_group, NA),
              success_interm     = ifelse(xp_level == "intermediate", hunting_success, NA),
-             Zspeed_expert      = ifelse(xp_level == "expert", Zspeed_group, NA),
-             Zprey_speed_expert = ifelse(xp_level == "expert", Zprey_speed_group, NA),
-             success_expert     = ifelse(xp_level == "expert", hunting_success, NA))
+             Zspeed_advanced      = ifelse(xp_level == "advanced", Zspeed_group, NA),
+             Zprey_speed_advanced = ifelse(xp_level == "advanced", Zprey_speed_group, NA),
+             success_advanced     = ifelse(xp_level == "advanced", hunting_success, NA))
 ]
 
 # =======================================================================
@@ -189,8 +201,8 @@ speed_intermediate <- bf(
       (1 |a| predator_id)
 ) + gaussian()
 
-speed_expert <- bf(
-  Zspeed_expert | subset(sub3) ~
+speed_advanced <- bf(
+  Zspeed_advanced | subset(sub3) ~
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
@@ -222,8 +234,8 @@ prey_speed_intermediate <- bf(
       (1 |a| predator_id)
 ) + gaussian()
 
-prey_speed_expert <- bf(
-  Zprey_speed_expert | subset(sub3) ~
+prey_speed_advanced <- bf(
+  Zprey_speed_advanced | subset(sub3) ~
       1 + Zgame_duration +
       (1 |a| predator_id),
   sigma ~  
@@ -269,8 +281,8 @@ success_interm <- bf(
       (1 |a| predator_id)
 ) + beta_binomial2
 
-success_expert <- bf(
-  success_expert | vint(4) + subset(sub3) ~
+success_advanced <- bf(
+  success_advanced | vint(4) + subset(sub3) ~
       1 + Zgame_duration +
       (1 |a| predator_id)
 ) + beta_binomial2
@@ -286,31 +298,31 @@ priors <- c(
             coef = "Zgame_duration",
             resp = c("Zspeednovice",
                      "Zspeedinterm",
-                     "Zspeedexpert",
+                     "Zspeedadvanced",
                      "Zpreyspeednovice",
                      "Zpreyspeedinterm",
-                     "Zpreyspeedexpert",
+                     "Zpreyspeedadvanced",
                      "successnovice",
                      "successinterm",
-                     "successexpert")),
+                     "successadvanced")),
   # priors on var. parameters (brms automatically detects half-normal)
   set_prior("normal(0, 1)",
             class = "sd", # applies to all variance parameters
             resp = c("Zspeednovice",
                      "Zspeedinterm",
-                     "Zspeedexpert",
+                     "Zspeedadvanced",
                      "Zpreyspeednovice",
                      "Zpreyspeedinterm",
-                     "Zpreyspeedexpert",
+                     "Zpreyspeedadvanced",
                      "successnovice",
                      "successinterm",
-                     "successexpert")),
+                     "successadvanced")),
   # priors on phi
   set_prior("normal(2, 1)",
             class = "phi",
             resp = c("successnovice",
                      "successinterm",
-                     "successexpert")),
+                     "successadvanced")),
   set_prior("lkj(2)", 
             class = "cor",
             group = "predator_id")
@@ -330,13 +342,13 @@ priors <- c(
 # ( nitt - burnin ) / thin = 1000
 mv_model <- brm(speed_novice +
                 speed_intermediate +
-                speed_expert +
+                speed_advanced +
                 prey_speed_novice +
                 prey_speed_intermediate +
-                prey_speed_expert +
+                prey_speed_advanced +
                 success_novice +
                 success_interm +
-                success_expert +
+                success_advanced +
                 set_rescor(FALSE),
                 warmup = 500, 
                 iter = 2500,
