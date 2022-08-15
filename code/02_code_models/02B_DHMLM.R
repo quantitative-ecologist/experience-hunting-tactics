@@ -42,6 +42,8 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data on compute canada
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
+                         "predator_avatar_id",
+                         "environment_id",
                          "hunting_success",
                          "cumul_xp_killer",
                          "pred_game_duration",
@@ -53,7 +55,8 @@ data <- unique(data)
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
-
+data[, predator_avatar_id := as.factor(predator_avatar_id)]
+data[, environment_id := as.factor(environment_id)]
 
 # To run the model on a subsample of players
 #set.seed(123)
