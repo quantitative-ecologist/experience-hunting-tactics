@@ -174,7 +174,7 @@ posterior_epred_beta_binomial2 <- function(prep) {
  draws <- melt(draws,
                variable.name = "predator_id")
  
- # Transform to original scale
+ # Transform predicted y values to original scale
  draws[, value := plogis(value)]
 
  # Compute the average for each player + 95% CI in a new table
