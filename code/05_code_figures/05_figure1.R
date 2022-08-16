@@ -234,7 +234,9 @@ posterior_epred_beta_binomial2 <- function(prep) {
             axis.text.x = element_text(color = "transparent"),
             axis.ticks.x = element_line(color = "transparent"),
             legend.position = "top",
-            legend.key = element_rect(fill = "transparent"))
+            legend.key = element_rect(fill = "transparent"),
+            legend.title = element_text(size = 15),
+            legend.text = element_text(size = 12))
 
 # ==========================================================================
 # ==========================================================================
