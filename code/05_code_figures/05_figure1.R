@@ -116,7 +116,9 @@ posterior_epred_beta_binomial2 <- function(prep) {
   tab <- data.table(tab)
 
  # Back transform x-axis values
- scaled_breaks <- (seq(0, 500, 100) - mean(data$cumul_xp_killer)) / sd(data$cumul_xp_killer)
+ sequence <- (seq(0, 500, 100) - mean(data$cumul_xp_killer))
+ standev <- sd(data$cumul_xp_killer)
+ scaled_breaks <- sequence / standev
 
 
 
