@@ -14,61 +14,62 @@
 
 # Load librairies and model ------------------------------------------------
 
-library(brms)
-library(data.table)
-library(ggplot2)
-
-mod1 <- readRDS("./outputs/02_outputs_models/02A1_GAMM.rds")
+ library(brms)
+ library(data.table)
+ library(ggplot2)
+ 
+ mod <- readRDS("./outputs/02_outputs_models/02A3_GLMM.rds")
 
 
 
 # Load the data ------------------------------------------------------------
 
-data <- fread("./data/FraserFrancoetalXXXX-data.csv",
-              select = c("predator_id",
-                         "pred_game_duration",
-                         "pred_speed",
-                         "prey_avg_speed",
-                         "cumul_xp_killer",
-                         "total_xp_killer",
-                         "hunting_success"))
-
-data <- unique(data)
-
+ data <- fread("./data/FraserFrancoetalXXXX-data.csv",
+               select = c("predator_id",
+                          "pred_game_duration",
+                          "pred_speed",
+                          "prey_avg_speed",
+                          "cumul_xp_killer",
+                          "total_xp_killer",
+                          "hunting_success"))
+ 
+ data <- unique(data)
+ data[, predator_id := as.factor(predator_id)]
 
 
 # Post processing preparations for custom family ---------------------------
 
-expose_functions(mod1, vectorize = TRUE)
-
-# Define the log likelihood function
-log_lik_beta_binomial2 <- function(i, prep) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  phi <- brms::get_dpar(prep, "phi", i = i)
-  trials <- prep$data$vint1[i]
-  y <- prep$data$Y[i]
-  beta_binomial2_lpmf(y, mu, phi, trials)
-}
-
-# Define function for posterior_predict
-posterior_predict_beta_binomial2 <- function(i, prep, ...) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  phi <- brms::get_dpar(prep, "phi", i = i)
-  trials <- prep$data$vint1[i]
-  beta_binomial2_rng(mu, phi, trials)
-}
-
-# Define function for posterior_epred
-posterior_epred_beta_binomial2 <- function(prep) {
-  mu <- brms::get_dpar(prep, "mu")
-  trials <- prep$data$vint1
-  trials <- matrix(trials, nrow = nrow(mu), ncol = ncol(mu), byrow = TRUE)
-  mu * trials
-}
+ expose_functions(mod, vectorize = TRUE)
+ 
+ # Define the log likelihood function
+ log_lik_beta_binomial2 <- function(i, prep) {
+   mu <- brms::get_dpar(prep, "mu", i = i)
+   phi <- brms::get_dpar(prep, "phi", i = i)
+   trials <- prep$data$vint1[i]
+   y <- prep$data$Y[i]
+   beta_binomial2_lpmf(y, mu, phi, trials)
+ }
+ 
+ # Define function for posterior_predict
+ posterior_predict_beta_binomial2 <- function(i, prep, ...) {
+   mu <- brms::get_dpar(prep, "mu", i = i)
+   phi <- brms::get_dpar(prep, "phi", i = i)
+   trials <- prep$data$vint1[i]
+   beta_binomial2_rng(mu, phi, trials)
+ }
+ 
+ # Define function for posterior_epred
+ posterior_epred_beta_binomial2 <- function(prep) {
+   mu <- brms::get_dpar(prep, "mu")
+   trials <- prep$data$vint1
+   trials <- matrix(trials, nrow = nrow(mu), ncol = ncol(mu), byrow = TRUE)
+   mu * trials
+ }
 
 
 
 # Setup a custom theme for the plot ----------------------------------------
+ 
  custom_theme <- theme(# axis values size
                        axis.text.x = element_text(face = "plain", 
                                                   size = 15,
@@ -107,7 +108,7 @@ posterior_epred_beta_binomial2 <- function(prep) {
 # Prepare the plot ---------------------------------------------------------
  
  # With intercept using built-in function
- fig1 <- conditional_effects(mod1, method = "fitted", robust = FALSE)
+ fig1 <- conditional_effects(mod, method = "fitted", robust = FALSE)
 
  # Extract values in a table
  tab <- fig1$Zcumul_xp
@@ -124,7 +125,7 @@ posterior_epred_beta_binomial2 <- function(prep) {
 
 # Produce the plot --------------------------------------------------------
 
- gamm_plot <- ggplot(tab,
+ glmm_plot <- ggplot(tab,
                      aes(x = Zcumul_xp,
                          y = estimate__)) +
      geom_ribbon(aes(x = Zcumul_xp,
@@ -133,7 +134,7 @@ posterior_epred_beta_binomial2 <- function(prep) {
                  alpha = 0.5,
                  fill = "gray") +
      geom_line(#linetype = "dashed",
-               size = 1.5,
+               size = 1,
                color = "black") +
      ylab("Hunting success\n") +
      scale_y_continuous(breaks = seq(0, 4, 1),
@@ -161,21 +162,23 @@ posterior_epred_beta_binomial2 <- function(prep) {
  # Extract draws from each player
  draws <- data.table(
      as_draws_df(
-         mod1,
-         variable = c("^s_spredator_id_1"),
+         mod,
+         variable = c("^r_predator_id"),
          regex = TRUE
      )
  )
  
  draws[, c(275:277) := NULL]
- 
- # Rename columns
- colnames(draws) <- as.character(seq(1, 274, 1))
 
  # Flip the table
  draws <- melt(draws,
                variable.name = "predator_id")
  
+ # Rename to only keep the true predator ID
+ draws[, predator_id := as.character(predator_id)]
+ draws[, predator_id := gsub("[]_,a-zA-Z,[]", "", predator_id)]
+ draws[, predator_id := as.factor(predator_id)]
+
  # Transform predicted y values to original scale
  draws[, value := plogis(value)]
 
@@ -197,13 +200,13 @@ posterior_epred_beta_binomial2 <- function(prep) {
 
  # Add total xp in table
  total_xp <- unique(data[, .(predator_id, total_xp_killer)])
- tab1 <- cbind(tab1, total_xp = total_xp$total_xp)
- tab1[total_xp < 150, expertise := "Below 150"]
- tab1[total_xp %between% c(150, 299), expertise := "Between 150 and 300"]
- tab1[total_xp %between% c(300, 500), expertise := "Above 300"]
+ tab1 <- merge(tab1, total_xp, by = "predator_id")
+ tab1[total_xp_killer < 150, experience := "Below 150"]
+ tab1[total_xp_killer %between% c(150, 299), experience := "Between 150 and 300"]
+ tab1[total_xp_killer %between% c(300, 500), experience := "Above 300"]
  
  # Reorder the factors
- tab1$expertise <- factor(tab1$expertise, 
+ tab1$experience <- factor(tab1$experience, 
                           levels = c("Below 150",
                                      "Between 150 and 300",
                                      "Above 300"))
@@ -211,8 +214,8 @@ posterior_epred_beta_binomial2 <- function(prep) {
  id_plot <- ggplot(tab1,
                    aes(x = predator_id,
                        y = mean,
-                       color = expertise,
-                       shape = expertise)) +
+                       color = experience,
+                       shape = experience)) +
       geom_pointrange(aes(ymin = lower_ci,
                           ymax = upper_ci)) +
       #geom_hline(intercept = 
@@ -259,7 +262,7 @@ posterior_epred_beta_binomial2 <- function(prep) {
  library(ggpubr)
  
  # Arrange paneled figure
- figure <- ggarrange(gamm_plot, id_plot,
+ figure <- ggarrange(glmm_plot, id_plot,
                      ncol = 2, nrow = 1,
                      labels = c("(A)", "(B)"),
                      common.legend = TRUE,
