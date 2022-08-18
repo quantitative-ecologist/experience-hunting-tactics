@@ -158,7 +158,9 @@ table <- merge(unique(data[, "predator_id"]),
                                                  color = "black"),
                         panel.grid = element_blank(),
                         panel.background = element_blank())
-
+ 
+ # 1 digits to axis
+ scaleFUN <- function(x) sprintf("%.1f", x)
 
 
 # Plot experts ----------------------------------------------------------
@@ -191,7 +193,7 @@ plot1 <- ggplot() +
                color = "black") +
     
     scale_x_continuous(breaks = scaled_breaks1,
-                       labels = c(0.2, 0.6, 1, 1.4),
+                       labels = scaleFUN,
                        limits = c(0, 4)) +
 
     #scale_x_continuous(#breaks = c(-1, 0, 1),
@@ -242,8 +244,8 @@ plot2 <- ggplot() +
                size = 1,
                color = "black") +
     
-    scale_x_continuous(breaks = scaled_breaks1,
-                       labels = c(0.2, 0.6, 1, 1.4),
+    scale_x_continuous(breaks = scaled_breaks2,
+                       labels = c(0.5, 1.5, 2.5, 3.5),
                        limits = c(0, 4)) +
 
     #scale_x_continuous(#breaks = c(-1, 0, 1),
