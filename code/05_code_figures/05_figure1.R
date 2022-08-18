@@ -12,7 +12,7 @@
 
 
 
-# Load librairies and model ------------------------------------------------
+# Load libraries and model -------------------------------------------------
 
  library(brms)
  library(data.table)
@@ -241,7 +241,7 @@
             legend.position = "top",
             legend.key = element_rect(fill = "transparent"),
             legend.title = element_text(size = 15),
-            legend.text = element_text(size = 12))
+            legend.text = element_text(size = 14))
 
 # ==========================================================================
 # ==========================================================================
