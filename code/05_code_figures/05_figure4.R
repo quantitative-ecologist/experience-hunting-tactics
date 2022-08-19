@@ -271,7 +271,7 @@ plot3 <- ggplot() +
     scale_x_continuous(breaks = seq(-2, 2, 2),
                        limits = c(-3.5, 2.5)) +
     
-    ylab("Predator speed (IIV)\n") +
+    ylab("Predator speed (mean)\n") +
     xlab("\nHunting success (mean)") +
     labs(title = "Advanced \nCorrelation = -0.152 (-0.304, 0.011)") +
     
