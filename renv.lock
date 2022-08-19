@@ -184,13 +184,6 @@
       "Repository": "CRAN",
       "Hash": "461aa75a11ce2400245190ef5d3995df"
     },
-    "captioner": {
-      "Package": "captioner",
-      "Version": "2.2.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "67d494ef44c6ea5f9a8803a1fc4b851a"
-    },
     "car": {
       "Package": "car",
       "Version": "3.0-13",
