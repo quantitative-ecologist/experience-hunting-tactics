@@ -106,7 +106,7 @@
      scale_y_continuous(breaks = seq(0.1, 0.4, 0.1),
                         limits = c(0.02, 0.48)) +
 
-     ylab("CV (mean)\n") +
+     ylab("Coefficient of variation (mean)\n") +
      xlab("\nBehavior") +
      
      custom_theme +
@@ -137,7 +137,7 @@
      scale_y_continuous(breaks = seq(0.1, 0.4, 0.1),
                         limits = c(0.02, 0.48)) +
 
-     ylab("CV (sigma)\n") +
+     ylab("Coefficient of variation (IIV)\n") +
      xlab("\nBehavior") +
      
      custom_theme +
@@ -171,13 +171,3 @@
 
 # =======================================================================
 # =======================================================================
-
-
-
-
-
-
-
-
-
-
