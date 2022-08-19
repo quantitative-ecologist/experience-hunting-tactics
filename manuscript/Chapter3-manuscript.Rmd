@@ -79,6 +79,12 @@ blablabla figure 3
 knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure3.png"))
 ```
 
+blablabla figure 4
+
+```{r out.width = "100%", fig.cap = "**Figure 4.** Title (A) and (B) Novice. (C) and (D) Advanced."}
+knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure4.png"))
+```
+
 \newpage
 # LITTERATURE CITED {.unnumbered}
 
