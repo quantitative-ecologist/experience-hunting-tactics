@@ -14,14 +14,6 @@ fit modele avec :
 
 
 
-model_formula <- brmsformula(hunting_success | vint(4) ~
-                                        s(Zcumul_xp, by = covariate) +
-                                        Zgame_duration +
-                                        (1 | predator_id))
-
-or something. le by est la covariable pour l'interaction
-
-
 pt enlever la figure 2 et la garder comme info supp?
 Il faut vrmt que je fasse ressortir les covariances entre les sigma et mu de speed avec les proies. C'est un des points essentiels de l'article
 
