@@ -19,6 +19,16 @@ Il faut vrmt que je fasse ressortir les covariances entre les sigma et mu de spe
 
 faire ça en table??
 
+Questions que je j'avais pour PO :
+
 Comment je prouve que la flexibilité augmente avec l'expérience?
 
 Pt faire modèle ou j'évalue la relation entre sigma et xp de façon continue
+
+
+Rencontre avec PO :
+
+estimer le changement de spécialisation individuelle moyenne avec l'experience (continue ou comparer groupe)
+estimer le changement de sélectionà travers les changements de variance en succès et comportement
+
+figure 1 : changer le panneau B pour les estimés pour chaque niveau d'expérience
