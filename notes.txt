@@ -30,5 +30,6 @@ Rencontre avec PO :
 
 estimer le changement de spécialisation individuelle moyenne avec l'experience (continue ou comparer groupe)
 estimer le changement de sélectionà travers les changements de variance en succès et comportement
+je dois rouler mes modèles multi à nouveau sans standardiser
 
 figure 1 : changer le panneau B pour les estimés pour chaque niveau d'expérience
