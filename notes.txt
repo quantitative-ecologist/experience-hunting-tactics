@@ -33,3 +33,7 @@ estimer le changement de sélectionà travers les changements de variance en suc
 je dois rouler mes modèles multi à nouveau sans standardiser
 
 figure 1 : changer le panneau B pour les estimés pour chaque niveau d'expérience
+
+
+
+
