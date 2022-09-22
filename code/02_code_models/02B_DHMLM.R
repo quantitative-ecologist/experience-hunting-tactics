@@ -358,7 +358,7 @@ mv_model <- brm(speed_novice +
                 thin = 8,
                 chains = 4, 
                 inits = "0",
-                threads = threading(10),
+                threads = threading(12),
                 backend = "cmdstanr",
                 seed = 123,
                 prior = priors,

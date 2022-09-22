@@ -122,18 +122,21 @@ model_formula <- brmsformula(
 
 priors <- c(
   # priors on fixed effects
-  set_prior("normal(0, 2)",
+  set_prior("normal(0, 1)",
             class = "b",
             coef = "Zgame_duration"),
   set_prior("normal(0, 2)",
             class = "b",
             coef = "sZcumul_xp_1"),
-  # priors on smooth terms
+  # prior on the intercept
   set_prior("normal(0, 2)",
+            class = "Intercept"),
+  # priors on smooth terms
+  set_prior("normal(0, 1)",
             class = "sds",
             coef = "s(Zcumul_xp)"),
   # priors on phi
-  set_prior("normal(2, 1)",
+  set_prior("normal(2, 0.5)",
             class = "phi")
             )
 
@@ -154,7 +157,7 @@ model_g <- brm(formula = model_formula,
                iter = 1500,
                thin = 4,
                chains = 4,
-               threads = threading(10),
+               threads = threading(12),
                backend = "cmdstanr",
                inits = "0", 
                seed = 123,

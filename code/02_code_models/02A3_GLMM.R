@@ -124,6 +124,9 @@ priors <- c(
   # priors on fixed effects
   set_prior("normal(0, 2)",
             class = "b"),
+  # prior on the intercept
+  set_prior("normal(0, 2)",
+            class = "Intercept"),
   # priors on variance parameters
   set_prior("normal(0, 1)",
             class = "sd"),
@@ -149,7 +152,7 @@ model_glmm <- brm(formula = model_formula,
                   iter = 1500,
                   thin = 4,
                   chains = 4,
-                  threads = threading(10),
+                  threads = threading(12),
                   backend = "cmdstanr",
                   inits = "0", 
                   seed = 123,
