@@ -35,6 +35,7 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data on compute canada
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
+                         "pred_game_mode",
                          "hunting_success",
                          "pred_game_duration",
                          "pred_speed",
@@ -49,6 +50,7 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
 #                         "cumul_xp_killer"))
 
 data <- unique(data)
+data <- data[pred_game_mode == "Online"]
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
@@ -63,7 +65,7 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) /
 data[, c("Zgame_duration",
          "Zspeed",
          "Zcumul_xp") := lapply(.SD, standardize), 
-       .SDcols = c(3:5)]
+       .SDcols = c(4:6)]
 
 # ==========================================================================
 # ==========================================================================
