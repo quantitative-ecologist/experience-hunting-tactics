@@ -22,14 +22,18 @@ library(brms)
 
 path <- file.path(here::here(), "data")
 dat <- fread(file.path(path, "FraserFrancoetalXXXX-data.csv"),
-             select = c("match_encode_id", "game_mode",
+             select = c("pred_timestamp", "match_encode_id", "pred_game_mode",
                         "realm_id", "environment_id", "predator_avatar_id",
                         "predator_id", "pred_game_duration",
                         "total_xp_killer", "cumul_xp_killer", "hunting_success",
                         "pred_speed", "prey_avg_speed"))
 
 dat <- unique(dat)
-dat[, c(1:6) := lapply(.SD, function (x) as.factor(x)), .SDcols = c(1:6)]
+dat <- dat[pred_game_mode == "Online"]
+dat[, c(2:7) := lapply(.SD, function (x) as.factor(x)), .SDcols = c(2:7)]
+
+# To have a date column
+dat[, date := as.POSIXct(sub(" .*", "", pred_timestamp))]
 
 ```
 
@@ -63,11 +67,14 @@ Individual predators in *DBD* display variation in the hunting strategies that t
 
 ## Data collection
 
-We were provided with raw datasets from the videogame company that spanned a period of 6 months of matches recorded for each player. 
+We were provided raw data by the videogame company that spanned a period of 6 months of gameplay recorded for every player. The first recorded match was played on `r toString(format(min(dat$date)))`, and the last one on `r toString(format(max(dat$date)))`. We applied cleaning and filtering procedures on the raw data to produce a synthetic dataset for our analyses. The data that we analyzed were for matches where players did not know each other. We filtered any matches where players were inactive, such as when speed values were equal to, or very close to, zero. Moreover, we used our knowledge of the game to delete any matches where players were potentially hacking, or not playing has the game is supposed to be played. These matches were not considered as player experience.
 
-# (mean = `r toString(format(round(mean(data$space_covered_rate, na.rm = TRUE), digits = 2) (pour écrire dans le texte)
+After the cleaning and filtering procedures, our synthetic dataset consists of a population of `r toString(format(length(unique(dat$predator_id))))` predator players who played a total of `r toString(format(length(unique(dat$match_encode_id))))` matches.
+All the matches we analyzed lasted between `r toString(format(round(min(dat$pred_game_duration / 60))), digits = 2)` and `r toString(format(round(max(dat$pred_game_duration / 60))), digits = 2)` minutes (mean = `r toString(format(round(mean(dat$pred_game_duration / 60))), digits = 2)`). For every match, we report the predator player's anonymous ID, its avatar, the game environment, the predator player's experience along with its speed, and the average speed of the group of prey it encountered.
 
-## Behaviors
+## Variables
+
+
 
 ## Statistical analyses 
 
