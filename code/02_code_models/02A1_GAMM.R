@@ -131,10 +131,10 @@ priors <- c(
             class = "b",
             coef = "sZcumul_xp_1"),
   # prior on the intercept
-  set_prior("normal(0, 2)",
+  set_prior("normal(0.05, 0.5)",
             class = "Intercept"),
   # priors on smooth terms
-  set_prior("normal(0, 1)",
+  set_prior("cauchy(0, 2)",
             class = "sds",
             coef = "s(Zcumul_xp)"),
   # priors on phi
@@ -156,8 +156,8 @@ priors <- c(
 model_g <- brm(formula = model_formula,
                family = beta_binomial2,
                warmup = 500, 
-               iter = 1500,
-               thin = 4,
+               iter = 2500,
+               thin = 8,
                chains = 4,
                threads = threading(12),
                backend = "cmdstanr",

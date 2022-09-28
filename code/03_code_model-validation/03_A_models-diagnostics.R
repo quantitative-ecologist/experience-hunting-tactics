@@ -37,7 +37,7 @@
  # Read saved loo outputs
  loo1 <- readRDS("./outputs/03_outputs_model-validation/02A1_loo.rds")
  loo2 <- readRDS("./outputs/03_outputs_model-validation/02A2_loo.rds")
- loo3 <- readRDS("./outputs/03_outputs_model-validation/02A3_loo.rds")
+ #loo3 <- readRDS("./outputs/03_outputs_model-validation/02A3_loo.rds")
 
  # Folder path where I will save the outputs
  path <- "./outputs/03_outputs_model-validation"
