@@ -96,7 +96,7 @@
 
  plot(mod1)
  plot(mod2)
- plot(mod3)
+ #plot(mod3)
 
 
 # Posterior predictive checks -------------------------------------------
@@ -104,24 +104,24 @@
  # Check distributions
  pp1 <- pp_check(mod1)
  pp2 <- pp_check(mod2)
- pp3 <- pp_check(mod3)
+ #pp3 <- pp_check(mod3)
   
  # Effects plot (mean variance plot)
  stat1 <- pp_check(mod1, type = "stat_2d")
  stat2 <- pp_check(mod2, type = "stat_2d")
- stat3 <- pp_check(mod3, type = "stat_2d")
+ #stat3 <- pp_check(mod3, type = "stat_2d")
  
  
  # Predicted means
  mean1 <- pp_check(mod1, type = "stat", stat = "mean")
  mean2 <- pp_check(mod2, type = "stat", stat = "mean")
- mean3 <- pp_check(mod3, type = "stat", stat = "mean")
+ #mean3 <- pp_check(mod3, type = "stat", stat = "mean")
  
  
  # Error scatter
  e_scat1 <- pp_check(mod1, type = "error_scatter_avg")
  e_scat2 <- pp_check(mod2, type = "error_scatter_avg")
- e_scat3 <- pp_check(mod3, type = "error_scatter_avg")
+ #e_scat3 <- pp_check(mod3, type = "error_scatter_avg")
 
 
 
@@ -140,11 +140,11 @@
                         e_scat2,
                         ncol = 2, nrow = 2)
  
- stat_fig3 <- ggarrange(pp3,    
-                        stat3,
-                        mean3,
-                        e_scat3,
-                        ncol = 2, nrow = 2)
+ #stat_fig3 <- ggarrange(pp3,    
+ #                       stat3,
+ #                       mean3,
+ #                       e_scat3,
+ #                       ncol = 2, nrow = 2)
  
  # Export the figure
  ggexport(stat_fig1,
@@ -155,9 +155,9 @@
           filename = file.path(path, "03_GAMM-diagnostics2.png"),
           width = 3000, height = 2500, res = 300) # more 
  
- ggexport(stat_fig3,
-          filename = file.path(path, "03_GLMM-diagnostics.png"),
-          width = 3000, height = 2500, res = 300) # more 
+ #ggexport(stat_fig3,
+ #         filename = file.path(path, "03_GLMM-diagnostics.png"),
+ #         width = 3000, height = 2500, res = 300) # more 
 
 # =======================================================================
 # =======================================================================
@@ -183,14 +183,15 @@
          file = file.path(path, "02A1_loo.rds"))
  saveRDS(loo2,
          file = file.path(path, "02A2_loo.rds"))
- saveRDS(loo3,
-         file = file.path(path, "02A3_loo.rds"))
+ #saveRDS(loo3,
+ #        file = file.path(path, "02A3_loo.rds"))
 
 
 # Compare models --------------------------------------------------------
 
  # Compare models
- loo_tab <- loo_compare(loo1, loo2, loo3)
+ loo_tab <- loo_compare(loo1, loo2)
+ #loo_tab <- loo_compare(loo1, loo2, loo3)
  
  # Compute table with complete information
  loo_table <- print(loo_tab, simplify = FALSE)
