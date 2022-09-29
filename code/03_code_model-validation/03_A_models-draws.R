@@ -94,18 +94,29 @@ ggplot(posterior_fit1) +
                fill = "steelblue",
                color = "black",
                alpha = 0.6) +
+  #geom_density(aes(sds_sZcumul_xp_1),
+  #             fill = "#FC4E07",
+  #             color = "black",
+  #             alpha = 0.6) + 
+  theme_classic()
+
+ggplot(posterior_fit1) +
+  #geom_density(aes(prior_sds_sZcumul_xp_1),
+  #             fill = "steelblue",
+  #             color = "black",
+  #             alpha = 0.6) +
   geom_density(aes(sds_sZcumul_xp_1),
                fill = "#FC4E07",
                color = "black",
                alpha = 0.6) + 
-  theme_classic()
+  theme_classic()  
 
 # Standard deviation of predator ID
 ggplot(posterior_fit1) +
-  #geom_density(aes(prior_sds_spredator_id_1),
-  #             fill = "steelblue",
-  #             color = "black",
-  #             alpha = 0.6) +
+  geom_density(aes(prior_sds_spredator_id_1),
+               fill = "steelblue",
+               color = "black",
+               alpha = 0.6) +
   geom_density(aes(sds_spredator_id_1),
                fill = "#FC4E07",
                color = "black",
