@@ -35,5 +35,12 @@ je dois rouler mes modèles multi à nouveau sans standardiser
 figure 1 : changer le panneau B pour les estimés pour chaque niveau d'expérience
 
 
+Idéee PO :
+
+Se spécialiser devrait augmenter + rapidement l'expertise. (comment tester cela?)
+
+1 droite par groupe (1 géné, 1 spéc.)
+
+
 
 
