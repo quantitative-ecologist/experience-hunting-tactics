@@ -58,11 +58,6 @@ data[, predator_id := as.factor(predator_id)]
 data[, predator_avatar_id := as.factor(predator_avatar_id)]
 data[, environment_id := as.factor(environment_id)]
 
-# To run the model on a subsample of players
-#set.seed(123)
-#chosen <- sample(unique(data$player_encode_id), 15)
-#dat1 <- subset(data, player_encode_id %in% chosen)
-
 # =======================================================================
 # =======================================================================
 
@@ -94,17 +89,6 @@ data[, environment_id := as.factor(environment_id)]
 
 # This is done so the model partition the covariances by experience
 
-# This is before when I had fewer data
-#data[cumul_xp_killer <= 100,
-#     xp_level := "novice"]
-#
-#data[cumul_xp_killer %between% c(101, 350),
-#     xp_level := "intermediate"]
-#
-#data[cumul_xp_killer > 350,
-#     xp_level := "advanced"]
-
-# This is before when I had fewer data
 data[cumul_xp_killer < 100,
      xp_level := "novice"]
 
@@ -142,25 +126,21 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)}
 # The function standardizes the variables by group :
 # in this case, by level of experience
 
-data[, c("Zspeed_group",
-         "Zprey_speed_group",
-         "Zgame_duration") :=
+data[, Zgame_duration :=
        lapply(.SD, standardize), 
-       .SDcols = c("pred_speed",
-                   "prey_avg_speed",
-                   "pred_game_duration"),
+       .SDcols = "pred_game_duration",
        by = xp_level]
 
 # Compute the new columns for each level of experience
-data[, ":=" (Zspeed_novice      = ifelse(xp_level == "novice", Zspeed_group, NA),
-             Zprey_speed_novice = ifelse(xp_level == "novice", Zprey_speed_group, NA),
-             success_novice     = ifelse(xp_level == "novice", hunting_success, NA),
-             Zspeed_interm      = ifelse(xp_level == "intermediate", Zspeed_group, NA),
-             Zprey_speed_interm = ifelse(xp_level == "intermediate", Zprey_speed_group, NA),
-             success_interm     = ifelse(xp_level == "intermediate", hunting_success, NA),
-             Zspeed_advanced      = ifelse(xp_level == "advanced", Zspeed_group, NA),
-             Zprey_speed_advanced = ifelse(xp_level == "advanced", Zprey_speed_group, NA),
-             success_advanced     = ifelse(xp_level == "advanced", hunting_success, NA))
+data[, ":=" (speed_novice        = ifelse(xp_level == "novice", pred_speed, NA),
+             prey_speed_novice   = ifelse(xp_level == "novice", prey_avg_speed, NA),
+             success_novice      = ifelse(xp_level == "novice", hunting_success, NA),
+             speed_interm        = ifelse(xp_level == "intermediate", pred_speed, NA),
+             prey_speed_interm   = ifelse(xp_level == "intermediate", prey_avg_speed, NA),
+             success_interm      = ifelse(xp_level == "intermediate", hunting_success, NA),
+             speed_advanced      = ifelse(xp_level == "advanced", pred_speed, NA),
+             prey_speed_advanced = ifelse(xp_level == "advanced", prey_avg_speed, NA),
+             success_advanced    = ifelse(xp_level == "advanced", hunting_success, NA))
 ]
 
 # =======================================================================
@@ -183,7 +163,7 @@ data[, ":=" (Zspeed_novice      = ifelse(xp_level == "novice", Zspeed_group, NA)
 # Speed at three levels of experience -----------------------------------
 
 speed_novice <- bf(
-  Zspeed_novice | subset(sub1) ~
+  speed_novice | subset(sub1) ~
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
@@ -194,7 +174,7 @@ speed_novice <- bf(
 ) + gaussian()
 
 speed_intermediate <- bf(
-  Zspeed_interm | subset(sub2) ~
+  speed_interm | subset(sub2) ~
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
@@ -205,7 +185,7 @@ speed_intermediate <- bf(
 ) + gaussian()
 
 speed_advanced <- bf(
-  Zspeed_advanced | subset(sub3) ~
+  speed_advanced | subset(sub3) ~
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
@@ -220,7 +200,7 @@ speed_advanced <- bf(
 # Prey speed at three levels of experience ------------------------------
 
 prey_speed_novice <- bf(
-  Zprey_speed_novice | subset(sub1) ~
+  prey_speed_novice | subset(sub1) ~
       1 + Zgame_duration +
       (1 |a| predator_id),
   sigma ~  
@@ -229,7 +209,7 @@ prey_speed_novice <- bf(
 ) + gaussian()
 
 prey_speed_intermediate <- bf(
-  Zprey_speed_interm | subset(sub2) ~
+  prey_speed_interm | subset(sub2) ~
       1 + Zgame_duration +
       (1 |a| predator_id),
   sigma ~ 
@@ -238,7 +218,7 @@ prey_speed_intermediate <- bf(
 ) + gaussian()
 
 prey_speed_advanced <- bf(
-  Zprey_speed_advanced | subset(sub3) ~
+  prey_speed_advanced | subset(sub3) ~
       1 + Zgame_duration +
       (1 |a| predator_id),
   sigma ~  
@@ -299,24 +279,24 @@ priors <- c(
   set_prior("normal(0, 2)", 
             class = "b",
             coef = "Zgame_duration",
-            resp = c("Zspeednovice",
-                     "Zspeedinterm",
-                     "Zspeedadvanced",
-                     "Zpreyspeednovice",
-                     "Zpreyspeedinterm",
-                     "Zpreyspeedadvanced",
+            resp = c("speednovice",
+                     "speedinterm",
+                     "speedadvanced",
+                     "preyspeednovice",
+                     "preyspeedinterm",
+                     "preyspeedadvanced",
                      "successnovice",
                      "successinterm",
                      "successadvanced")),
   # priors on var. parameters (brms automatically detects half-normal)
   set_prior("normal(0, 1)",
             class = "sd", # applies to all variance parameters
-            resp = c("Zspeednovice",
-                     "Zspeedinterm",
-                     "Zspeedadvanced",
-                     "Zpreyspeednovice",
-                     "Zpreyspeedinterm",
-                     "Zpreyspeedadvanced",
+            resp = c("speednovice",
+                     "speedinterm",
+                     "speedadvanced",
+                     "preyspeednovice",
+                     "preyspeedinterm",
+                     "preyspeedadvanced",
                      "successnovice",
                      "successinterm",
                      "successadvanced")),
