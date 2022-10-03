@@ -72,18 +72,29 @@ After cleaning and filtering the raw data, we obtained a population of `r toStri
 
 ## Variables
 
-We analyzed the predator's average speed and the average speed of the prey encountered by the predator. The predator's average speed is measured as the average distance per second traveled during a match (m/s) (mean = `r toString(format(round(mean(dat$pred_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$pred_speed), digits = 2), nsmall = 2))`). For the prey, we averaged the travel speed of the four individuals within a match to obtain the average speed of the group, also measured in meters per second (mean = `r toString(format(round(mean(dat$prey_avg_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$prey_avg_speed), digits = 2), nsmall = 2))`). Hunting success was defined as the number of prey consumed during the match (min = `r toString(format(round(min(dat$hunting_success)))`, max = `r toString(format(max(dat$hunting_success)))`). Lastly, the predator's experience was defined as the number of matches played within the study period.
+We analyzed the predator's average speed and the average speed of the prey encountered by the predator. The predator's average speed is measured as the average distance per second traveled during a match (m/s) (mean = `r toString(format(round(mean(dat$pred_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$pred_speed), digits = 2), nsmall = 2))`). For the prey, we averaged the travel speed of the four individuals within a match to obtain the average speed of the group, also measured in meters per second (mean = `r toString(format(round(mean(dat$prey_avg_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$prey_avg_speed), digits = 2), nsmall = 2))`). Hunting success was defined as the number of prey consumed during the match (min = `r toString(format(round(min(dat$hunting_success)))`, max = `r toString(format(max(dat$hunting_success)))`). Lastly, the predator's cumulative experience was defined as the number of matches played prior to the match being monitored. For example, the first match of a player would have a cumulative experience value of 0, while the 10^th match would have a value of 9.
 
 
 ## Statistical analyses 
 
-### Software and computer components
+### Software and computer specifications
 
-All our statistical analyses were performed on Cedar (https://docs.alliancecan.ca/wiki/Cedar), a computer cluster provided by the Digital Research Alliance of Canada. Cedar runs CentOS Linux 7 as an operating system,
-
-cmdstan-2.28.2 cmdstanr_0.4.0 brms 2.16.3
+All our statistical analyses were conducted on Cedar (https://docs.alliancecan.ca/wiki/Cedar), a computer cluster provided by the Digital Research Alliance of Canada. The operating system for Cedar is CentOS Linux 7. The models were fitted in R (version 4.1.2) using Markov chain Monte Carlo sampling with the package "brms" version 2.16.3 [@Burkner2017], and "cmdstanr" version 0.4.0 [@Gabry2021] as the backend for estimation (cmdstan installation version 2.28.2).
 
 ### Effect of experience on hunting success
+
+We estimated the relationship between hunting success and experience using a Bayesian generalized additive mixed model with thin plate regression splines. Because a maximum of four prey can be captured, we used the beta-binomial family distribution to estimate the success of predators while controlling for overdispersion. The model parameters were estimated with a logit link function, while the dispersion parameter ($\phi$) was estimated with an identity link. The model had the following form :
+
+\[
+\begin{align}
+logit (P_{ij}) &= (\beta_{0} + id_{0,i} + \phi_{0,ij}) \\
+&\text{ } + \text{ } \beta_{1} \textit{time}_{i} \\
+&\text{ } + \text{ } f(\textit{cumul. xp}_{i}) \\
+\end{align}
+\tag{1}
+\]
+
+The number of knots was set to 10.
 
 ### Foraging tactics at each level of experience
 

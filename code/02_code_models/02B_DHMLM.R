@@ -105,10 +105,10 @@ data[, environment_id := as.factor(environment_id)]
 #     xp_level := "advanced"]
 
 # This is before when I had fewer data
-data[cumul_xp_killer < 150,
+data[cumul_xp_killer < 100,
      xp_level := "novice"]
 
-data[cumul_xp_killer %between% c(150, 299),
+data[cumul_xp_killer %between% c(100, 299),
      xp_level := "intermediate"]
 
 data[cumul_xp_killer >= 300,
