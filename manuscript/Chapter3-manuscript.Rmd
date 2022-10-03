@@ -72,12 +72,16 @@ After cleaning and filtering the raw data, we obtained a population of `r toStri
 
 ## Variables
 
-The behaviors we analyzed were the predator's average speed and the average speed of the prey encountered by the predator. The predator's average speed is measured as the average distance per second traveled during a match (m/s) (mean = `r toString(format(round(mean(dat$pred_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$pred_speed), digits = 2), nsmall = 2))`). For the prey, we averaged the travel speed of the four individuals within a match to obtain the average speed of the group, also measured in meters per second (mean = `r toString(format(round(mean(dat$prey_avg_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$prey_avg_speed), digits = 2), nsmall = 2))`).
+We analyzed the predator's average speed and the average speed of the prey encountered by the predator. The predator's average speed is measured as the average distance per second traveled during a match (m/s) (mean = `r toString(format(round(mean(dat$pred_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$pred_speed), digits = 2), nsmall = 2))`). For the prey, we averaged the travel speed of the four individuals within a match to obtain the average speed of the group, also measured in meters per second (mean = `r toString(format(round(mean(dat$prey_avg_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$prey_avg_speed), digits = 2), nsmall = 2))`). Hunting success was defined as the number of prey consumed during the match (min = `r toString(format(round(min(dat$hunting_success)))`, max = `r toString(format(max(dat$hunting_success)))`). Lastly, the predator's experience was defined as the number of matches played within the study period.
 
 
 ## Statistical analyses 
 
 ### Software and computer components
+
+All our statistical analyses were performed on Cedar (https://docs.alliancecan.ca/wiki/Cedar), a computer cluster provided by the Digital Research Alliance of Canada. Cedar runs CentOS Linux 7 as an operating system,
+
+cmdstan-2.28.2 cmdstanr_0.4.0 brms 2.16.3
 
 ### Effect of experience on hunting success
 
