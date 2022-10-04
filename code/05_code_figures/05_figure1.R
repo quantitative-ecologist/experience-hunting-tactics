@@ -18,7 +18,6 @@
  library(data.table)
  library(ggplot2)
  
- #mod <- readRDS("./outputs/02_outputs_models/02A3_GLMM.rds")
  mod <- readRDS("./outputs/02_outputs_models/02A1_GAMM.rds")
 
 
