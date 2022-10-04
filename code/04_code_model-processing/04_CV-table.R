@@ -34,10 +34,10 @@
  data <- unique(data)
  
  # Experience column
- data[cumul_xp_killer < 150,
+ data[cumul_xp_killer < 100,
       xp_level := "novice"]
  
- data[cumul_xp_killer %between% c(150, 299),
+ data[cumul_xp_killer %between% c(100, 299),
       xp_level := "intermediate"]
  
  data[cumul_xp_killer >= 300,
@@ -53,7 +53,8 @@
  
  # Model object
  fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
- 
+ fit <- readRDS("./tests/02B_DHMLM.rds")
+
  # Extract draws for sd of mu and sigma
  draws <- data.table(
      as_draws_df(
@@ -96,9 +97,9 @@
  table[Parameter %like% "advanced", xp_level := "advanced"]
  
  # Add variable
- table[, variable := ifelse(Parameter %like% "Zspeed",
-                            "Zspeed",
-                            "Zpreyspeed")]
+ table[, variable := ifelse(Parameter %like% "preyspeed",
+                            "prey_speed",
+                            "pred_speed")]
  
  # Change parameter factor levels to sigma or mu
 
@@ -130,7 +131,7 @@
 # Extract the mean of traits at each xp level ---------------------------
  
  # Predator speed
- mean_speed1 <- mean(data[xp_level == "novice", pred_speed])      
+ mean_speed1 <- mean(data[xp_level == "novice", pred_speed])
  mean_speed2 <- mean(data[xp_level == "intermediate", pred_speed])
  mean_speed3 <- mean(data[xp_level == "advanced", pred_speed])
  
@@ -146,12 +147,12 @@
                          na.rm = TRUE)
 
  # Add values in a column
- table[xp_level == "novice" & variable == "Zspeed", mean := mean_speed1]
- table[xp_level == "interm" & variable == "Zspeed", mean := mean_speed2]
- table[xp_level == "advanced" & variable == "Zspeed", mean := mean_speed3]
- table[xp_level == "novice" & variable == "Zpreyspeed", mean := mean_preyspeed1]
- table[xp_level == "interm" & variable == "Zpreyspeed", mean := mean_preyspeed2]
- table[xp_level == "advanced" & variable == "Zpreyspeed", mean := mean_preyspeed3]
+ table[xp_level == "novice" & variable == "pred_speed", mean := mean_speed1]
+ table[xp_level == "interm" & variable == "pred_speed", mean := mean_speed2]
+ table[xp_level == "advanced" & variable == "pred_speed", mean := mean_speed3]
+ table[xp_level == "novice" & variable == "prey_speed", mean := mean_preyspeed1]
+ table[xp_level == "interm" & variable == "prey_speed", mean := mean_preyspeed2]
+ table[xp_level == "advanced" & variable == "prey_speed", mean := mean_preyspeed3]
 
 
 
