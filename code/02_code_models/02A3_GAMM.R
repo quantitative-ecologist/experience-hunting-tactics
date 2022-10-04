@@ -1,6 +1,6 @@
 # ==========================================================================
 
-#                       GLMM - random intercepts
+#          GAMM model S - individual curves without common smoother
 
 # ==========================================================================
 
@@ -32,9 +32,10 @@ library(parallel)
 folder <- file.path("/home", "maxime11", "projects", "def-monti", 
                     "maxime11", "phd_project", "data")
 
-# Load data on compute canada
+# Load data
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
+                         "pred_game_mode",
                          "hunting_success",
                          "pred_game_duration",
                          "pred_speed",
@@ -43,12 +44,14 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
 # Project path for testing
 #data <- fread("./data/FraserFrancoetalXXXX-data.csv",
 #              select = c("predator_id",
-#                         "hunting_success",
 #                         "pred_game_duration",
 #                         "pred_speed",
-#                         "cumul_xp_killer"))
+#                         "prey_avg_speed",
+#                         "cumul_xp_killer",
+#                         "hunting_success"))
 
 data <- unique(data)
+data <- data[pred_game_mode == "Online"]
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
@@ -58,12 +61,12 @@ data[, predator_id := as.factor(predator_id)]
 # Standardise the variables (Z-scores) -------------------------------------
 
 standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / 
-    sd(x, na.rm = TRUE)}
+                              sd(x, na.rm = TRUE)}
 
 data[, c("Zgame_duration",
          "Zspeed",
          "Zcumul_xp") := lapply(.SD, standardize), 
-     .SDcols = c(3:5)]
+       .SDcols = c(4:6)]
 
 # ==========================================================================
 # ==========================================================================
@@ -110,10 +113,9 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 # Model formula ------------------------------------------------------------
 
 model_formula <- brmsformula(
-  hunting_success | vint(4) ~
-    Zcumul_xp +
-    Zgame_duration +
-    (1 | predator_id)
+    hunting_success | vint(4) ~
+        s(Zcumul_xp, predator_id, bs = "fs", m = 2) + 
+        Zgame_duration
 )
 
 
@@ -122,16 +124,17 @@ model_formula <- brmsformula(
 
 priors <- c(
   # priors on fixed effects
-  set_prior("normal(0, 2)",
-            class = "b"),
-  # prior on the intercept
-  set_prior("normal(0, 2)",
-            class = "Intercept"),
-  # priors on variance parameters
   set_prior("normal(0, 1)",
-            class = "sd"),
+            class = "b",
+            coef = "Zgame_duration"),
+  #set_prior("normal(0, 2)",
+  #          class = "b",
+  #          coef = "sZcumul_xp_1"),
+  # prior on the intercept
+  set_prior("normal(0, 1)",
+            class = "Intercept"),
   # priors on phi
-  set_prior("normal(2, 1)",
+  set_prior("normal(2, 0.5)",
             class = "phi")
 )
 
@@ -146,23 +149,23 @@ priors <- c(
 # 3. Run the model
 # ==========================================================================
 
-model_glmm <- brm(formula = model_formula,
-                  family = beta_binomial2,
-                  warmup = 500, 
-                  iter = 1500,
-                  thin = 4,
-                  chains = 4,
-                  threads = threading(12),
-                  backend = "cmdstanr",
-                  inits = "0", 
-                  seed = 123,
-                  prior = priors,
-                  sample_prior = TRUE,
-                  control = list(adapt_delta = 0.99),
-                  data = data,
-                  stanvars = stanvars)
+model_s <- brm(formula = model_formula,
+                family = beta_binomial2,
+                warmup = 500, 
+                iter = 1500,
+                thin = 4,
+                chains = 4,
+                threads = threading(12),
+                backend = "cmdstanr",
+                inits = "0", 
+                seed = 123,
+                prior = priors,
+                sample_prior = TRUE,
+                control = list(adapt_delta = 0.99),
+                data = data,
+                stanvars = stanvars)
 
-saveRDS(model_glmm, file = "02A3_GLMM.rds")
+saveRDS(model_s, file = "02A3_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================
