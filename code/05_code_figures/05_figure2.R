@@ -22,18 +22,18 @@
  tab <- readRDS(file.path(path, "04_CV-table.rds"))
  
  # Rename the XP variable
- tab[xp_level == "novice", xp_level := "Below 150"]
- tab[xp_level == "interm", xp_level := "Between 150 and 300"]
- tab[xp_level == "advanced", xp_level := "Above 300"]
+ tab[xp_level == "novice", xp_level := "Below 100"]
+ tab[xp_level == "interm", xp_level := "Between 100 and 299"]
+ tab[xp_level == "advanced", xp_level := "300 or more"]
  
  # Rename the behaviour names
- tab[variable == "Zspeed", variable := "Predator speed"]
- tab[variable == "Zpreyspeed", variable := "Prey speed"]
+ tab[variable == "pred_speed", variable := "Predator speed"]
+ tab[variable == "prey_speed", variable := "Prey speed"]
 
  # Reorder factors
- tab[, xp_level := factor(xp_level, levels = c("Below 150",
-                                               "Between 150 and 300",
-                                               "Above 300"))]
+ tab[, xp_level := factor(xp_level, levels = c("Below 100",
+                                               "Between 100 and 299",
+                                               "300 or more"))]
  
  # Encode Parameter and variable as factor
  tab[, ":=" (Parameter = as.factor(Parameter),
@@ -103,8 +103,8 @@
      scale_color_manual(name = "Total experience :",
                         values = c("#999999", "#E69F00", "#00AFBB")) +
      
-     scale_y_continuous(breaks = seq(0.1, 0.4, 0.1),
-                        limits = c(0.02, 0.48)) +
+     scale_y_continuous(breaks = seq(0.1, 0.6, 0.1),
+                        limits = c(0.02, 0.6)) +
 
      ylab("Coefficient of variation (mean)\n") +
      xlab("\nBehavior") +
@@ -134,8 +134,8 @@
                          values = c(15, 16, 17)) +
      scale_color_manual(name = "Total experience :",
                         values = c("#999999", "#E69F00", "#00AFBB")) +
-     scale_y_continuous(breaks = seq(0.1, 0.4, 0.1),
-                        limits = c(0.02, 0.48)) +
+     scale_y_continuous(breaks = seq(0.1, 0.6, 0.1),
+                        limits = c(0.02, 0.6)) +
 
      ylab("Coefficient of variation (IIV)\n") +
      xlab("\nBehavior") +
