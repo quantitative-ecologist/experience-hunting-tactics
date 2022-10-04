@@ -24,6 +24,7 @@
  
  # import model
  fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
+ fit <- readRDS("./tests/02B_DHMLM.rds")
  
 
 
@@ -36,7 +37,7 @@
                           "pred_speed"))
  
  # Extract standard deviation of speed
- sd_speed1 <- sd(data[total_xp_killer < 150]$pred_speed)
+ sd_speed1 <- sd(data[total_xp_killer < 100]$pred_speed)
  sd_speed2 <- sd(data[total_xp_killer >= 300]$pred_speed)
 
  # Filter only for advanced players
@@ -64,12 +65,12 @@
  draws <- data.table(
      as_draws_df(
          fit,
-         variable = c("r_predator_id__sigma_Zspeed"),
+         variable = c("r_predator_id__sigma_speed"),
          regex = TRUE)
  )
 
- draws[, c(1:33, 308:581) := NULL]
- draws[, c(549:551) := NULL]
+ draws[, c(1:33, 375:715) := NULL]
+ draws[, c(683:685) := NULL]
 
 # =======================================================================
 # =======================================================================
@@ -100,18 +101,18 @@ draws[, predator_id := gsub("[]_,a-zA-Z,[]", "", predator_id)]
 draws[, predator_id := as.factor(predator_id)]
 
 # Rename value to speed
-setnames(draws, "value", "Zspeed_sigma")
+setnames(draws, "value", "speed_sigma")
 
 
 
 # Transform  ------------------------------------------------------------
 
 # Back transform to original scale (sigma is on log scale)
-draws[, exp_Zspeed_sigma := exp(Zspeed_sigma)]
+draws[, exp_speed_sigma := exp(speed_sigma)]
 
 
 # Calculate mean predicted value for each individual
-draws <- draws[, average_Zspeed_sigma := mean(exp_Zspeed_sigma),
+draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
                  by = c("predator_id",
                         "xp_level")]
 
@@ -163,38 +164,40 @@ table <- merge(unique(data[, "predator_id"]),
  scaleFUN <- function(x) sprintf("%.1f", x)
 
 
+
 # Plot experts ----------------------------------------------------------
 
-scaled_breaks1 <- c(0.2 / sd_speed1,
-                    0.6 / sd_speed1,
-                    1.0 / sd_speed1,
-                    1.4 / sd_speed1)
+#scaled_breaks1 <- c(0.2 / sd_speed1,
+#                    0.6 / sd_speed1,
+#                    1.0 / sd_speed1,
+#                    1.4 / sd_speed1)
 
 
 # Plot the distributions of advanced players
 plot1 <- ggplot() +
     
-    #geom_vline(xintercept = exp(fixef(fit)[6]),
-    #               linetype = "dashed",
-    #               size = 1) +
+    geom_vline(xintercept = exp(fixef(fit)[6]),
+                   linetype = "dashed",
+                   size = 1) +
 
     geom_density_ridges(data = table[xp_level == "advanced"],
                         rel_min_height = 0.005,
                         fill = "#00AFBB",
-                        aes(x = exp_Zspeed_sigma,
+                        aes(x = exp_speed_sigma,
                             y = predator_id,
                             height = ..density..,
                             scale = 3)) +
     
     geom_point(data = unique(table[xp_level == "advanced", c(1, 5)]),
-               aes(x = average_Zspeed_sigma, 
+               aes(x = average_speed_sigma, 
                    y = predator_id),
                size = 1,
                color = "black") +
-    
-    scale_x_continuous(breaks = scaled_breaks1,
-                       labels = scaleFUN,
-                       limits = c(0, 4)) +
+    scale_x_continuous(breaks = seq(0, 8, 2),
+                       limits = c(0, 8)) +
+    #scale_x_continuous(breaks = scaled_breaks1,
+    #                   labels = scaleFUN,
+    #                   limits = c(0, 4)) +
 
     #scale_x_continuous(#breaks = c(-1, 0, 1),
     #                   limits = c(0.1, 3.5),
@@ -217,36 +220,39 @@ plot1 <- ggplot() +
 
 # Plot novices ----------------------------------------------------------
 
-scaled_breaks2 <- c(0.2 / sd_speed2,
-                    0.6 / sd_speed2,
-                    1.0 / sd_speed2,
-                    1.4 / sd_speed2)
+#scaled_breaks2 <- c(0.2 / sd_speed2,
+#                    0.6 / sd_speed2,
+#                    1.0 / sd_speed2,
+#                    1.4 / sd_speed2)
 
 
 # Plot the distributions of advanced players when they were novice
 plot2 <- ggplot() +
 
-    #geom_vline(xintercept = exp(fixef(fit)[2]),
-    #           linetype = "dashed",
-    #           size = 1) +
+    geom_vline(xintercept = exp(fixef(fit)[2]),
+               linetype = "dashed",
+               size = 1) +
     
     geom_density_ridges(data = table[xp_level == "novice"],
                         rel_min_height = 0.005,
                         fill = "#999999",
-                        aes(x = exp_Zspeed_sigma,
+                        aes(x = exp_speed_sigma,
                             y = predator_id,
                             height = ..density..,
                             scale = 3)) +
     
     geom_point(data = unique(table[xp_level == "novice", c(1, 5)]),
-               aes(x = average_Zspeed_sigma, 
+               aes(x = average_speed_sigma, 
                    y = predator_id),
                size = 1,
                color = "black") +
     
-    scale_x_continuous(breaks = scaled_breaks2,
-                       labels = c(0.5, 1.5, 2.5, 3.5),
-                       limits = c(0, 4)) +
+    #scale_x_continuous(breaks = scaled_breaks2,
+    #                   labels = c(0.5, 1.5, 2.5, 3.5),
+    #                   limits = c(0, 4)) +
+    #scale_x_continuous(breaks = scaled_breaks2,
+    #                   labels = c(0.5, 1.5, 2.5, 3.5),
+    #                   limits = c(0, 4)) +
 
     #scale_x_continuous(#breaks = c(-1, 0, 1),
     #                   limits = c(0.1, 3.5),
@@ -258,7 +264,7 @@ plot2 <- ggplot() +
 
     ylab("Predator ID\n") +
     xlab("\nWithin individual variance (ms/s)") +
-    labs(title = "First 150 matches") +
+    labs(title = "First 100 matches") +
 
     custom_theme +
     theme(axis.text.y = element_blank(),
@@ -293,7 +299,7 @@ plot2 <- ggplot() +
           height = 1800,
           res = 300)
 
-# correlation between sigma intercept = 0.40 [0.24, 0.55]
+# correlation between sigma intercept = 0.42 [0.29, 0.54] 
 
 # =======================================================================
 # =======================================================================
