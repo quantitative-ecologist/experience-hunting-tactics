@@ -23,6 +23,7 @@
  
  # Model
  fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
+ fit <- readRDS("./tests/02B_DHMLM.rds")
  
  # ID table
  id_tab <- readRDS("./tests/04_id-draws.rds")
@@ -47,10 +48,10 @@
  data[, predator_id := as.factor(predator_id)]
 
  # Calculate total xp
- data[total_xp_killer < 150,
+ data[total_xp_killer < 100,
       xp_level := "novice"]
  
- data[total_xp_killer %between% c(150, 299),
+ data[total_xp_killer %between% c(100, 299),
       xp_level := "interm"]
  
  data[total_xp_killer > 300,
@@ -142,40 +143,40 @@
 
  # average speed table
  speed1 <- id_tab[xp_level == "novice" &
-                  variable %in% c("Zspeed", "success") & 
+                  variable %in% c("pred_speed", "success") & 
                   sigma == 0]
 
 plot1 <- ggplot() + 
    
    geom_segment(aes(x = speed1[variable == "success"]$lower_ci,
                     xend = speed1[variable == "success"]$upper_ci,
-                    y = speed1[variable == "Zspeed"]$mean,
-                    yend = speed1[variable == "Zspeed"]$mean),
+                    y = speed1[variable == "pred_speed"]$mean,
+                    yend = speed1[variable == "pred_speed"]$mean),
                 color = "#999999",
                 alpha = 0.2) +
    geom_segment(aes(x = speed1[variable == "success"]$mean,
                     xend = speed1[variable == "success"]$mean,
-                    y = speed1[variable == "Zspeed"]$lower_ci,
-                    yend = speed1[variable == "Zspeed"]$upper_ci), 
+                    y = speed1[variable == "pred_speed"]$lower_ci,
+                    yend = speed1[variable == "pred_speed"]$upper_ci), 
                 color = "#999999",
                 alpha = 0.2) +
    
    geom_point(aes(x = speed1[variable == "success"]$mean, 
-                  y = speed1[variable == "Zspeed"]$mean),
+                  y = speed1[variable == "pred_speed"]$mean),
               shape = 16,
               size = 2,
               color = "#999999",
               alpha = 0.8,
               stroke = 0) +
     
-    scale_y_continuous(breaks = seq(-2, 2, 2),
-                       limits = c(-2.5, 2.5)) +
-    scale_x_continuous(breaks = seq(-2, 2, 2),
-                       limits = c(-3.5, 2.5)) +
+    #scale_y_continuous(breaks = seq(-2, 2, 2),
+    #                   limits = c(-2.5, 2.5)) +
+    #scale_x_continuous(breaks = seq(-2, 2, 2),
+    #                   limits = c(-3.5, 2.5)) +
     
     ylab("Predator speed (mean)\n") +
     xlab("\nHunting success (mean)") +
-    labs(title = "Novices \nCorrelation = -0.033 (-0.147, 0.084)") +
+    labs(title = "Novices \nCorrelation = 0.099 (-0.012, 0.201)") +
     
     custom_theme +
     theme(plot.title = element_text(size = 15,
@@ -188,7 +189,7 @@ plot1 <- ggplot() +
 
  # sigma speed table
  speed2 <- id_tab[xp_level == "novice" &
-                  variable == "Zspeed" & 
+                  variable == "pred_speed" & 
                   sigma == 1]
  bind <- id_tab[xp_level == "novice" &
                 variable == "success"]
@@ -198,33 +199,33 @@ plot2 <- ggplot() +
    
    geom_segment(aes(x = speed2[variable == "success"]$lower_ci,
                     xend = speed2[variable == "success"]$upper_ci,
-                    y = speed2[variable == "Zspeed"]$mean,
-                    yend = speed2[variable == "Zspeed"]$mean),
+                    y = speed2[variable == "pred_speed"]$mean,
+                    yend = speed2[variable == "pred_speed"]$mean),
                 color = "#999999",
                 alpha = 0.2) +
    geom_segment(aes(x = speed2[variable == "success"]$mean,
                     xend = speed2[variable == "success"]$mean,
-                    y = speed2[variable == "Zspeed"]$lower_ci,
-                    yend = speed2[variable == "Zspeed"]$upper_ci), 
+                    y = speed2[variable == "pred_speed"]$lower_ci,
+                    yend = speed2[variable == "pred_speed"]$upper_ci), 
                 color = "#999999",
                 alpha = 0.2) +
    
    geom_point(aes(x = speed2[variable == "success"]$mean, 
-                  y = speed2[variable == "Zspeed"]$mean),
+                  y = speed2[variable == "pred_speed"]$mean),
               shape = 16,
               size = 2,
               color = "#999999",
               alpha = 0.8,
               stroke = 0) +
     
-    scale_y_continuous(breaks = seq(-2, 2, 2),
-                       limits = c(-3, 2.5)) +
-    scale_x_continuous(breaks = seq(-2, 2, 2),
-                       limits = c(-3.5, 2.5)) +
+    #scale_y_continuous(breaks = seq(-2, 2, 2),
+    #                   limits = c(-3, 2.5)) +
+    #scale_x_continuous(breaks = seq(-2, 2, 2),
+    #                   limits = c(-3.5, 2.5)) +
     
     ylab("Predator speed (IIV)\n") +
     xlab("\nHunting success (mean)") +
-    labs(title = "Novices \nCorrelation = -0.141 (-0.265, -0.024)") +
+    labs(title = "Novices \nCorrelation = -0.206 (-0.304, -0.101)") +
     
     custom_theme +
     theme(plot.title = element_text(size = 15,
@@ -237,7 +238,7 @@ plot2 <- ggplot() +
 
 # average speed table
  speed3 <- id_tab[xp_level == "advanced" &
-                  variable %in% c("Zspeed", "success") & 
+                  variable %in% c("pred_speed", "success") & 
                   sigma == 0]
  id <- unique(data[xp_level == "advanced", .(predator_id)])
  
@@ -247,33 +248,33 @@ plot3 <- ggplot() +
    
    geom_segment(aes(x = speed3[variable == "success"]$lower_ci,
                     xend = speed3[variable == "success"]$upper_ci,
-                    y = speed3[variable == "Zspeed"]$mean,
-                    yend = speed3[variable == "Zspeed"]$mean),
+                    y = speed3[variable == "pred_speed"]$mean,
+                    yend = speed3[variable == "pred_speed"]$mean),
                 color = "#00AFBB",
                 alpha = 0.2) +
    geom_segment(aes(x = speed3[variable == "success"]$mean,
                     xend = speed3[variable == "success"]$mean,
-                    y = speed3[variable == "Zspeed"]$lower_ci,
-                    yend = speed3[variable == "Zspeed"]$upper_ci), 
+                    y = speed3[variable == "pred_speed"]$lower_ci,
+                    yend = speed3[variable == "pred_speed"]$upper_ci), 
                 color = "#00AFBB",
                 alpha = 0.2) +
    
    geom_point(aes(x = speed3[variable == "success"]$mean, 
-                  y = speed3[variable == "Zspeed"]$mean),
+                  y = speed3[variable == "pred_speed"]$mean),
               shape = 16,
               size = 2,
               color = "#00AFBB",
               alpha = 0.8,
               stroke = 0) +
     
-    scale_y_continuous(breaks = seq(-2, 2, 2),
-                       limits = c(-2.5, 2.5)) +
-    scale_x_continuous(breaks = seq(-2, 2, 2),
-                       limits = c(-3.5, 2.5)) +
+    #scale_y_continuous(breaks = seq(-2, 2, 2),
+    #                   limits = c(-2.5, 2.5)) +
+    #scale_x_continuous(breaks = seq(-2, 2, 2),
+    #                   limits = c(-3.5, 2.5)) +
     
     ylab("Predator speed (mean)\n") +
     xlab("\nHunting success (mean)") +
-    labs(title = "Advanced \nCorrelation = -0.152 (-0.304, 0.011)") +
+    labs(title = "Advanced \nCorrelation = -0.186 (0.059, 0.316)") +
     
     custom_theme +
     theme(plot.title = element_text(size = 15,
@@ -286,7 +287,7 @@ plot3 <- ggplot() +
 
  # sigma speed table
  speed4 <- id_tab[xp_level == "advanced" &
-                  variable == "Zspeed" & 
+                  variable == "pred_speed" & 
                   sigma == 1]
  bind <- id_tab[xp_level == "advanced" &
                 variable == "success"]
@@ -298,19 +299,19 @@ plot4 <- ggplot() +
    
    geom_segment(aes(x = speed4[variable == "success"]$lower_ci,
                     xend = speed4[variable == "success"]$upper_ci,
-                    y = speed4[variable == "Zspeed"]$mean,
-                    yend = speed4[variable == "Zspeed"]$mean),
+                    y = speed4[variable == "pred_speed"]$mean,
+                    yend = speed4[variable == "pred_speed"]$mean),
                 color = "#00AFBB",
                 alpha = 0.2) +
    geom_segment(aes(x = speed4[variable == "success"]$mean,
                     xend = speed4[variable == "success"]$mean,
-                    y = speed4[variable == "Zspeed"]$lower_ci,
-                    yend = speed4[variable == "Zspeed"]$upper_ci), 
+                    y = speed4[variable == "pred_speed"]$lower_ci,
+                    yend = speed4[variable == "pred_speed"]$upper_ci), 
                 color = "#00AFBB",
                 alpha = 0.2) +
    
    geom_point(aes(x = speed4[variable == "success"]$mean, 
-                  y = speed4[variable == "Zspeed"]$mean),
+                  y = speed4[variable == "pred_speed"]$mean),
               shape = 16,
               size = 2,
               color = "#00AFBB",
@@ -324,7 +325,7 @@ plot4 <- ggplot() +
     
     ylab("Predator speed (IIV)\n") +
     xlab("\nHunting success (mean)") +
-    labs(title = "Advanced \nCorrelation = -0.152 (-0.317, 0.023)") +
+    labs(title = "Advanced \nCorrelation = -0.226 (-0.359, -0.095)") +
     
     custom_theme +
     theme(plot.title = element_text(size = 15,

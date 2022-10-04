@@ -42,6 +42,7 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data on compute canada
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
+                         "pred_game_mode",
                          "predator_avatar_id",
                          "environment_id",
                          "hunting_success",
@@ -52,6 +53,7 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
                          "prey_avg_speed"))
 
 data <- unique(data)
+data <- data[pred_game_mode == "Online"]
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
@@ -77,9 +79,9 @@ data[, environment_id := as.factor(environment_id)]
 # See figure X for reference ***
 
 # Here :
-  # Novice = 0 to 100
-  # Intermediate = >101 to 350
-  # advanced = 351 to 500
+  # Novice = 0 to 99
+  # Intermediate = >=100 to 299
+  # advanced = 300 to 500
 
 # All traits will then need to be computed as variables 
 # at these levels of experience
