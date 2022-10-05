@@ -24,6 +24,7 @@
  # Data
  data <- fread("./data/FraserFrancoetalXXXX-data.csv",
                select = c("predator_id",
+                          "pred_game_mode",
                           "pred_game_duration",
                           "pred_speed",
                           "prey_avg_speed",
@@ -32,6 +33,7 @@
                           "hunting_success"))
  
  data <- unique(data)
+ data <- data[pred_game_mode == "Online"]
  
  # Experience column
  data[cumul_xp_killer < 100,
