@@ -434,15 +434,18 @@ plot4 <- ggplot() +
 # =======================================================================
 
 # Combine as one figure ------------------------------------------------
-
- # Folder path
- path <- "./outputs/05_outputs_figures"
  
  # Arrange paneled figure
  figure <- ggarrange(plot1, plot2, plot3, plot4,
                      ncol = 2, nrow = 2,
                      labels = c("(A)", "(B)", "(C)", "(D)"))
 
+
+
+# Save figure ----------------------------------------------------------
+
+ # Folder path
+ path <- "./outputs/05_outputs_figures"
 
  # Save figure
  ggexport(figure,
