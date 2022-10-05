@@ -22,10 +22,11 @@
  library(ggpubr)
  
  # Model
- fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
+ #fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
  fit <- readRDS("./tests/02B_DHMLM.rds")
  
  # ID table
+ path <- "./outputs/04_outputs_model-processing"
  id_tab <- readRDS("./tests/04_id-draws.rds")
  
 
