@@ -23,6 +23,7 @@
  # Load data
  data <- fread("./data/FraserFrancoetalXXXX-data.csv",
                select = c("predator_id",
+                          "pred_game_mode",
                           "pred_game_duration",
                           "pred_speed",
                           "prey_avg_speed",
@@ -31,11 +32,9 @@
                           "hunting_success"))
  
  data <- unique(data)
+ data <- data[pred_game_mode == "Online"]
  
- # Predator id as factor
- data[, predator_id := as.factor(predator_id)]
- 
- 
+ # Experience column
  data[cumul_xp_killer < 100,
       xp_level := "novice"]
  
@@ -45,9 +44,10 @@
  data[cumul_xp_killer >= 300,
       xp_level := "advanced"]
  
- # Encode the variable as a factor
+ # Encode variables as a factor
  data[, xp_level := as.factor(xp_level)]
- 
+ data[, predator_id := as.factor(predator_id)]
+
 # =======================================================================
 # =======================================================================
 
@@ -117,46 +117,11 @@
 
 # Save the table --------------------------------------------------------
 
- saveRDS(draws, file = "./tests/04_id-draws.rds")
+ # Path
+ path <- "./outputs/04_outputs_model-processing"
 
-# =======================================================================
-# =======================================================================
-
-
-
-
-
-# =======================================================================
-# 4. Produce the final table - 1 value per player
-# =======================================================================
-
-# NEED TO BAKC TRANSFORM BEFORE REPORTING MEANS
-
-# Compute means and CIs -------------------------------------------------
-
-# Intervals
-#lower_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[1]}
-#upper_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[2]}
-
-# Compute mean values by ID
-#draws[, ":="(mean = mean(value),
-#             lower_ci = lower_interval(value),
-#             upper_ci = upper_interval(value)),
-#        by = .(predator_id, xp_level, sigma, variable)]
-
-# Create table with unique values
-#id_tab <- unique(draws[, c(2:8)])
-
-# Round values to 3 digits
-#id_tab[, c(5:7) := 
-#            lapply(.SD, function (x) {round(x,  digits = 3)}),
-#          .SDcols = c(5:7)]
-
-
-
-# Save the table --------------------------------------------------------
-
-#saveRDS(id_tab, file = "./tests/results_ISBE/04_id_means-table.rds")
+ # Save
+ saveRDS(draws, file = file.path(path, "04_id-draws.rds")
 
 # =======================================================================
 # =======================================================================
