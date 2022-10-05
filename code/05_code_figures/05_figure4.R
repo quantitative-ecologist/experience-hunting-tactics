@@ -27,7 +27,7 @@
  
  # ID table
  path <- "./outputs/04_outputs_model-processing"
- id_tab <- readRDS("./tests/04_id-draws.rds")
+ id_tab <- readRDS(file.path(path, "04_id-draws.rds"))
  
 
 
@@ -36,6 +36,7 @@
  # Data
  data <- fread("./data/FraserFrancoetalXXXX-data.csv",
                select = c("predator_id",
+                          "pred_game_mode",
                           "pred_game_duration",
                           "pred_speed",
                           "prey_avg_speed",
@@ -44,9 +45,7 @@
                           "hunting_success"))
  
  data <- unique(data)
-
- # Predator id as factor
- data[, predator_id := as.factor(predator_id)]
+ data <- data[pred_game_mode == "Online"]
 
  # Calculate total xp
  data[total_xp_killer < 100,
@@ -58,8 +57,9 @@
  data[total_xp_killer > 300,
       xp_level := "advanced"]
 
- # Encode the variable as a factor
+ # Encode variables as a factor
  data[, xp_level := as.factor(xp_level)]
+ data[, predator_id := as.factor(predator_id)]
 
 # =======================================================================
 # =======================================================================
@@ -102,29 +102,144 @@
 
 
 # =======================================================================
-# 4. Prepare synthetic table for plots
+# 4. Prepare synthetic tables for plots
 # =======================================================================
 
  # Intervals
  lower_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[1]}
  upper_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[2]}
+
+
+
+# For plot 1 ------------------------------------------------------------
+
+ # Filter and create table
+ speed1 <- id_tab[xp_level == "novice" &
+                  variable %in% c("pred_speed", "success") & 
+                  sigma == 0]
  
- # Summary table
- id_tab <- id_tab[, .(mean = mean(value),
+
+ # Copy value column to back transform
+ speed1[, value_bt := value]
+ 
+ mean1 <- mean(data[xp_level == "novice", pred_speed])
+ sd1 <- sd(data[xp_level == "novice", pred_speed])
+ 
+ speed1[variable == "pred_speed",
+        value_bt := (value_bt * sd1) + mean1]
+
+ speed1[variable == "success",
+        value_bt := (value_bt +4) / 2]
+
+
+ # Synthetic table
+ speed1 <- speed1[, .(mean = mean(value),
+                      mean_bt = mean(value_bt),
                       lower_ci = lower_interval(value),
-                      upper_ci = upper_interval(value)),
-                     by = .(xp_level, predator_id, variable, sigma)]
-
-# =======================================================================
-# =======================================================================
-
+                      upper_ci = upper_interval(value),
+                      lower_ci_bt = lower_interval(value_bt),
+                      upper_ci_bt = upper_interval(value_bt)),
+                    by = .(predator_id, variable)]
 
 
+# For plot 2 ------------------------------------------------------------
+
+ # Filter and create table
+ speed2 <- id_tab[xp_level == "novice" &
+                  variable == "pred_speed" & 
+                  sigma == 1]
+ bind <-  id_tab[xp_level == "novice" &
+                 variable == "success"]
+ speed2 <- rbind(speed2, bind)
 
 
-# =======================================================================
-# 5. Compute plots
-# =======================================================================
+ # Copy value column to back transform
+ speed2[, value_bt := value]
+ 
+ speed2[variable == "pred_speed",
+        value_bt := exp(value)]
+
+ speed2[variable == "success",
+        value_bt := (value_bt +4) / 2]
+
+
+ # Synthetic table
+ speed2 <- speed2[, .(mean = mean(value),
+                      mean_bt = mean(value_bt),
+                      lower_ci = lower_interval(value),
+                      upper_ci = upper_interval(value),
+                      lower_ci_bt = lower_interval(value_bt),
+                      upper_ci_bt = upper_interval(value_bt)),
+                    by = .(predator_id, variable)]
+
+
+
+# For plot 3 ------------------------------------------------------------
+
+ # Filter and create table
+ speed3 <- id_tab[xp_level == "advanced" &
+                  variable %in% c("pred_speed", "success") & 
+                  sigma == 0]
+ id <- unique(data[xp_level == "advanced", .(predator_id)])
+ 
+ speed3 <- merge(speed3, id, by = "predator_id")
+
+
+ # Copy value column to back transform
+ speed3[, value_bt := value]
+ 
+ mean3 <- mean(data[xp_level == "advanced", pred_speed])
+ sd3 <- sd(data[xp_level == "advanced", pred_speed])
+ 
+ speed3[variable == "pred_speed",
+        value_bt := (value_bt * sd3) + mean3]
+
+ speed3[variable == "success",
+        value_bt := (value_bt +4) / 2]
+
+
+ # Synthetic table
+ speed3 <- speed3[, .(mean = mean(value),
+                      mean_bt = mean(value_bt),
+                      lower_ci = lower_interval(value),
+                      upper_ci = upper_interval(value),
+                      lower_ci_bt = lower_interval(value_bt),
+                      upper_ci_bt = upper_interval(value_bt)),
+                    by = .(predator_id, variable)]
+
+
+
+# For plot 4 ------------------------------------------------------------
+
+# Filter and create table
+ speed4 <- id_tab[xp_level == "novice" &
+                  variable == "pred_speed" & 
+                  sigma == 1]
+ bind4 <-  id_tab[xp_level == "novice" &
+                 variable == "success"]
+ speed4 <- rbind(speed4, bind4)
+ speed4 <- merge(speed4, id, by = "predator_id")
+
+
+ # Copy value column to back transform
+ speed4[, value_bt := value]
+ 
+ speed4[variable == "pred_speed",
+        value_bt := exp(value)]
+
+ speed4[variable == "success",
+        value_bt := (value_bt +4) / 2]
+
+
+ # Synthetic table
+ speed4 <- speed4[, .(mean = mean(value),
+                      mean_bt = mean(value_bt),
+                      lower_ci = lower_interval(value),
+                      upper_ci = upper_interval(value),
+                      lower_ci_bt = lower_interval(value_bt),
+                      upper_ci_bt = upper_interval(value_bt)),
+                    by = .(predator_id, variable)]
+
 
 
 # Extract correlations for plot labels ----------------------------------
@@ -138,46 +253,49 @@
  # Success advanced
  corr_advanced <- corr[15, c(1, 3, 4), c(5, 6)]
 
+# =======================================================================
+# =======================================================================
+
+
+
+
+
+# =======================================================================
+# 5. Compute plots
+# =======================================================================
 
 
 # Speed-success novices -------------------------------------------------
 
- # average speed table
- speed1 <- id_tab[xp_level == "novice" &
-                  variable %in% c("pred_speed", "success") & 
-                  sigma == 0]
-
 plot1 <- ggplot() + 
    
-   geom_segment(aes(x = speed1[variable == "success"]$lower_ci,
-                    xend = speed1[variable == "success"]$upper_ci,
-                    y = speed1[variable == "pred_speed"]$mean,
-                    yend = speed1[variable == "pred_speed"]$mean),
+   geom_segment(aes(y = speed1[variable == "success"]$lower_ci_bt,
+                    yend = speed1[variable == "success"]$upper_ci_bt,
+                    x = speed1[variable == "pred_speed"]$mean_bt,
+                    xend = speed1[variable == "pred_speed"]$mean_bt),
                 color = "#999999",
                 alpha = 0.2) +
-   geom_segment(aes(x = speed1[variable == "success"]$mean,
-                    xend = speed1[variable == "success"]$mean,
-                    y = speed1[variable == "pred_speed"]$lower_ci,
-                    yend = speed1[variable == "pred_speed"]$upper_ci), 
+   geom_segment(aes(y = speed1[variable == "success"]$mean_bt,
+                    yend = speed1[variable == "success"]$mean_bt,
+                    x = speed1[variable == "pred_speed"]$lower_ci_bt,
+                    xend = speed1[variable == "pred_speed"]$upper_ci_bt), 
                 color = "#999999",
                 alpha = 0.2) +
    
-   geom_point(aes(x = speed1[variable == "success"]$mean, 
-                  y = speed1[variable == "pred_speed"]$mean),
+   geom_point(aes(y = speed1[variable == "success"]$mean_bt, 
+                  x = speed1[variable == "pred_speed"]$mean_bt),
               shape = 16,
               size = 2,
               color = "#999999",
               alpha = 0.8,
               stroke = 0) +
     
-    #scale_y_continuous(breaks = seq(-2, 2, 2),
-    #                   limits = c(-2.5, 2.5)) +
-    #scale_x_continuous(breaks = seq(-2, 2, 2),
-    #                   limits = c(-3.5, 2.5)) +
+    scale_x_continuous(breaks = seq(2, 3.5, 0.5),
+                       limits = c(1.8, 3.7)) +
     
-    ylab("Predator speed (mean)\n") +
-    xlab("\nHunting success (mean)") +
-    labs(title = "Novices \nCorrelation = 0.099 (-0.012, 0.201)") +
+    xlab("\nPredator speed (individual mean)") +
+    ylab("Hunting success (individual mean)\n") +
+    labs(title = "Novices \nCorrelation = 0.107 (0.006, 0.210)") +
     
     custom_theme +
     theme(plot.title = element_text(size = 15,
@@ -188,45 +306,35 @@ plot1 <- ggplot() +
 
 # Sigmaspeed-success novices --------------------------------------------
 
- # sigma speed table
- speed2 <- id_tab[xp_level == "novice" &
-                  variable == "pred_speed" & 
-                  sigma == 1]
- bind <- id_tab[xp_level == "novice" &
-                variable == "success"]
- speed2 <- rbind(speed2, bind)
-
 plot2 <- ggplot() + 
    
-   geom_segment(aes(x = speed2[variable == "success"]$lower_ci,
-                    xend = speed2[variable == "success"]$upper_ci,
-                    y = speed2[variable == "pred_speed"]$mean,
-                    yend = speed2[variable == "pred_speed"]$mean),
+   geom_segment(aes(y = speed2[variable == "success"]$lower_ci_bt,
+                    yend = speed2[variable == "success"]$upper_ci_bt,
+                    x = speed2[variable == "pred_speed"]$mean_bt,
+                    xend = speed2[variable == "pred_speed"]$mean_bt),
                 color = "#999999",
                 alpha = 0.2) +
-   geom_segment(aes(x = speed2[variable == "success"]$mean,
-                    xend = speed2[variable == "success"]$mean,
-                    y = speed2[variable == "pred_speed"]$lower_ci,
-                    yend = speed2[variable == "pred_speed"]$upper_ci), 
+   geom_segment(aes(y = speed2[variable == "success"]$mean_bt,
+                    yend = speed2[variable == "success"]$mean_bt,
+                    x = speed2[variable == "pred_speed"]$lower_ci_bt,
+                    xend = speed2[variable == "pred_speed"]$upper_ci_bt), 
                 color = "#999999",
                 alpha = 0.2) +
    
-   geom_point(aes(x = speed2[variable == "success"]$mean, 
-                  y = speed2[variable == "pred_speed"]$mean),
+   geom_point(aes(y = speed2[variable == "success"]$mean_bt, 
+                  x = speed2[variable == "pred_speed"]$mean_bt),
               shape = 16,
               size = 2,
               color = "#999999",
               alpha = 0.8,
               stroke = 0) +
     
-    #scale_y_continuous(breaks = seq(-2, 2, 2),
-    #                   limits = c(-3, 2.5)) +
-    #scale_x_continuous(breaks = seq(-2, 2, 2),
-    #                   limits = c(-3.5, 2.5)) +
-    
-    ylab("Predator speed (IIV)\n") +
-    xlab("\nHunting success (mean)") +
-    labs(title = "Novices \nCorrelation = -0.206 (-0.304, -0.101)") +
+    scale_x_continuous(breaks = seq(0, 8, 2),
+                       limits = c(0, 8.5)) +
+
+    xlab("\nPredator speed (IIV)") +
+    ylab("Hunting success (individual mean)\n") +
+    labs(title = "Novices \nCorrelation = -0.216 (-0.313, -0.117)") +
     
     custom_theme +
     theme(plot.title = element_text(size = 15,
@@ -237,96 +345,76 @@ plot2 <- ggplot() +
 
 # Speed-success advanced ------------------------------------------------
 
-# average speed table
- speed3 <- id_tab[xp_level == "advanced" &
-                  variable %in% c("pred_speed", "success") & 
-                  sigma == 0]
- id <- unique(data[xp_level == "advanced", .(predator_id)])
- 
- speed3 <- merge(speed3, id, by = "predator_id")
-
 plot3 <- ggplot() + 
    
-   geom_segment(aes(x = speed3[variable == "success"]$lower_ci,
-                    xend = speed3[variable == "success"]$upper_ci,
-                    y = speed3[variable == "pred_speed"]$mean,
-                    yend = speed3[variable == "pred_speed"]$mean),
+   geom_segment(aes(y = speed3[variable == "success"]$lower_ci_bt,
+                    yend = speed3[variable == "success"]$upper_ci_bt,
+                    x = speed3[variable == "pred_speed"]$mean_bt,
+                    xend = speed3[variable == "pred_speed"]$mean_bt),
                 color = "#00AFBB",
                 alpha = 0.2) +
-   geom_segment(aes(x = speed3[variable == "success"]$mean,
-                    xend = speed3[variable == "success"]$mean,
-                    y = speed3[variable == "pred_speed"]$lower_ci,
-                    yend = speed3[variable == "pred_speed"]$upper_ci), 
+   geom_segment(aes(y = speed3[variable == "success"]$mean_bt,
+                    yend = speed3[variable == "success"]$mean_bt,
+                    x = speed3[variable == "pred_speed"]$lower_ci_bt,
+                    xend = speed3[variable == "pred_speed"]$upper_ci_bt), 
                 color = "#00AFBB",
                 alpha = 0.2) +
    
-   geom_point(aes(x = speed3[variable == "success"]$mean, 
-                  y = speed3[variable == "pred_speed"]$mean),
+   geom_point(aes(y = speed3[variable == "success"]$mean_bt, 
+                  x = speed3[variable == "pred_speed"]$mean_bt),
               shape = 16,
               size = 2,
               color = "#00AFBB",
               alpha = 0.8,
               stroke = 0) +
+
+   scale_x_continuous(breaks = seq(2, 3.5, 0.5),
+                       limits = c(1.8, 3.7)) + 
+   scale_y_continuous(breaks = seq(0, 4, 1),
+                      limits = c(0, 4)) +
+   
+   xlab("\nPredator speed (individual mean)") +
+   ylab("Hunting success (individual mean)\n") +
+   labs(title = "Advanced \nCorrelation = 0.192 (0.060, 0.312)") +
     
-    #scale_y_continuous(breaks = seq(-2, 2, 2),
-    #                   limits = c(-2.5, 2.5)) +
-    #scale_x_continuous(breaks = seq(-2, 2, 2),
-    #                   limits = c(-3.5, 2.5)) +
-    
-    ylab("Predator speed (mean)\n") +
-    xlab("\nHunting success (mean)") +
-    labs(title = "Advanced \nCorrelation = -0.186 (0.059, 0.316)") +
-    
-    custom_theme +
-    theme(plot.title = element_text(size = 15,
-                                    face = "bold",
-                                    color = "#00AFBB"))
+   custom_theme +
+   theme(plot.title = element_text(size = 15,
+                                   face = "bold",
+                                   color = "#00AFBB"))
 
 
 
 # Sigmaspeed-success advanced -------------------------------------------
 
- # sigma speed table
- speed4 <- id_tab[xp_level == "advanced" &
-                  variable == "pred_speed" & 
-                  sigma == 1]
- bind <- id_tab[xp_level == "advanced" &
-                variable == "success"]
- speed4 <- rbind(speed4, bind)
- speed4 <- merge(speed4, id, by = "predator_id")
-
-
 plot4 <- ggplot() + 
    
-   geom_segment(aes(x = speed4[variable == "success"]$lower_ci,
-                    xend = speed4[variable == "success"]$upper_ci,
-                    y = speed4[variable == "pred_speed"]$mean,
-                    yend = speed4[variable == "pred_speed"]$mean),
+   geom_segment(aes(y = speed4[variable == "success"]$lower_ci_bt,
+                    yend = speed4[variable == "success"]$upper_ci_bt,
+                    x = speed4[variable == "pred_speed"]$mean_bt,
+                    xend = speed4[variable == "pred_speed"]$mean_bt),
                 color = "#00AFBB",
                 alpha = 0.2) +
-   geom_segment(aes(x = speed4[variable == "success"]$mean,
-                    xend = speed4[variable == "success"]$mean,
-                    y = speed4[variable == "pred_speed"]$lower_ci,
-                    yend = speed4[variable == "pred_speed"]$upper_ci), 
+   geom_segment(aes(y = speed4[variable == "success"]$mean_bt,
+                    yend = speed4[variable == "success"]$mean_bt,
+                    x = speed4[variable == "pred_speed"]$lower_ci_bt,
+                    xend = speed4[variable == "pred_speed"]$upper_ci_bt), 
                 color = "#00AFBB",
                 alpha = 0.2) +
    
-   geom_point(aes(x = speed4[variable == "success"]$mean, 
-                  y = speed4[variable == "pred_speed"]$mean),
+   geom_point(aes(y = speed4[variable == "success"]$mean_bt, 
+                  x = speed4[variable == "pred_speed"]$mean_bt),
               shape = 16,
               size = 2,
               color = "#00AFBB",
               alpha = 0.8,
               stroke = 0) +
     
-    scale_y_continuous(breaks = seq(-2, 2, 2),
-                       limits = c(-3, 2.5)) +
-    scale_x_continuous(breaks = seq(-2, 2, 2),
-                       limits = c(-3.5, 2.5)) +
-    
-    ylab("Predator speed (IIV)\n") +
-    xlab("\nHunting success (mean)") +
-    labs(title = "Advanced \nCorrelation = -0.226 (-0.359, -0.095)") +
+    scale_x_continuous(breaks = seq(0, 8, 2),
+                       limits = c(0, 8.5)) +
+
+    xlab("\nPredator speed (IIV)") +
+    ylab("Hunting success (individual mean)\n") +
+    labs(title = "Advanced \nCorrelation = -0.236 (-0.365, -0.102)") +
     
     custom_theme +
     theme(plot.title = element_text(size = 15,
