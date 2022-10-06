@@ -27,17 +27,17 @@
  # Load models
  mod1 <- readRDS("./outputs/02_outputs_models/02A1_GAMM.rds")
  mod2 <- readRDS("./outputs/02_outputs_models/02A2_GAMM.rds")
- mod3 <- readRDS("./outputs/02_outputs_models/02A3_GLMM.rds")
+ mod3 <- readRDS("./outputs/02_outputs_models/02A3_GAMM.rds")
  
  # Check object size
  print(object.size(mod1), units = "MB")
  print(object.size(mod2), units = "MB")
- 
+ print(object.size(mod3), units = "MB")
  
  # Read saved loo outputs
  loo1 <- readRDS("./outputs/03_outputs_model-validation/02A1_loo.rds")
  loo2 <- readRDS("./outputs/03_outputs_model-validation/02A2_loo.rds")
- #loo3 <- readRDS("./outputs/03_outputs_model-validation/02A3_loo.rds")
+ loo3 <- readRDS("./outputs/03_outputs_model-validation/02A3_loo.rds")
 
  # Folder path where I will save the outputs
  path <- "./outputs/03_outputs_model-validation"
@@ -76,7 +76,10 @@
  posterior_epred_beta_binomial2 <- function(prep) {
    mu <- brms::get_dpar(prep, "mu")
    trials <- prep$data$vint1
-   trials <- matrix(trials, nrow = nrow(mu), ncol = ncol(mu), byrow = TRUE)
+   trials <- matrix(trials,
+                    nrow = nrow(mu),
+                    ncol = ncol(mu),
+                    byrow = TRUE)
    mu * trials
  }
 
@@ -96,7 +99,7 @@
 
  plot(mod1)
  plot(mod2)
- #plot(mod3)
+ plot(mod3)
 
 
 # Posterior predictive checks -------------------------------------------
@@ -104,24 +107,24 @@
  # Check distributions
  pp1 <- pp_check(mod1)
  pp2 <- pp_check(mod2)
- #pp3 <- pp_check(mod3)
+ pp3 <- pp_check(mod3)
   
  # Effects plot (mean variance plot)
  stat1 <- pp_check(mod1, type = "stat_2d")
  stat2 <- pp_check(mod2, type = "stat_2d")
- #stat3 <- pp_check(mod3, type = "stat_2d")
+ stat3 <- pp_check(mod3, type = "stat_2d")
  
  
  # Predicted means
  mean1 <- pp_check(mod1, type = "stat", stat = "mean")
  mean2 <- pp_check(mod2, type = "stat", stat = "mean")
- #mean3 <- pp_check(mod3, type = "stat", stat = "mean")
+ mean3 <- pp_check(mod3, type = "stat", stat = "mean")
  
  
  # Error scatter
  e_scat1 <- pp_check(mod1, type = "error_scatter_avg")
  e_scat2 <- pp_check(mod2, type = "error_scatter_avg")
- #e_scat3 <- pp_check(mod3, type = "error_scatter_avg")
+ e_scat3 <- pp_check(mod3, type = "error_scatter_avg")
 
 
 
@@ -140,24 +143,24 @@
                         e_scat2,
                         ncol = 2, nrow = 2)
  
- #stat_fig3 <- ggarrange(pp3,    
- #                       stat3,
- #                       mean3,
- #                       e_scat3,
- #                       ncol = 2, nrow = 2)
+ stat_fig3 <- ggarrange(pp3,    
+                        stat3,
+                        mean3,
+                        e_scat3,
+                        ncol = 2, nrow = 2)
  
  # Export the figure
  ggexport(stat_fig1,
-          filename = file.path(path, "03_GAMM-diagnostics1.png"),
+          filename = file.path(path, "03A1_GAMM-diagnostics.png"),
           width = 3000, height = 2500, res = 300) # more 
  
  ggexport(stat_fig2,
-          filename = file.path(path, "03_GAMM-diagnostics2.png"),
+          filename = file.path(path, "03A2_GAMM-diagnostics.png"),
           width = 3000, height = 2500, res = 300) # more 
  
- #ggexport(stat_fig3,
- #         filename = file.path(path, "03_GLMM-diagnostics.png"),
- #         width = 3000, height = 2500, res = 300) # more 
+ ggexport(stat_fig3,
+          filename = file.path(path, "03A3_GAMM-diagnostics.png"),
+          width = 3000, height = 2500, res = 300) # more 
 
 # =======================================================================
 # =======================================================================
