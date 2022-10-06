@@ -183,11 +183,11 @@
  
  # Save outputs
  saveRDS(loo1,
-         file = file.path(path, "02A1_loo.rds"))
+         file = file.path(path, "03A1_loo.rds"))
  saveRDS(loo2,
-         file = file.path(path, "02A2_loo.rds"))
- #saveRDS(loo3,
- #        file = file.path(path, "02A3_loo.rds"))
+         file = file.path(path, "03A2_loo.rds"))
+ saveRDS(loo3,
+         file = file.path(path, "03A3_loo.rds"))
 
 
 # Compare models --------------------------------------------------------
@@ -201,7 +201,7 @@
  
  # Save table
  saveRDS(loo_table,
-         file = file.path(path, "03_A_models-lootable.rds"))
+         file = file.path(path, "03A_models-lootable.rds"))
 
 # =======================================================================
 # =======================================================================
