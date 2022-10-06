@@ -129,7 +129,7 @@
         value_bt := (value_bt * sd1) + mean1]
 
  speed1[variable == "success",
-        value_bt := (value_bt +4) / 2]
+        value_bt := (value_bt + 4) / 2]
 
 
  # Synthetic table
@@ -140,6 +140,7 @@
                       lower_ci_bt = lower_interval(value_bt),
                       upper_ci_bt = upper_interval(value_bt)),
                     by = .(predator_id, variable)]
+
 
 
 # For plot 2 ------------------------------------------------------------
@@ -160,7 +161,7 @@
         value_bt := exp(value)]
 
  speed2[variable == "success",
-        value_bt := (value_bt +4) / 2]
+        value_bt := (value_bt + 4) / 2]
 
 
  # Synthetic table
@@ -195,7 +196,7 @@
         value_bt := (value_bt * sd3) + mean3]
 
  speed3[variable == "success",
-        value_bt := (value_bt +4) / 2]
+        value_bt := (value_bt + 4) / 2]
 
 
  # Synthetic table
@@ -228,7 +229,7 @@
         value_bt := exp(value)]
 
  speed4[variable == "success",
-        value_bt := (value_bt +4) / 2]
+        value_bt := (value_bt + 4) / 2]
 
 
  # Synthetic table
@@ -252,6 +253,117 @@
  
  # Success advanced
  corr_advanced <- corr[15, c(1, 3, 4), c(5, 6)]
+
+
+
+# Extract values to plot the line ---------------------------------------
+
+# Plot 1
+cov1 <- (
+  as_draws_matrix(
+       fit,
+       variable = "cor_predator_id__speednovice_Intercept__successnovice_Intercept"
+       ) *
+  
+  sqrt((as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__speednovice_Intercept"
+       )^2)
+  ) *
+  sqrt((as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__successnovice_Intercept"
+       )^2)
+  )
+)
+
+var1 <- (as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__speednovice_Intercept")
+)^2
+
+slope1 <- cov1 / var1
+
+
+# Plot 2
+cov2 <- (
+  as_draws_matrix(
+       fit,
+       variable = "cor_predator_id__sigma_speednovice_Intercept__successnovice_Intercept"
+       ) *
+  
+  sqrt((as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__sigma_speednovice_Intercept"
+       )^2)
+  ) *
+  sqrt((as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__successnovice_Intercept"
+       )^2)
+  )
+)
+
+var2 <- (as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__sigma_speednovice_Intercept")
+)^2
+
+slope2 <- cov2 / var2
+
+
+# Plot 3
+cov3 <- (
+  as_draws_matrix(
+       fit,
+       variable = "cor_predator_id__speedadvanced_Intercept__successadvanced_Intercept"
+       ) *
+  
+  sqrt((as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__speedadvanced_Intercept"
+       )^2)
+  ) *
+  sqrt((as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__successadvanced_Intercept"
+       )^2)
+  )
+)
+
+var3 <- (as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__speedadvanced_Intercept")
+)^2
+
+slope3 <- cov3 / var3
+
+
+# Plot 4
+cov4 <- (
+  as_draws_matrix(
+       fit,
+       variable = "cor_predator_id__sigma_speedadvanced_Intercept__successadvanced_Intercept"
+       ) *
+  
+  sqrt((as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__sigma_speedadvanced_Intercept"
+       )^2)
+  ) *
+  sqrt((as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__successadvanced_Intercept"
+       )^2)
+  )
+)
+
+var4 <- (as_draws_matrix(
+       fit,
+       variable = "sd_predator_id__sigma_speedadvanced_Intercept")
+)^2
+
+slope4 <- cov4 / var4
 
 # =======================================================================
 # =======================================================================
@@ -289,6 +401,12 @@ plot1 <- ggplot() +
               color = "#999999",
               alpha = 0.8,
               stroke = 0) +
+   
+   geom_segment(aes(x = 2.5,
+                    xend = 3.55,
+                    y = ((-0.01 + 4) / 2) + mean(slope1) * -1, 
+                    yend = ((-0.01 + 4) / 2) + mean(slope1) * 1),
+                color = "purple4", size = 1, alpha = 0.8) +
     
     scale_x_continuous(breaks = seq(2, 3.5, 0.5),
                        limits = c(1.8, 3.7)) +
@@ -329,17 +447,22 @@ plot2 <- ggplot() +
               alpha = 0.8,
               stroke = 0) +
     
-    scale_x_continuous(breaks = seq(0, 8, 2),
-                       limits = c(0, 8.5)) +
+   geom_segment(aes(x = 0,
+                      xend = 6,
+                      y = ((-0.01 + 4) / 2) + mean(slope2) * -1, 
+                      yend = ((-0.01 + 4) / 2) + mean(slope2) * 1),
+                  color = "purple4", size = 1, alpha = 0.8) +
 
-    xlab("\nPredator speed (IIV)") +
-    ylab("Hunting success (individual mean)\n") +
-    labs(title = "Novices \nCorrelation = -0.216 (-0.313, -0.117)") +
-    
-    custom_theme +
-    theme(plot.title = element_text(size = 15,
-                                    face = "bold",
-                                    color = "#999999"))
+   scale_x_continuous(breaks = seq(0, 8, 2),
+                      limits = c(0, 8.5)) +
+   xlab("\nPredator speed (IIV)") +
+   ylab("Hunting success (individual mean)\n") +
+   labs(title = "Novices \nCorrelation = -0.216 (-0.313, -0.117)") +
+   
+   custom_theme +
+   theme(plot.title = element_text(size = 15,
+                                   face = "bold",
+                                   color = "#999999"))
 
 
 
@@ -368,6 +491,12 @@ plot3 <- ggplot() +
               alpha = 0.8,
               stroke = 0) +
 
+   geom_segment(aes(x = 2,
+                    xend = 3.55,
+                    y = ((-0.01 + 4) / 2) + mean(slope3) * -1, 
+                    yend = ((-0.01 + 4) / 2) + mean(slope3) * 1),
+                color = "purple4", size = 1, alpha = 0.8) +
+
    scale_x_continuous(breaks = seq(2, 3.5, 0.5),
                        limits = c(1.8, 3.7)) + 
    scale_y_continuous(breaks = seq(0, 4, 1),
@@ -386,7 +515,7 @@ plot3 <- ggplot() +
 
 # Sigmaspeed-success advanced -------------------------------------------
 
-plot4 <- ggplot() + 
+plot5 <- ggplot() + 
    
    geom_segment(aes(y = speed4[variable == "success"]$lower_ci_bt,
                     yend = speed4[variable == "success"]$upper_ci_bt,
@@ -409,6 +538,12 @@ plot4 <- ggplot() +
               alpha = 0.8,
               stroke = 0) +
     
+   geom_segment(aes(x = 0,
+                    xend = 6,
+                    y = ((-0.01 + 4) / 2) + mean(slope4) * -1, 
+                    yend = ((-0.01 + 4) / 2) + mean(slope4) * 1),
+                color = "purple4", size = 1, alpha = 0.8) +
+
     scale_x_continuous(breaks = seq(0, 8, 2),
                        limits = c(0, 8.5)) +
 
