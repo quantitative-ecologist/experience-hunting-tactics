@@ -35,9 +35,9 @@
  print(object.size(mod3), units = "MB")
  
  # Read saved loo outputs
- loo1 <- readRDS("./outputs/03_outputs_model-validation/02A1_loo.rds")
- loo2 <- readRDS("./outputs/03_outputs_model-validation/02A2_loo.rds")
- loo3 <- readRDS("./outputs/03_outputs_model-validation/02A3_loo.rds")
+ loo1 <- readRDS("./outputs/03_outputs_model-validation/03A1_loo.rds")
+ loo2 <- readRDS("./outputs/03_outputs_model-validation/03A2_loo.rds")
+ loo3 <- readRDS("./outputs/03_outputs_model-validation/03A3_loo.rds")
 
  # Folder path where I will save the outputs
  path <- "./outputs/03_outputs_model-validation"
@@ -193,7 +193,7 @@
 # Compare models --------------------------------------------------------
 
  # Compare models
- loo_tab <- loo_compare(loo1, loo2)
+ loo_tab <- loo_compare(loo1, loo3)
  #loo_tab <- loo_compare(loo1, loo2, loo3)
  
  # Compute table with complete information
@@ -201,7 +201,7 @@
  
  # Save table
  saveRDS(loo_table,
-         file = file.path(path, "03A_models-lootable.rds"))
+         file = file.path(path, "03A_lootable.rds"))
 
 # =======================================================================
 # =======================================================================
