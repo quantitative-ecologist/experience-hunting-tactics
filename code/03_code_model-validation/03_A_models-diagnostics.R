@@ -190,11 +190,11 @@
          file = file.path(path, "03A3_loo.rds"))
 
 
+
 # Compare models --------------------------------------------------------
 
  # Compare models
- loo_tab <- loo_compare(loo1, loo3)
- #loo_tab <- loo_compare(loo1, loo2, loo3)
+ loo_tab <- loo_compare(loo1, loo2, loo3)
  
  # Compute table with complete information
  loo_table <- print(loo_tab, simplify = FALSE)
