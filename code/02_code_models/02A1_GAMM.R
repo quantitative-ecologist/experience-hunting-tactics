@@ -139,7 +139,7 @@ priors <- c(
   # priors on smooth terms
   set_prior("cauchy(0, 2)",
             class = "sds",
-            coef = "s(Zcumul_xp)"),      
+            coef = "s(Zcumul_xp)"),
   # priors on phi
   set_prior("normal(2, 0.5)",
             class = "phi")

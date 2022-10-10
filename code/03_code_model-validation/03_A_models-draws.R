@@ -26,7 +26,7 @@ library(ggplot2)
 # Import model in R session
 mod1 <- readRDS("./outputs/02_outputs_models/02A1_GAMM.rds")
 mod2 <- readRDS("./outputs/02_outputs_models/02A2_GAMM.rds")
-mod3 <- readRDS("./outputs/02_outputs_models/02A3_GLMM.rds")
+mod3 <- readRDS("./outputs/02_outputs_models/02A3_GAMM.rds")
 
 
 # Extract posterior draws
@@ -105,6 +105,17 @@ ggplot(posterior_fit1) +
   #             fill = "steelblue",
   #             color = "black",
   #             alpha = 0.6) +
+  geom_density(aes(sds_sZcumul_xp_1),
+               fill = "#FC4E07",
+               color = "black",
+               alpha = 0.6) + 
+  theme_classic()  
+
+ggplot(posterior_fit1) +
+  geom_density(aes(prior_sds_sZcumul_xp_1),
+               fill = "steelblue",
+               color = "black",
+               alpha = 0.6) +
   geom_density(aes(sds_sZcumul_xp_1),
                fill = "#FC4E07",
                color = "black",
@@ -283,7 +294,7 @@ ggplot(posterior_fit3) +
 
 # Game duration
 ggplot(posterior_fit3) +
-  geom_density(aes(prior_b),
+  geom_density(aes(prior_b_Zgame_duration),
                fill = "steelblue",
                color = "black",
                alpha = 0.6) +
@@ -293,27 +304,39 @@ ggplot(posterior_fit3) +
                alpha = 0.6) + 
   theme_classic()
 
-
-# slope term of cumul xp
+# not sure what this is but refers to predator ID
 ggplot(posterior_fit3) +
-  geom_density(aes(prior_b),
+  geom_density(aes(prior_sds_sZcumul_xppredator_id_1),
                fill = "steelblue",
                color = "black",
                alpha = 0.6) +
-  geom_density(aes(b_Zcumul_xp),
+  geom_density(aes(sds_sZcumul_xppredator_id_1),
                fill = "#FC4E07",
                color = "black",
                alpha = 0.6) + 
   theme_classic()
 
 
-# Standard deviation of predator ID
+# not sure what this is but refers to predator ID
 ggplot(posterior_fit3) +
-  geom_density(aes(prior_sd_predator_id),
+  geom_density(aes(prior_sds_sZcumul_xppredator_id_2),
                fill = "steelblue",
                color = "black",
                alpha = 0.6) +
-  geom_density(aes(sd_predator_id__Intercept),
+  geom_density(aes(sds_sZcumul_xppredator_id_2),
+               fill = "#FC4E07",
+               color = "black",
+               alpha = 0.6) + 
+  theme_classic()
+
+
+# not sure what this is but refers to predator ID
+ggplot(posterior_fit3) +
+  geom_density(aes(prior_sds_sZcumul_xppredator_id_3),
+               fill = "steelblue",
+               color = "black",
+               alpha = 0.6) +
+  geom_density(aes(sds_sZcumul_xppredator_id_3),
                fill = "#FC4E07",
                color = "black",
                alpha = 0.6) + 

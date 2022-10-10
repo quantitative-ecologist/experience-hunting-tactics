@@ -42,6 +42,7 @@ dat[, date := as.POSIXct(sub(" .*", "", pred_timestamp))]
 Keywords: foraging behavior, individual specialization, experience, learning, prey predictability, online videogames
 
 
+
 \newpage
 # INTRODUCTION {.unnumbered}
 
@@ -55,20 +56,25 @@ There is currently a lack of consensus on the fitness advantages of specialized 
 
 In this study, we analyze individual behavioral data from players in *Dead by Daylight* (*DBD*) to test how hunting expertise and prey behavior shape predator foraging specialization. *DBD* is an online videogame simulating a predator-prey interaction, where one predator player hunts four prey players in different virtual environments. The data grants a high degree of precision on the behavioral interaction as both the predator and the four prey are measured simultaneously in each trial. First, we investigate how predators developed their individual hunting expertise. We hypothesize that predators should differ in the development of their expertise because they encounter varying levels of difficulty with the prey that they hunt. Second, we test the hypothesis that individual variation in foraging behavior will change with experience. If experience reduces the costs of switching between hunting tactics, we predict that individual predators should become more flexible with time. Alternatively, if experience enables the refinement of the hunting tactics, then individuals may instead specialize. Third, we evaluate how predator foraging specialization interacts with variation in prey behavior. Whether predators specialize or not with experience may depend on the behavior of their prey, for instance, as it may be harder to specialize when encounters are less predictable. Lastly, if individuals differ in their degree of foraging specialization, then we expect specialist hunters to fare better when prey variability is lower, while flexible hunters should fare better when prey variability is higher.
 
+
+
 \newpage
 # MATERIALS AND METHODS {.unnumbered}
 
+
 ## Study system
 
-*DBD* is a survival horror asymmetric multiplayer online game developed by Behavior Interactive Inc. In this game, players get to chose if they wish to play has a predator or a prey. The objective of the predator player is to search, stalk, and hunt the four prey players across a virtual environment. The objective of the four prey players is to forage for resources in the form of generators that once activated, will enable them to escape through one of two exit doors. A match ends when the predator kills all the prey available (i.e. that haven't escaped), or when the last prey left escapes the virtual environment. Each player, predator or prey, can chose an avatar with abilities that encourage specific play styles (e.g. bolder vs cautious prey, or ambush vs roaming predator). During our study period, the game offered 23 playable predator avatars. The virtual environment where matches take place is composed of fixed and procedurally generated items (e.g. vegetation, mazes, buildings) that constitute its structure. Some of these environments are larger than others, with varying levels or buildings. However, we have previously shown that they generally do not influence the behavior nor hunting success of the predator, which is probably due to a game feature enabling predators to have visual cues on the generators [@FraserFranco.etal2022]. There were 35 virtual game environments available for play during our study period.
+*DBD* is a survival horror asymmetric multiplayer online game developed by Behavior Interactive Inc. In this game, players get to chose if they wish to play has a predator or a prey. The objective of the predator player is to search, stalk, and hunt the four prey players across a virtual environment. The objective of the four prey players is to forage for resources while avoiding the predator. The resources take the the form of power generators that once activated, will enable the prey to escape through one of two exit doors. A match ends when the predator kills all the prey available (i.e. that haven't escaped), or when the last remaining prey escapes the virtual environment. Each player, predator or prey, can chose an avatar with abilities that encourage specific play styles (e.g. bolder vs cautious prey, or ambush vs roaming predator). During our study period, the game offered 23 playable predator avatars. The virtual environment where matches take place is composed of fixed and procedurally generated habitat components, such as vegetation, mazes, and buildings. Some of these environments are larger than others, with varying structural complexity. However, we have previously shown that predators display only minimal changes in behavior and hunting success across the environments, probably due to a game feature enabling predators to have visual cues on the generators [@FraserFranco.etal2022]. There were 35 virtual game environments available for play during our study period.
 
 Individual predators in *DBD* display variation in the hunting strategies that they use. Some specialize at hunting at high speeds and covering space in the environment, while others prefer to stalk and ambush their prey [@FraserFranco.etal2022]. They also display flexibility in the use of these tactics by switching between them across matches. The expression of these tactics and their success is highly dependent on the behavior of the prey group. The prey need to forage for resources while maintaining a high level of attention on the predator cues to avoid being detected and chased. Some prey contribute to the group's success by healing or helping others escape the predator, while other self-centered individuals play alone and attempt to escape by themselves [@Cere.etal2021]. Predators must be wary of how the prey behave to chose the right way to capture them. Thus, *DBD* simulates a highly dynamic system where both predators and prey must constantly adapt to each other to be successful.
 
+
 ## Data collection
 
-We were provided raw data by the videogame company that spanned a period of 6 months of gameplay recorded for every player. The first recorded match was played on `r toString(format(min(dat$date)))`, and the last one on `r toString(format(max(dat$date)))`. We applied cleaning and filtering procedures on the raw data to produce a synthetic dataset for our analyses. The data that we analyzed was for matches where players did not know each other. We filtered any matches where players were inactive, such as when speed values were equal to, or very close to, zero. Moreover, we used our knowledge of the game to remove any matches where players were potentially hacking, or not playing the game has it is supposed to be played. These matches were not considered as player experience.
+We were provided raw data by the videogame company that spanned a period of 6 months of gameplay recorded for every player. The first recorded match was played on `r toString(format(min(dat$date)))`, and the last one on `r toString(format(max(dat$date)))`. We applied cleaning and filtering procedures on the raw data to produce a synthetic dataset for our analyses. We only analyzed matches where players did not know each other (i.e. "Online" mode). We filtered any matches where players were inactive, such as when speed values were equal to, or very close to, zero. Moreover, we used our knowledge of the game to remove any matches where players were potentially hacking, or not playing the game has it is supposed to be played. These matches were not considered as player experience.
 
-After cleaning and filtering the raw data, we obtained a population of `r toString(format(length(unique(dat$predator_id))))` predator players with a total record of `r toString(format(length(unique(dat$match_encode_id))))` matches. The predator players' experience varied between `r toString(format(min(dat$total_xp_killer)))` and `r toString(format(max(dat$total_xp_killer)))` matches played. These matches lasted between `r toString(format(round(min(dat$pred_game_duration / 60))), digits = 2)` and `r toString(format(round(max(dat$pred_game_duration / 60))), digits = 2)` minutes (mean = `r toString(format(round(mean(dat$pred_game_duration / 60))), digits = 2)`). For every match, we report the predator player's anonymous ID, its avatar, the game environment, the predator player's experience along with its speed, and the average speed of the group of prey it encountered.
+Our population consists of `r toString(format(length(unique(dat$predator_id))))` predator players with a total record of `r toString(format(length(unique(dat$match_encode_id))))` matches. The predator players' experience varied between `r toString(format(min(dat$total_xp_killer)))` and `r toString(format(max(dat$total_xp_killer)))` matches played. These matches lasted between `r toString(format(round(min(dat$pred_game_duration / 60))), digits = 2)` and `r toString(format(round(max(dat$pred_game_duration / 60))), digits = 2)` minutes (mean = `r toString(format(round(mean(dat$pred_game_duration / 60))), digits = 2)`). For every match, we report the predator player's anonymous ID, its avatar, the game environment, the predator player's experience along with its speed, and the average speed of the group of prey it encountered.
+
 
 ## Variables
 
@@ -83,20 +89,28 @@ All our statistical analyses were executed on Cedar (https://docs.alliancecan.ca
 
 ### Effect of experience on hunting success
 
-*expliquer avant que j'ai fait 2 modèles et que j'ai comparé par LOO afin de déterminer si la relation entre le succès et l'expérience variait d'un joueur à l'autre. Dire que j'ai suivi le workflow the Perdersen, Wood, etc.*
+We tested whether predators varied in the development of their expertise by computing 3 Bayesian generalized additive mixed models with thin plate regression splines. Here, we estimated the relationship between hunting success (i.e. number of prey captured) and the predators' cumulative experience (i.e. number of matches played before the current match). We parametrized the models with increasing complexity following @Pedersen.etal2019. The first model was the simplest, with a common global smoothing function for all observations and random intercepts for the predator ID. In this model, we assume that individuals have the same development of expertise, with the model estimating a trend for the average individual (i.e. global smoother). For the second model, we included varying group-level smoothers for the predator ID. In this model, we assume that individuals share a similar relationship between success and experience, but that this relationship can vary (e.g. individual 1 has a steeper curve than individual 2). This enabled us to test whether predators differed in the development of their expertise. In the third model, we kept the group-level smoothers for the predators, but removed the global smoother. This allows each individual to have a unique relationship between success and experience without penalization by the global smoother. Thus, this model assumes that predators do not share a common relationship between success and experience. For all three models, we controlled for the match duration.
 
-We estimated the relationship between hunting success and experience using a Bayesian generalized additive mixed model with thin plate regression splines. Because a maximum of four prey can be captured, we used the beta-binomial family distribution to estimate the probability of capturing all prey while controlling for overdispersion. The model parameters were estimated with a logit link function with the number of knots set to ten, while the dispersion parameter ($\phi$) was estimated with an identity link. The model had the following form :
+Because a maximum of four prey can be captured in the game, we used the beta-binomial family distribution to estimate the probability of capturing all prey while controlling for overdispersion. The model parameters were estimated with a logit link function, while the dispersion parameter ($\phi$) was estimated with an identity link. The probability of capturing the four prey $P_{i}$ is drawn from a Beta distribution ($P_{i} ~ Beta(a_{i}, b_{i})$) with shape ($a_{i} = \frac{P_{i}}{\phi}$) and scale ($b_{i} = \frac{1 - P_{i}}{\phi}$) parameters. We employed the default number of basis functions (K) in "brms" for the model to estimate the relationship between hunting success and experience. We assumed that the random intercepts for the predator ID $id_{0,i}$ followed a Gaussian distribution with estimated variance ($id_{0,i} ~ N(0, V_{id})$). We parametrized all the models to run 4 MCMC chains with 1000 posterior samples for each parameter. We ran 2500 iterations for the first model with a thinning set to 8, and 1500 iterations with a thinning set to 4 for the second and third models. The first 500 iterations were used as warmups for all models. We provide a description on how we specified the priors of each model in the supporting information.
 
-\[
-\begin{align}
-logit (P_{i}) &= (\beta_{0} + id_{0,i}) \\
-&\text{ } + \text{ } \beta_{1} \textit{time}_{i} \\
-&\text{ } + \text{ } f(\textit{cumul. xp}_{i}) \\
-\end{align}
-\tag{1}
-\]
+After fitting the 3 models, we proceeded to select the one with the best predictive accuracy using approximate leave-one-out cross-validation with Pareto-smoothed importance sampling [@Vehtari.etal2017].
 
-where $P_{i}$ is drawn from a Beta distribution ($P_{i} ~ Beta(a_{i}, b_{i})$) with shape ($a_{i} = \frac{P_{i}}{\phi}$) and scale ($b_{i} = \frac{1 - P_{i}}{\phi}$) parameters. Here, $\beta_{0}$ is the general intercept estimating the mean hunting success, and $id_{0,i}$ is the random intercepts term for the the predator player ID, for which we assumed followed a Gaussian distribution with estimated variance ($id_{0,i} ~ N(0, V_{id})$). We controlled for the match duration
+
+```{r}
+#\[
+#\begin{align}
+#logit (P_{i}) &= (\beta_{0} + id_{0,i}) \\
+#&\text{ } + \text{ } \beta_{1} \textit{match duration}_{i} \\
+#&\text{ } + \text{ } f(\textit{cumulative xp}_{i}) \\
+#\end{align}
+#\tag{1}
+#\]
+```
+
+
+
+
+
 
 ### Foraging tactics at each level of experience
 
