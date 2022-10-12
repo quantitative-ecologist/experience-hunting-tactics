@@ -80,7 +80,7 @@ Our population consists of `r toString(format(length(unique(dat$predator_id))))`
 
 ## Variables
 
-We analyzed the predator's average speed and the average speed of the prey encountered by the predator. The predator's average speed is measured as the average distance per second traveled during a match (m/s) (mean = `r toString(format(round(mean(dat$pred_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$pred_speed), digits = 2), nsmall = 2))`). For the prey, we averaged the travel speed of the four individuals within a match to obtain the average speed of the group, also measured in meters per second (mean = `r toString(format(round(mean(dat$prey_avg_speed), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$prey_avg_speed), digits = 2), nsmall = 2))`). Hunting success was defined as the number of prey consumed during the match (min = `r toString(format(min(dat$hunting_success)))`, max = `r toString(format(max(dat$hunting_success)))`). Lastly, the predator's cumulative experience was defined as the number of matches played prior to the match being monitored. For example, the first match of a player would have a cumulative experience value of 0, while the 10^th match would have a value of 9.
+We analyzed the predator's average speed and the average speed of the prey encountered by the predator. The predator's average speed is measured as the average distance per second traveled during a match (m/s) (mean = `r toString(format(round(mean(dat$pred_speed), digits = 2), nsmall = 2))`, sd = `r toString(format(round(sd(dat$pred_speed), digits = 2), nsmall = 2))`). For the prey, we averaged the travel speed of the four individuals within a match to obtain the average speed of the group, also measured in meters per second (mean = `r toString(format(round(mean(dat$prey_avg_speed, na.rm = T), digits = 2), nsmall = 2))`, sd = mean = `r toString(format(round(sd(dat$prey_avg_speed, na.rm = T), digits = 2), nsmall = 2))`). Hunting success was defined as the number of prey consumed during the match (min = `r toString(format(min(dat$hunting_success)))`, max = `r toString(format(max(dat$hunting_success)))`). Lastly, the predator's cumulative experience was defined as the number of matches played prior to the match being monitored. For example, the first match of a player would have a cumulative experience value of 0, while the tenth match would have a value of 9.
 
 
 ## Statistical analyses 
@@ -91,12 +91,9 @@ All our statistical analyses were executed on Cedar (https://docs.alliancecan.ca
 
 ### Effect of experience on hunting success
 
-We tested whether predators varied in the development of their expertise by computing 3 Bayesian generalized additive mixed models with thin plate regression splines. Here, we estimated the relationship between hunting success (i.e. number of prey captured) and the predators' cumulative experience (i.e. number of matches played before the current match). We parametrized the models with increasing complexity following @Pedersen.etal2019. The first model was the simplest, with a common global smoothing function for all observations and random intercepts for the predator ID. In this model, we assume that individuals have the same development of expertise, with the model estimating a trend for the average individual (i.e. global smoother). For the second model, we included varying group-level smoothers for the predator ID. In this model, we assume that individuals share a similar relationship between success and experience, but that this relationship can vary (e.g. individual 1 has a steeper curve than individual 2). This enabled us to test whether predators differed in the development of their expertise. In the third model, we kept the group-level smoothers for the predators, but removed the global smoother. This allows each individual to have a unique relationship between success and experience without penalization by the global smoother. Thus, this model assumes that predators do not share a common relationship between success and experience. For all three models, we controlled for the match duration.
+We tested whether predators varied in the development of their expertise by computing 3 Bayesian generalized additive mixed models (GAMM) with thin plate regression splines that estimated the relationship between hunting success (i.e. number of prey captured) and the predators' cumulative experience (i.e. number of matches played before the current match). We parametrized the models following the method by @Pedersen.etal2019. The first model was the simplest, with a common global smoothing function for all observations and random intercepts for the predator ID. In this model, we assume that individuals have the same development of expertise, with the model estimating a trend for the average individual (i.e. global smoother). For the second model, we included varying group-level smoothers for the predator ID. In this model, we assume that individuals share a similar relationship between success and experience, but that this relationship can vary (e.g. individual 1 has a steeper curve than individual 2). This enabled us to test whether predators differed in the development of their expertise. In the third model, we kept the group-level smoothers for the predators, but removed the global smoother. This allows each individual to have a unique relationship between success and experience without penalization by the global smoother. Thus, this model assumes that predators do not share a common relationship between success and experience. For all three models, we controlled for the match duration.
 
-Because a maximum of four prey can be captured in the game, we used the beta-binomial family distribution to estimate the probability of capturing all prey while controlling for overdispersion. The model parameters were estimated with a logit link function, while the dispersion parameter ($\phi$) was estimated with an identity link. The probability of capturing the four prey $P_{i}$ is drawn from a Beta distribution ($P_{i} ~ Beta(a_{i}, b_{i})$) with shape ($a_{i} = \frac{P_{i}}{\phi}$) and scale ($b_{i} = \frac{1 - P_{i}}{\phi}$) parameters. We employed the default number of basis functions (K) in "brms" for the model to estimate the relationship between hunting success and experience. We assumed that the random intercepts for the predator ID $id_{0,i}$ followed a Gaussian distribution with estimated variance ($id_{0,i} ~ N(0, V_{id})$). We parametrized all the models to run 4 MCMC chains with 1000 posterior samples for each parameter. We ran 2500 iterations for the first model with a thinning set to 8, and 1500 iterations with a thinning set to 4 for the second and third models. The first 500 iterations were used as warmups for all models. We provide a description on how we specified the priors of each model in the supporting information.
-
-After fitting the 3 models, we proceeded to select the one with the best predictive accuracy using approximate leave-one-out cross-validation with Pareto-smoothed importance sampling [@Vehtari.etal2017].
-
+Because a maximum of four prey can be captured in the game, we used the beta-binomial family distribution to estimate the probability of capturing all prey while controlling for overdispersion. The model parameters were estimated with a logit link function, while the dispersion parameter ($\phi$) was estimated with an identity link. The probability of capturing the four prey $P_{i}$ is drawn from a Beta distribution ($P_{i} \sim Beta(a_{i}, b_{i})$) with shape ($a_{i} = \frac{P_{i}}{\phi}$) and scale ($b_{i} = \frac{1 - P_{i}}{\phi}$) parameters. We employed the default number of basis functions (K) in "brms" for the model to estimate the relationship between hunting success and experience. We assumed that the random intercepts for the predator ID ($id_{0,i}$) followed a Gaussian distribution with estimated variance ($id_{0,i} \sim N(0, V_{id})$). We parametrized all models to run 4 MCMC chains with 1000 posterior samples. We ran 2500 iterations for the first model with a thinning set to 8, and 1500 iterations with a thinning set to 4 for the second and third models. The first 500 iterations were used as warmups. We provide a description on how we specified the priors for each model in the supporting information. After fitting the 3 models, we proceeded to select the one with the best predictive accuracy using approximate leave-one-out cross-validation with Pareto-smoothed importance sampling [@Vehtari.etal2017].
 
 ```{r}
 #\[
@@ -109,12 +106,9 @@ After fitting the 3 models, we proceeded to select the one with the best predict
 #\]
 ```
 
-
-
-
-
-
 ### Foraging tactics at each level of experience
+
+We proceeded to test whether foraging behavior changes with experience, and compare the success of generalists vs specialists, using a multivariate double hierarchical linear model (MDHLM) [@@leeDoubleHierarchicalGeneralized2006;@cleasbyQuantifyingPredictabilityBehaviour2015;@westneatBiologyHiddenResidual2014;@Mitchell.etal2016a]
 
 \newpage
 # RESULTS {.unnumbered}
@@ -122,18 +116,6 @@ After fitting the 3 models, we proceeded to select the one with the best predict
 ## Effect of experience on hunting success
 
 Contrary to our predictions, individual predators did not differ in the development of their expertise, as the best model was the one with a general population trend with varying intercepts only (Table x.). Moreover, we did not detect a relationship between experience (i.e. the cumulative amount of matches played) and hunting success, such that players did not optimize their success with increasing experience as we expected (Figure 1 A). However, predators did differ in their average hunting success across the study period (Figure 1 B).
-
-```{r, ft.align = "left"}
-
-tab1 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table1.rds"))
-
-set_caption(
-  tab1,
-  caption = "LOO table",
-  style = "Table Caption"
-)
-
-```
  
 <br>
  
@@ -141,10 +123,10 @@ blablabla
 
 ```{r, ft.align = "left"}
 
-tab2 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table2.rds"))
+tab1 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table2.rds"))
 
 set_caption(
-  tab2,
+  tab1,
   caption = "Posterior mean values, standard errors, and 95% credible intervals for the GAMM with a common global smoother",
   style = "Table Caption"
 )
