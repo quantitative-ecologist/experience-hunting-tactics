@@ -1,0 +1,9 @@
+---
+title: "Hunting experience and prey variability jointly shape individual foraging specialisation in a predator-prey videogame"
+output: 
+  word_document:
+    reference_docx: Chapter2-styles.docx
+    fig_caption: yes
+bibliography: references.bib
+csl: e-letters.csl
+---
