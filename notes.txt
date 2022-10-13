@@ -42,5 +42,11 @@ Se spécialiser devrait augmenter + rapidement l'expertise. (comment tester cela
 1 droite par groupe (1 géné, 1 spéc.)
 
 
+Parler avec Fran 2022-10-13
+control for avatar and map for the prey
+arrange the plot (scale) similar to petri's plot, check what happened (maybe email Anne Hertel)
+add the correlation matrix
+
+
 
 
