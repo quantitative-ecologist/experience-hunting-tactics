@@ -23,7 +23,7 @@
  library(ggridges)
  
  # import model
- fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
+ #fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
  fit <- readRDS("./tests/02B_DHMLM.rds")
  
 
@@ -33,8 +33,11 @@
  # Data
  data <- fread("./data/FraserFrancoetalXXXX-data.csv",
                select = c("predator_id",
+                          "pred_game_mode",
                           "total_xp_killer",
                           "pred_speed"))
+ 
+ data <- data[pred_game_mode == "Online"]
  
  # Extract standard deviation of speed
  sd_speed1 <- sd(data[total_xp_killer < 100]$pred_speed)
@@ -107,6 +110,13 @@ setnames(draws, "value", "speed_sigma")
 
 # Transform  ------------------------------------------------------------
 
+# Add population intercept
+int1 <- fixef(fit, pars = "sigma_speednovice_Intercept")[1]
+int2 <- fixef(fit, pars = "sigma_speedadvanced_Intercept")[1]
+
+draws[xp_level == "novice", speed_sigma := speed_sigma + int1]
+draws[xp_level == "advanced", speed_sigma := speed_sigma + int2]
+
 # Back transform to original scale (sigma is on log scale)
 draws[, exp_speed_sigma := exp(speed_sigma)]
 
@@ -167,109 +177,115 @@ table <- merge(unique(data[, "predator_id"]),
 
 # Plot experts ----------------------------------------------------------
 
-#scaled_breaks1 <- c(0.2 / sd_speed1,
-#                    0.6 / sd_speed1,
-#                    1.0 / sd_speed1,
-#                    1.4 / sd_speed1)
+ #scaled_breaks1 <- c(0.2 / sd_speed1,
+ #                    0.6 / sd_speed1,
+ #                    1.0 / sd_speed1,
+ #                    1.4 / sd_speed1)
+ 
+ # Extract 95% CI of intercepts
+ int1min <- exp(fixef(fit, pars = "sigma_speednovice_Intercept")[3])
+ int1max <- exp(fixef(fit, pars = "sigma_speednovice_Intercept")[4])
+ int2min <- exp(fixef(fit, pars = "sigma_speedadvanced_Intercept")[3])
+ int2max <- exp(fixef(fit, pars = "sigma_speedadvanced_Intercept")[4])
 
-
-# Plot the distributions of advanced players
-plot1 <- ggplot() +
-    
-    geom_vline(xintercept = exp(fixef(fit)[6]),
-                   linetype = "dashed",
-                   size = 1) +
-
-    geom_density_ridges(data = table[xp_level == "advanced"],
-                        rel_min_height = 0.005,
-                        fill = "#00AFBB",
-                        aes(x = exp_speed_sigma,
-                            y = predator_id,
-                            height = ..density..,
-                            scale = 3)) +
-    
-    geom_point(data = unique(table[xp_level == "advanced", c(1, 5)]),
-               aes(x = average_speed_sigma, 
-                   y = predator_id),
-               size = 1,
-               color = "black") +
-    scale_x_continuous(breaks = seq(0, 8, 2),
-                       limits = c(0, 8)) +
-    #scale_x_continuous(breaks = scaled_breaks1,
-    #                   labels = scaleFUN,
-    #                   limits = c(0, 4)) +
-
-    #scale_x_continuous(#breaks = c(-1, 0, 1),
-    #                   limits = c(0.1, 3.5),
-    #                   #expand = c(0, 0),
-    #                   sec.axis = sec_axis(trans = ~.,
-    #                                       breaks = scaled_breaks1,
-    #                                       labels = c(0.2, 0.4, 0.6, 0.8, 1),
-    #                                       name = "Within individual variance (m/s)\n")) +
-    
-    ylab("Predator ID\n") +
-    xlab("\nWithin individual variance (m/s)") +
-    labs(title = "After playing 300 matches") +
-    
-    custom_theme +
-    theme(axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
-          plot.title = element_text(size = 15))
+ # Plot the distributions of advanced players
+ plot1 <- ggplot() +
+     
+     annotate("rect",
+              fill = "firebrick2",
+              xmin = int2min,
+              xmax = int2max,
+              ymin = -Inf,
+              ymax = Inf, 
+              alpha = .5) +
+ 
+     geom_density_ridges(data = table[xp_level == "advanced"],
+                         rel_min_height = 0.005,
+                         fill = "#00AFBB",
+                         aes(x = exp_speed_sigma,
+                             y = predator_id,
+                             height = ..density..,
+                             scale = 3)) +
+     
+     geom_point(data = unique(table[xp_level == "advanced", c(1, 5)]),
+                aes(x = average_speed_sigma, 
+                    y = predator_id),
+                size = 1,
+                color = "black") +
+     scale_x_continuous(breaks = seq(0, 2, 0.5),
+                        limits = c(0, 2.5)) +
+     #scale_x_continuous(breaks = scaled_breaks1,
+     #                   labels = scaleFUN,
+     #                   limits = c(0, 4)) +
+     
+     ylab("Predator ID\n") +
+     xlab("\nIntra individual variance (m/s)") +
+     labs(title = "Advanced \nIntercept = 0.281 (0.263, 0.299)") +
+     
+     custom_theme +
+     theme(axis.text.y = element_blank(),
+           axis.ticks.y = element_blank(),
+           plot.title = element_text(size = 15,
+                                     face = "bold"))
 
 
 
 # Plot novices ----------------------------------------------------------
 
-#scaled_breaks2 <- c(0.2 / sd_speed2,
-#                    0.6 / sd_speed2,
-#                    1.0 / sd_speed2,
-#                    1.4 / sd_speed2)
+ #scaled_breaks2 <- c(0.2 / sd_speed2,
+ #                    0.6 / sd_speed2,
+ #                    1.0 / sd_speed2,
+ #                    1.4 / sd_speed2)
 
 
-# Plot the distributions of advanced players when they were novice
-plot2 <- ggplot() +
-
-    geom_vline(xintercept = exp(fixef(fit)[2]),
-               linetype = "dashed",
-               size = 1) +
-    
-    geom_density_ridges(data = table[xp_level == "novice"],
-                        rel_min_height = 0.005,
-                        fill = "#999999",
-                        aes(x = exp_speed_sigma,
-                            y = predator_id,
-                            height = ..density..,
-                            scale = 3)) +
-    
-    geom_point(data = unique(table[xp_level == "novice", c(1, 5)]),
-               aes(x = average_speed_sigma, 
-                   y = predator_id),
-               size = 1,
-               color = "black") +
-    
-    #scale_x_continuous(breaks = scaled_breaks2,
-    #                   labels = c(0.5, 1.5, 2.5, 3.5),
-    #                   limits = c(0, 4)) +
-    #scale_x_continuous(breaks = scaled_breaks2,
-    #                   labels = c(0.5, 1.5, 2.5, 3.5),
-    #                   limits = c(0, 4)) +
-
-    #scale_x_continuous(#breaks = c(-1, 0, 1),
-    #                   limits = c(0.1, 3.5),
-    #                   #expand = c(0, 0),
-    #                   sec.axis = sec_axis(trans = ~.,
-    #                                       breaks = scaled_breaks2,
-    #                                       labels = c(0.2, 0.4, 0.6, 0.8, 1),
-    #                                       name = "Within individual variance (m/s)\n")) +
-
-    ylab("Predator ID\n") +
-    xlab("\nWithin individual variance (ms/s)") +
-    labs(title = "First 100 matches") +
-
-    custom_theme +
-    theme(axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
-          plot.title = element_text(size = 15))
+ # Plot the distributions of advanced players when they were novice
+ plot2 <- ggplot() +
+ 
+     annotate("rect",
+              fill = "firebrick2",
+              xmin = int1min,
+              xmax = int1max,
+              ymin = -Inf,
+              ymax = Inf, 
+              alpha = .5) +
+     
+     geom_density_ridges(data = table[xp_level == "novice"],
+                         rel_min_height = 0.005,
+                         fill = "#999999",
+                         aes(x = exp_speed_sigma,
+                             y = predator_id,
+                             height = ..density..,
+                             scale = 3)) +
+     
+     geom_point(data = unique(table[xp_level == "novice", c(1, 5)]),
+                aes(x = average_speed_sigma, 
+                    y = predator_id),
+                size = 1,
+                color = "black") +
+     
+     scale_x_continuous(breaks = seq(0, 2, 0.5),
+                        limits = c(0, 2.5)) +
+     #scale_x_continuous(breaks = scaled_breaks2,
+     #                   labels = c(0.5, 1.5, 2.5, 3.5),
+     #                   limits = c(0, 4)) +
+ 
+     #scale_x_continuous(#breaks = c(-1, 0, 1),
+     #                   limits = c(0.1, 3.5),
+     #                   #expand = c(0, 0),
+     #                   sec.axis = sec_axis(trans = ~.,
+     #                                       breaks = scaled_breaks2,
+     #                                       labels = c(0.2, 0.4, 0.6, 0.8, 1),
+     #                                       name = "Within individual variance (m/s)\n")) +
+ 
+     ylab("Predator ID\n") +
+     xlab("\nIntra individual variance (m/s)") +
+     labs(title = "Novices \nIntercept = 0.279 (0.267, 0.292)") +
+ 
+     custom_theme +
+     theme(axis.text.y = element_blank(),
+           axis.ticks.y = element_blank(),
+           plot.title = element_text(size = 15,
+                                     face = "bold"))
 
 # =======================================================================
 # =======================================================================
@@ -298,8 +314,6 @@ plot2 <- ggplot() +
           width = 3500,
           height = 1800,
           res = 300)
-
-# correlation between sigma intercept = 0.42 [0.29, 0.54] 
 
 # =======================================================================
 # =======================================================================
