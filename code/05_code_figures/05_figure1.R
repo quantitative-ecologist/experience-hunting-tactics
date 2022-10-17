@@ -22,18 +22,18 @@
  tab <- readRDS(file.path(path, "04_CV-table.rds"))
  
  # Rename the XP variable
- tab[xp_level == "novice", xp_level := "Below 100"]
- tab[xp_level == "interm", xp_level := "Between 100 and 299"]
- tab[xp_level == "advanced", xp_level := "300 or more"]
+ tab[xp_level == "novice", xp_level := "Novice"]
+ tab[xp_level == "interm", xp_level := "Intermediate"]
+ tab[xp_level == "advanced", xp_level := "Advanced"]
  
  # Rename the behaviour names
  tab[variable == "pred_speed", variable := "Predator speed"]
  tab[variable == "prey_speed", variable := "Prey speed"]
 
  # Reorder factors
- tab[, xp_level := factor(xp_level, levels = c("Below 100",
-                                               "Between 100 and 299",
-                                               "300 or more"))]
+ tab[, xp_level := factor(xp_level, levels = c("Novice",
+                                               "Intermediate",
+                                               "Advanced"))]
  
  # Encode Parameter and variable as factor
  tab[, ":=" (Parameter = as.factor(Parameter),
