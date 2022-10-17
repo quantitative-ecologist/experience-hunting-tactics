@@ -204,7 +204,9 @@ speed_advanced <- bf(
 prey_speed_novice <- bf(
   prey_speed_novice | subset(sub1) ~
       1 + Zgame_duration +
-      (1 |a| predator_id),
+      (1 |a| predator_id) +
+      (1 | environment_id) +
+      (1 | predator_avatar_id),
   sigma ~  
       1 + Zgame_duration +
       (1 |a| predator_id)
@@ -213,7 +215,9 @@ prey_speed_novice <- bf(
 prey_speed_intermediate <- bf(
   prey_speed_interm | subset(sub2) ~
       1 + Zgame_duration +
-      (1 |a| predator_id),
+      (1 |a| predator_id) +
+      (1 | environment_id) +
+      (1 | predator_avatar_id),
   sigma ~ 
       1 + Zgame_duration +
       (1 |a| predator_id)
@@ -222,7 +226,9 @@ prey_speed_intermediate <- bf(
 prey_speed_advanced <- bf(
   prey_speed_advanced | subset(sub3) ~
       1 + Zgame_duration +
-      (1 |a| predator_id),
+      (1 |a| predator_id) +
+      (1 | environment_id) +
+      (1 | predator_avatar_id),
   sigma ~  
       1 + Zgame_duration +
       (1 |a| predator_id)
