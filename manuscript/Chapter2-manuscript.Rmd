@@ -4,6 +4,7 @@ output:
   word_document:
     reference_docx: Chapter2-styles.docx
     fig_caption: yes
+    pandoc_args: ["-Fpandoc-crossref"] # to have eq. numbers
 bibliography: references.bib
 csl: e-letters.csl
 ---
@@ -75,7 +76,7 @@ Individual predators in *DBD* display variation in the hunting strategies that t
 
 We were provided raw data by the videogame company that spanned a period of 6 months of gameplay recorded for every player. The first recorded match was played on `r toString(format(min(dat$date)))`, and the last one on `r toString(format(max(dat$date)))`. We applied cleaning and filtering procedures on the raw data to produce a synthetic dataset for our analyses. We only analyzed matches where players did not know each other (i.e. "Online" mode). We filtered any matches where players were inactive, such as when speed values were equal to, or very close to, zero. Moreover, we used our knowledge of the game to remove any matches where players were potentially hacking, or not playing the game has it is supposed to be played. These matches were not considered as player experience. We then proceeded to partition the player population by total experience, and randomly sampled players to have a uniform representation of total gameplay experience. To optimize the representation of gameplay experience at advanced levels, we set the maximum amount of matches at 500 for these players. For instance, there could be a large difference in gameplay between 300-500 and 500-1000 matches. Players that played above 500 matches represented only ~2% of the population.
 
-Our population consists of `r toString(format(length(unique(dat$predator_id))))` predator players with a total record of `r toString(format(length(unique(dat$match_encode_id))))` matches. The predator players' experience varied between `r toString(format(min(dat$total_xp_killer)))` and `r toString(format(max(dat$total_xp_killer)))` matches played. These matches lasted between `r toString(format(round(min(dat$pred_game_duration / 60))), digits = 2)` and `r toString(format(round(max(dat$pred_game_duration / 60))), digits = 2)` minutes (mean = `r toString(format(round(mean(dat$pred_game_duration / 60))), digits = 2)`). For every match, we report the predator player's anonymous ID, its avatar, the game environment, the predator player's experience along with its speed, and the average speed of the group of prey it encountered.
+Our population consists of `r toString(format(length(unique(dat$predator_id))))` predator players with a total record of `r toString(format(length(unique(dat$match_encode_id))))` matches. The predator players' experience varied between `r toString(format(min(dat$total_xp_killer)))` and `r toString(format(max(dat$total_xp_killer)))` matches played. These matches lasted between `r toString(format(round(min(dat$pred_game_duration / 60))), digits = 2)` and `r toString(format(round(max(dat$pred_game_duration / 60))), digits = 2)` minutes (mean = `r toString(format(round(mean(dat$pred_game_duration / 60))), digits = 2)`). The following information is collected and reported for every match : the player's anonymous ID, its avatar, the game environment, the predator player's experience along with its speed, and the average speed of the group of prey it encountered.
 
 
 ## Variables
@@ -95,7 +96,7 @@ We tested whether predators varied in the development of their expertise by comp
 
 Because a maximum of four prey can be captured in the game, and to control for overdispersion, we computed the three models using a modified version of the beta-binomial distribution implemented in "brms" (for an overview, see https://paul-buerkner.github.io/brms/articles/brms_customfamilies.html). Thus, hunting success was estimated as the probability of capturing the four prey ($p_i$), drawn from a Beta distribution ($p_i \sim Beta(\mu_i, \phi) = Beta(\alpha = \mu\phi, \beta = (1 - \mu)\phi)$) with mean ($\mu \in [0,1]$) and shape ($\phi > 0$) parameters. We employed a logit link function to estimate $\mu_i$ where $\mu_i = \frac{exp(\eta_i)}{exp(\eta_i) + 1}$ and $\eta_i$ is the linear predictor, while the shape parameter ($\phi$) was estimated with an identity link for all models.
 
-We employed the default number of basis functions (K) in "brms" for the models to estimate the relationship between hunting success and experience. We assumed that the random intercepts for the predator ID ($id_{0,i}$) followed a Gaussian distribution with estimated variance ($id_{0,i} \sim N(0, V_{id})$). We parametrized all models to run 4 MCMC chains with 1000 posterior samples. We ran 2500 iterations for the first model with a thinning set to 8, and 1500 iterations with a thinning set to 4 for the second and third models. The first 500 iterations were used as warmups. We provide a description on how we specified the priors for each model in the supporting information. After fitting the 3 models, we proceeded to select the one with the best predictive accuracy using approximate leave-one-out cross-validation with Pareto-smoothed importance sampling [@Vehtari.etal2017].
+We employed the default number of basis functions (K) in "brms" for the models to estimate the relationship between hunting success and experience. We assumed that the random intercepts for the predator ID ($id$) followed a Gaussian distribution with estimated variance ($id \sim N(0,\ I\ \sigma^2_{id})$). We parametrized all models to run 4 MCMC chains with 1000 posterior samples for each parameter. To do so, we ran 2500 iterations for the first model with a thinning set to 8, and 1500 iterations with a thinning set to 4 for the second and third models. The first 500 iterations were used as warmups. We provide a description on how we specified the priors for each model in the supporting information. After fitting the 3 models, we proceeded to select the one with the best predictive accuracy using approximate leave-one-out cross-validation with Pareto-smoothed importance sampling [@Vehtari.etal2017].
 
 ```{r}
 #\[
@@ -110,11 +111,35 @@ We employed the default number of basis functions (K) in "brms" for the models t
 
 ### Foraging behavior and success, prey behavior, and their relationships, at each level of experience
 
-We proceeded to test whether foraging behavior changes with experience, and compare the success of generalists vs specialists, using a multivariate double hierarchical generalized linear model (MDHGLM) [@leeDoubleHierarchicalGeneralized2006;@cleasbyQuantifyingPredictabilityBehaviour2015;@westneatBiologyHiddenResidual2014;@Mitchell.etal2016a;@ODea.etal2022].
+We proceeded to test whether foraging behavior changes with experience, and compare the success of generalists vs specialists, using a multivariate double hierarchical generalized linear model (MDHGLM) [@leeDoubleHierarchicalGeneralized2006;@cleasbyQuantifyingPredictabilityBehaviour2015;@westneatBiologyHiddenResidual2014;@Mitchell.etal2016a;@ODea.etal2022]. We categorized the predators by their experience using the predicted values from the GAMM (see Figure S1 in the supporting information). We assigned the status of "novice" to any predator player that had a cumulative experience below 100 matches. For example, a predator player that played 500 matches in total would be labelled as a novice in its first 100 matches. Following this logic, we labelled predators as "intermediate" hunters when they had a cumulative experience between 100 and 299 and matches. For the third and last group, we defined predators as "advanced" hunters when they had a cumulative experience equal or above 300, with a maximum of 499 matches.
 
-expliquer comment j'ai partitionné l'expérience basée sur les résultats du GAMM
-expliquer que j'ai calculé le coefficient de variation pour comparer le comportement
+For each level of experience (i.e. novice, intermediate, advanced), we estimated the mean speed of individual predators, and an heterogeneous structure of the residuals such that we could estimate their intra individual variance (IIV) in speed (i.e. specialization). We followed the same structure for the preys' speed to estimate among individual differences in the mean and variance in speed of the prey encountered by predators. For hunting success, we only modeled the mean part of the equation to estimate among individual differences in mean hunting success. For all variables, we controlled for the duration of the match standardized in mean and unit variance. The model has the following form, with each equation repeated three times (i.e. one for each level of experience) :
 
+$$
+\begin{align}
+speed_{pred} &= \text{ } X_{m}\ b_m + M\ env_{m} + N\ av_{m} + Z\ id_{m} + e \\
+log(\sigma^2_{e,\ pred}) &= X_{d} + Z\ id_{d}
+\end{align}
+$${#eq:eqn1}
+
+$$
+\begin{align}
+speed_{prey} &= \text{ } X_{m}\ b_m + M\ env_{m} + N\ av_{m} + Z\ id_{m} + e \\
+log(\sigma^2_{e,\ prey}) &= X_{d} + Z\ id_{d}
+\end{align}
+$${#eq:eqn2}
+
+$$
+\begin{align}
+success_{pred} &= \text{ } X_{m}\ b_m + Z\ id_{m} + e
+\end{align}
+$${#eq:eqn3}
+
+where $env \sim N(0,\ I\ \sigma^2_{env})$, $av \sim N(0,\ I\ \sigma^2_{av})$, and $id \sim N(0,\ I\ \sigma^2_{id})$. $b$ is the vector of fixed effects with its incidence matrix $X$. $env$, $av$, and $id$ are the vectors of random environment, random avatar, and random individual identity effects associated with their incidence matrices $M$, $N$, and $Z$. The variance parameters $\sigma^2_{env}$, $\sigma^2_{av}$, and $\sigma^2_{id}$, correspond to the among environment, among avatar, and among individual variances, respectively. $I$ is the identity matrix, with $I,\ \sigma^2$ indicating that the random effects are independently and identically distributed. The $m$ and $d$ subscripts indicate that an estimate is from the mean or dispersion part of the model, respectively. The first two equations were parametrized with a Gaussian distribution family, while the third equation was parametrized with a beta-binomial distribution family. We parametrized the model to run 4 MCMC chains with 1000 posterior samples for each parameter. To do so, we ran 2500 iterations with a thinning set to 8, with the first 500 iterations used as warmups. We explain how we specified the priors for the MDHGLM in the supporting information.
+
+We estimated the correlation between the individual random effect on the mean and on the dispersion within each trait (e.g. $cor(\sigma^2_{id_{m}\ pred}\ \sigma^2_{id_{d}\ pred})$) and among each trait (e.g. $cor(\sigma^2_{id_{m}\ pred}\ \sigma^2_{id_{d}\ prey})$) within a level of experience. We also evaluated these correlations among the different levels of experience (e.g. $cor(\sigma^2_{id_{m}\ pred\ novice}\ \sigma^2_{id_{d}\ pred\ intermediate})$). The latter "character-state" approach [@Via.Lande1985;@viaAdaptivePhenotypicPlasticity1995], enables us to investigate whether predators express similar behaviors across each developmental stage. The correlations were estimated using a multivariate Gaussian distribution.
+
+Lastly we calculated the coefficient of variation in the mean (termed $CV_I$) and dispersion (termed $CV_p$) part of the predator's speed for each stage of experience, allowing us to report standardized effect sizes of individual variance for comparison across traits and studies [@cleasbyQuantifyingPredictabilityBehaviour2015;@Holtmann.etal2017;@Dingemanse.etal2022]. This also allowed us to evaluate whether predators displayed increasing/decreasing differences in specialization at each stage of experience.
 
 
 \newpage
@@ -125,17 +150,19 @@ expliquer que j'ai calculé le coefficient de variation pour comparer le comport
 
 Contrary to our predictions, individual predators did not differ in the development of their expertise, as the best model was the one with a global smoother with varying intercepts only (Table S1 in the supporting information). The model detected only a weak relationship between hunting success and experience (i.e. the cumulative amount of matches played), such that players did not substantially optimize their success with increasing experience as we expected (Table 1 and Figure S1 in the supporting information). However, predators did differ in their average hunting success across the study period (Figure S1). *peut être coder un autre modèle où je contrôle pour les proies afin de voir si les différences de succès disparaissent*
 
-```{r, ft.align = "left"}
+```{r table1, ft.align = "left"}
 
 tab1 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table2.rds"))
 
 set_caption(
   tab1,
-  caption = "Posterior mean values, standard errors, and 95% credible intervals for the GAMM with a common global smoother. The values are presented on the logit scale",
+  caption = "Posterior mean values, standard errors, and 95% credible intervals for the GAMM with a common global smoother. The values are presented on the logit scale.",
   style = "Table Caption"
 )
 
 ```
+
+
 
 
 ## Effect of experience on the development of behavioral specialization
@@ -143,7 +170,7 @@ set_caption(
 
 
 
-```{r out.width = "100%", fig.cap = "**Figure 1.** Coefficient of variation for the predator's speed and for the speed of the prey encountered at each level of experience. (A) Coefficient of variation for the among individual differences in average behavior. (B) Coefficient fo variation for the among individual differences in intra individual variance (i.e. specialization)."}
+```{r fig1, out.width = "100%", fig.cap = "**Figure 1.** Coefficient of variation for the predator's speed and for the speed of the prey encountered at each level of experience. (A) Coefficient of variation for the among individual differences in average behavior. (B) Coefficient fo variation for the among individual differences in intra individual variance (i.e. specialization)."}
 
 knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure1.png"))
 
@@ -151,7 +178,7 @@ knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure1.
 
 blablabla figure 2
 
-```{r out.width = "100%", fig.cap = "**Figure 2.** Distribution of the intra individual behavioral variation (i.e. specialization) of predators when they were (A) novices and (B) advanced. The red band displays the 95% CI of the intercept for the intra individual variance in predator speed."}
+```{r fig2, out.width = "100%", fig.cap = "**Figure 2.** Distribution of the intra individual behavioral variation (i.e. specialization) of predators when they were (A) novices and (B) advanced. The red band displays the 95% CI of the intercept for the intra individual variance in predator speed."}
 
 knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure2.png"))
 
@@ -163,7 +190,7 @@ knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure2.
 
 
 
-```{r out.width = "100%", fig.cap = "**Figure 3.** Full correlation matrix of the MDHGLM relating the mean and IIV speed of the predators, the mean and IIV in speed of the prey they encountered, and mean hunting success. Starting from the upper part of the plot are displayed the five parameters for novice predators (gray), the five for intermediate predators (yellow), and the five for advanced predators (blue). Larger dark blue circles indicate stronger positive correlations, while larger dark red circles indicate stronger negative correlations. The black squares indicate correlations between different experience levels."}
+```{r fig3, out.width = "100%", fig.cap = "**Figure 3.** Full correlation matrix of the MDHGLM relating the mean and IIV speed of the predators, the mean and IIV in speed of the prey they encountered, and mean hunting success. Starting from the upper part of the plot are displayed the five parameters for novice predators (gray), the five for intermediate predators (yellow), and the five for advanced predators (blue). Larger dark blue circles indicate stronger positive correlations, while larger dark red circles indicate stronger negative correlations. The black squares indicate correlations between different experience levels."}
 
 knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure3.png"))
 
@@ -175,7 +202,7 @@ knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure3.
 *relationship between IIV of prey and success fades with experience*
 
 
-```{r out.width = "100%", fig.cap = "**Figure 4.** Title (A) and (B) Novices. (C) and (D) Advanced."}
+```{r fig4, out.width = "100%", fig.cap = "**Figure 4.** Title (A) and (B) Novices. (C) and (D) Advanced."}
 
 knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure4.png"))
 
