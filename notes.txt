@@ -50,3 +50,5 @@ add the correlation matrix
 
 
 
+# Refaire modèles avec métriques de XP différentes
+# Faire modèle succès avec expérience de Bhvr
