@@ -296,6 +296,13 @@
       "Repository": "CRAN",
       "Hash": "eebd27ee58fcc58714eedb7aa07d8ad1"
     },
+    "devEMF": {
+      "Package": "devEMF",
+      "Version": "4.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3b9b8fdf440878e3099aa57a523c1098"
+    },
     "diffobj": {
       "Package": "diffobj",
       "Version": "0.3.5",
@@ -345,6 +352,18 @@
       "Repository": "CRAN",
       "Hash": "699a7a93d08c962d9f8950b2d7a227f1"
     },
+    "export": {
+      "Package": "export",
+      "Version": "0.3.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "export",
+      "RemoteUsername": "tomwenseleers",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "1afc8e214dfc10c2e9f53dd1cd4042b7023117d5",
+      "Hash": "d2fe5455c2bf5bd16a3ddb3bd284f238"
+    },
     "fansi": {
       "Package": "fansi",
       "Version": "1.0.3",
@@ -365,6 +384,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "77bd60a6157420d4ffa93b27cf6a58b8"
+    },
+    "flextable": {
+      "Package": "flextable",
+      "Version": "0.7.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "48663c451d1b751c9b613829f46f26fc"
     },
     "fontawesome": {
       "Package": "fontawesome",
@@ -393,6 +419,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "877024e372cf61e41f5d13eafd8d4bac"
+    },
+    "gdtools": {
+      "Package": "gdtools",
+      "Version": "0.2.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "bdfa7431687797edff8c9b0eb9271cc8"
     },
     "generics": {
       "Package": "generics",
@@ -716,6 +749,20 @@
       "Repository": "CRAN",
       "Hash": "df58958f293b166e4ab885ebcad90e02"
     },
+    "officer": {
+      "Package": "officer",
+      "Version": "0.4.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "412d0a3a35484ddb3fffd07d5f38fa36"
+    },
+    "openxlsx": {
+      "Package": "openxlsx",
+      "Version": "4.2.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "fc5e0e85d3a1e4282f04f303627b7e72"
+    },
     "parallelly": {
       "Package": "parallelly",
       "Version": "1.31.1",
@@ -856,6 +903,13 @@
       "Repository": "CRAN",
       "Hash": "bb5996d0bd962d214a11140d77589917"
     },
+    "rgl": {
+      "Package": "rgl",
+      "Version": "0.110.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d144dbb98f124612c5da6e13768c4e0f"
+    },
     "rlang": {
       "Package": "rlang",
       "Version": "1.0.2",
@@ -904,6 +958,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "06c85365a03fdaf699966cc1d3cf53ea"
+    },
+    "rvg": {
+      "Package": "rvg",
+      "Version": "0.2.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "a823d1d2fd9dcb8eb648d85ad68be046"
     },
     "sass": {
       "Package": "sass",
@@ -960,6 +1021,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "ce8613f4e8c84ef4da9eba65b874ebe9"
+    },
+    "stargazer": {
+      "Package": "stargazer",
+      "Version": "5.2.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d313fa83180f3376229f98633813cd31"
     },
     "stringi": {
       "Package": "stringi",
@@ -1038,6 +1106,13 @@
       "Repository": "CRAN",
       "Hash": "c9c462b759a5cc844ae25b5942654d13"
     },
+    "uuid": {
+      "Package": "uuid",
+      "Version": "1.1-0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "f1cb46c157d080b729159d407be83496"
+    },
     "vctrs": {
       "Package": "vctrs",
       "Version": "0.4.1",
@@ -1093,6 +1168,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "458bb38374d73bf83b1bb85e353da200"
+    },
+    "zip": {
+      "Package": "zip",
+      "Version": "2.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c7eef2996ac270a18c2715c997a727c5"
     },
     "zoo": {
       "Package": "zoo",
