@@ -1,6 +1,6 @@
 # ==========================================================================
 
-#                   GAMM model G - single common smoother
+#            GAMM model G - single common smoother - Hunting success
 
 # ==========================================================================
 
@@ -35,22 +35,16 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data on compute canada
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
-                         "pred_game_mode",
                          "hunting_success",
-                         "pred_game_duration",
-                         "pred_speed",
-                         "cumul_xp_killer"))
+                         "game_duration",
+                         "cumul_xp_pred"))
 
 # Project path for testing
 #data <- fread("./data/FraserFrancoetalXXXX-data.csv",
 #              select = c("predator_id",
 #                         "hunting_success",
-#                         "pred_game_duration",
-#                         "pred_speed",
-#                         "cumul_xp_killer"))
-
-data <- unique(data)
-data <- data[pred_game_mode == "Online"]
+#                         "game_duration",
+#                         "cumul_xp_pred"))
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
@@ -63,9 +57,8 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) /
                               sd(x, na.rm = TRUE)}
 
 data[, c("Zgame_duration",
-         "Zspeed",
          "Zcumul_xp") := lapply(.SD, standardize), 
-       .SDcols = c(4:6)]
+       .SDcols = c(3:4)]
 
 # ==========================================================================
 # ==========================================================================
