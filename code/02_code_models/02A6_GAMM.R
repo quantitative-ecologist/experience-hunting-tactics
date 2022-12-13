@@ -94,10 +94,7 @@ priors <- c(
   #          coef = "sZcumul_xp_1"),
   # prior on the intercept
   set_prior("normal(0, 0.5)",
-            class = "Intercept"),
-  # priors on phi
-  set_prior("normal(2, 0.5)",
-            class = "phi")
+            class = "Intercept")
 )
 
 # ==========================================================================
@@ -112,7 +109,7 @@ priors <- c(
 # ==========================================================================
 
 model_s <- brm(formula = model_formula,
-                family = beta_binomial2,
+                family = gaussian,
                 warmup = 500, 
                 iter = 1500,
                 thin = 4,
