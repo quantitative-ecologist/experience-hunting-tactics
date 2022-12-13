@@ -125,8 +125,7 @@ model_gs <- brm(formula = model_formula,
                 prior = priors,
                 sample_prior = TRUE,
                 control = list(adapt_delta = 0.99),
-                data = data,
-                stanvars = stanvars)
+                data = data)
 
 saveRDS(model_gs, file = "02A5_GAMM.rds")
 

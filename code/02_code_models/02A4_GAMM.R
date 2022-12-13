@@ -130,8 +130,7 @@ model_g <- brm(formula = model_formula,
                prior = priors,
                sample_prior = TRUE,
                control = list(adapt_delta = 0.99),
-               data = data,
-               stanvars = stanvars)
+               data = data)
 
 saveRDS(model_g, file = "02A4_GAMM.rds")
 
