@@ -109,7 +109,7 @@ priors <- c(
 # ==========================================================================
 
 model_s <- brm(formula = model_formula,
-                family = gaussian,
+                family = gaussian(),
                 warmup = 500, 
                 iter = 1500,
                 thin = 4,
