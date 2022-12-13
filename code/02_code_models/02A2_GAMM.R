@@ -124,12 +124,12 @@ priors <- c(
             class = "b",
             coef = "sZcumul_xp_1"),
   # prior on the intercept
-  set_prior("normal(0, 2)",
+  set_prior("normal(0, 0.5)",
             class = "Intercept"),
   # priors on smooth terms
-  set_prior("normal(0, 1)",
-            class = "sds",
-            coef = "s(Zcumul_xp)"),
+  #set_prior("normal(0, 1)",
+  #          class = "sds",
+  #          coef = "s(Zcumul_xp)"),
   # priors on phi
   set_prior("normal(2, 0.5)",
             class = "phi")

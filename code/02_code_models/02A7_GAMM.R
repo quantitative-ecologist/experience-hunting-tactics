@@ -126,15 +126,15 @@ priors <- c(
             class = "b",
             coef = "sZcumul_xp_1"),
   # prior on the intercept
-  set_prior("normal(0.05, 0.5)",
+  set_prior("normal(0, 0.5)",
             class = "Intercept"),
   # prior on sds predator_id
-  set_prior("normal(0.60, 0.5)",
+  set_prior("normal(0, 0.5)",
             class = "sds"),
   # priors on smooth terms
-  set_prior("cauchy(0, 2)",
-            class = "sds",
-            coef = "s(Zcumul_xp)"),
+  #set_prior("cauchy(0, 2)",
+  #          class = "sds",
+  #          coef = "s(Zcumul_xp)"),
   # priors on phi
   set_prior("normal(2, 0.5)",
             class = "phi")
