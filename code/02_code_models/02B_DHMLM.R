@@ -42,18 +42,14 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data on compute canada
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
-                         "pred_game_mode",
                          "predator_avatar_id",
                          "environment_id",
                          "hunting_success",
-                         "cumul_xp_killer",
-                         "pred_game_duration",
+                         "cumul_xp_pred",
+                         "game_duration",
                          "pred_speed",
                          "total_chase_duration",
                          "prey_avg_speed"))
-
-data <- unique(data)
-data <- data[pred_game_mode == "Online"]
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
@@ -91,13 +87,13 @@ data[, environment_id := as.factor(environment_id)]
 
 # This is done so the model partition the covariances by experience
 
-data[cumul_xp_killer < 100,
+data[cumul_xp_pred < 100,
      xp_level := "novice"]
 
-data[cumul_xp_killer %between% c(100, 299),
+data[cumul_xp_pred %between% c(100, 299),
      xp_level := "intermediate"]
 
-data[cumul_xp_killer >= 300,
+data[cumul_xp_pred >= 300,
      xp_level := "advanced"]
 
 # Encode the variable as a factor
@@ -108,14 +104,6 @@ data[, xp_level := as.factor(xp_level)]
 data[, sub1 := ifelse(xp_level == "novice", 1, 0)]
 data[, sub2 := ifelse(xp_level == "intermediate", 1, 0)]
 data[, sub3 := ifelse(xp_level == "advanced", 1, 0)]
-
-
-
-# Transform variables ---------------------------------------------------
-
-#data[, ":=" (sqrt_ambush_time_close = sqrt(ambush_time_close),
-#             log_latency_1st_capture = log(latency_1st_capture + 1),
-#             sqrt_game_duration = sqrt(game_duration)) ]
 
 
 
@@ -130,7 +118,7 @@ standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)}
 
 data[, Zgame_duration :=
        lapply(.SD, standardize), 
-       .SDcols = "pred_game_duration",
+       .SDcols = "game_duration",
        by = xp_level]
 
 # Compute the new columns for each level of experience
