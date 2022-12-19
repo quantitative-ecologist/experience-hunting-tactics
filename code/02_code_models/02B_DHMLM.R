@@ -42,7 +42,7 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 # Load data on compute canada
 data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
-                         "predator_avatar_id",
+                         "avatar_id",
                          "environment_id",
                          "hunting_success",
                          "cumul_xp_pred",
@@ -53,7 +53,7 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
-data[, predator_avatar_id := as.factor(predator_avatar_id)]
+data[, predator_avatar_id := as.factor(avatar_id)]
 data[, environment_id := as.factor(environment_id)]
 
 # =======================================================================
@@ -157,7 +157,7 @@ speed_novice <- bf(
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
-      (1 | predator_avatar_id),
+      (1 | avatar_id),
   sigma ~  
       1 + Zgame_duration +
       (1 |a| predator_id)
@@ -168,7 +168,7 @@ speed_intermediate <- bf(
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
-      (1 | predator_avatar_id),
+      (1 | avatar_id),
   sigma ~  
       1 + Zgame_duration +
       (1 |a| predator_id)
@@ -179,7 +179,7 @@ speed_advanced <- bf(
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
-      (1 | predator_avatar_id),
+      (1 | avatar_id),
   sigma ~  
       1 + Zgame_duration +
       (1 |a| predator_id)
@@ -194,7 +194,7 @@ prey_speed_novice <- bf(
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
-      (1 | predator_avatar_id),
+      (1 | avatar_id),
   sigma ~  
       1 + Zgame_duration +
       (1 |a| predator_id)
@@ -205,7 +205,7 @@ prey_speed_intermediate <- bf(
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
-      (1 | predator_avatar_id),
+      (1 | avatar_id),
   sigma ~ 
       1 + Zgame_duration +
       (1 |a| predator_id)
@@ -216,7 +216,7 @@ prey_speed_advanced <- bf(
       1 + Zgame_duration +
       (1 |a| predator_id) +
       (1 | environment_id) +
-      (1 | predator_avatar_id),
+      (1 | avatar_id),
   sigma ~  
       1 + Zgame_duration +
       (1 |a| predator_id)
