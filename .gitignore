@@ -9,5 +9,5 @@ data
 tests
 plan
 dump
-outputs/model_outputs
+outputs/02_model_outputs
 .Rproj.user
