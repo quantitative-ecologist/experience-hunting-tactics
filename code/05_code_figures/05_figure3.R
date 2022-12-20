@@ -236,7 +236,7 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
               ymax = Inf, 
               alpha = .5) +
      
-     geom_density_ridges(data = table[xp_level == "advanced"],
+     geom_density_ridges(data = draws[xp_level == "advanced"],
                          rel_min_height = 0.005,
                          fill = "#00AFBB",
                          aes(x = exp_speed_sigma,
@@ -244,7 +244,7 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
                              height = ..density..,
                              scale = 3)) +
      
-     geom_point(data = unique(table[xp_level == "advanced", c(1, 5)]),
+     geom_point(data = unique(draws[xp_level == "advanced", c(1, 5)]),
                 aes(x = average_speed_sigma, 
                     y = predator_id),
                 size = 1,
@@ -288,10 +288,9 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
 # Combine as one figure -------------------------------------------------
 
  # Combine plots
- figure <- ggarrange(NULL, plot1, NULL, plot2,
-                     labels = c("(A)", "", "(B)", ""),
-                     widths = c(0.15, 1.5, 0.15, 1.5),
-                     ncol = 4, nrow = 1)
+ figure <- ggarrange(plot1, plot2,
+                     labels = c("(A)", "(B)"),
+                     ncol = 2, nrow = 1)
 
  # Folder path
  path <- file.path(getwd(), "outputs", "05_outputs_figures")
