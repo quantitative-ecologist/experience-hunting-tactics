@@ -27,14 +27,14 @@
  
  # Import model in R session
  mod1 <- readRDS(file.path(path, "02A1_GAMM.rds"))
- mod4 <- readRDS(file.path(path, "02A4_GAMM.rds"))
- mod7 <- readRDS(file.path(path, "02A7_GAMM.rds"))
+ mod2 <- readRDS(file.path(path, "02A2_GAMM.rds"))
+ mod3 <- readRDS(file.path(path, "02A3_GAMM.rds"))
  
  
  # Extract posterior draws
  posterior_fit1 <- as_draws_df(mod1)
- posterior_fit2 <- as_draws_df(mod4)
- posterior_fit3 <- as_draws_df(mod7)
+ posterior_fit2 <- as_draws_df(mod2)
+ posterior_fit3 <- as_draws_df(mod3)
 
 # ==================================================================================
 # ==================================================================================
