@@ -17,31 +17,27 @@
  library(data.table)
  
  # import model
+ path<- file.path(getwd(), "outputs", "02_outputs_models")
  fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
- fit <- readRDS("./tests/02B_DHMLM.rds")
  
  # Load data
  data <- fread("./data/FraserFrancoetalXXXX-data.csv",
                select = c("predator_id",
-                          "pred_game_mode",
-                          "pred_game_duration",
+                          "game_duration",
                           "pred_speed",
                           "prey_avg_speed",
-                          "cumul_xp_killer",
-                          "total_xp_killer",
+                          "cumul_xp_pred",
+                          "total_xp_pred",
                           "hunting_success"))
  
- data <- unique(data)
- data <- data[pred_game_mode == "Online"]
- 
  # Experience column
- data[cumul_xp_killer < 100,
+ data[cumul_xp_pred < 100,
       xp_level := "novice"]
  
- data[cumul_xp_killer %between% c(100, 299),
+ data[cumul_xp_pred %between% c(100, 299),
       xp_level := "intermediate"]
  
- data[cumul_xp_killer >= 300,
+ data[cumul_xp_pred >= 300,
       xp_level := "advanced"]
  
  # Encode variables as a factor
@@ -118,10 +114,10 @@
 # Save the table --------------------------------------------------------
 
  # Path
- path <- "./outputs/04_outputs_model-processing"
+ path1 <- file.path("outputs", "04_outputs_model-processing")
 
  # Save
- saveRDS(draws, file = file.path(path, "04_id-draws.rds"))
+ saveRDS(draws, file = file.path(path1, "04_id-draws.rds"))
 
 # =======================================================================
 # =======================================================================
