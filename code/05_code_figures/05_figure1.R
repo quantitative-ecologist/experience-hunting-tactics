@@ -1,173 +1,211 @@
-# =======================================================================
+# ==========================================================================
 
-#                   Plot the coefficients of variation
+#                          Plot 02A1 GAMM model
 
-# =======================================================================
-
-
+# ==========================================================================
 
 
 
-# =======================================================================
-# 1. Import the libraries and data
-# =======================================================================
+# ==========================================================================
+# 1. Prepare script
+# ==========================================================================
 
- # Libraries
+
+
+# Load libraries and model -------------------------------------------------
+
+ library(brms)
  library(data.table)
  library(ggplot2)
  library(ggpubr)
-
- # CV table
- path <- "./outputs/04_outputs_model-processing"
- tab <- readRDS(file.path(path, "04_CV-table.rds"))
+ library(viridis)
  
- # Rename the XP variable
- tab[xp_level == "novice", xp_level := "Novice"]
- tab[xp_level == "interm", xp_level := "Intermediate"]
- tab[xp_level == "advanced", xp_level := "Advanced"]
+ path <- file.path(getwd(), "outputs", "02_outputs_models")
+
+ mod1 <- readRDS(file.path(path, "02A3_GAMM.rds"))
+ mod2 <- readRDS(file.path(path, "02A3_prey-GAMM.rds"))
+
+
  
- # Rename the behaviour names
- tab[variable == "pred_speed", variable := "Predator speed"]
- tab[variable == "prey_speed", variable := "Prey speed"]
+# Load the data ------------------------------------------------------------
 
- # Reorder factors
- tab[, xp_level := factor(xp_level, levels = c("Novice",
-                                               "Intermediate",
-                                               "Advanced"))]
+ data <- fread("./data/FraserFrancoetalXXXX-data.csv",
+               select = c("predator_id",
+                          "game_duration",
+                          "pred_speed",
+                          "prey_avg_speed",
+                          "cumul_xp_pred",
+                          "total_xp_pred",
+                          "hunting_success",
+                          "latency_1st_capture",
+                          "chase_count",
+                          "chase_count_success"))
  
- # Encode Parameter and variable as factor
- tab[, ":=" (Parameter = as.factor(Parameter),
-             variable = as.factor(variable))]
+ data[, predator_id := as.factor(predator_id)]
+
+
+
+# Post processing preparations for custom family ---------------------------
+
+ expose_functions(mod1, vectorize = TRUE)
  
-# =======================================================================
-# =======================================================================
-
-
-
-
-
-# =======================================================================
-# 2. Prepare the figure options
-# =======================================================================
-
-
-# Set custom theme -----------------------------------------------------
-
- custom_theme <- theme(# axis values size
-                       axis.text.x = element_text(face = "plain", 
-                                                  size = 15,
-                                                  color = "black"),
-                       axis.text.y = element_text(face = "plain", 
-                                                  size = 15,
-                                                  color = "black"),
-                       # axis ticks lenght
-                       axis.ticks.length = unit(.15, "cm"),
-                       # axis ticks width
-                       axis.ticks = element_line(size = 0.90, 
-                                                 color = "black"),
-                       # axis titles size
-                       axis.title = element_text(size = 17, 
-                                                 face = "plain",
-                                                 color = "black"),
-                       axis.line = element_line(size = 0.95,
-                                                color = "black"),
-                       panel.grid = element_blank(),
-                       panel.background = element_blank())
-
-# =======================================================================
-# =======================================================================
-
-
-
-
-
-# =======================================================================
-# 3. Make the plot
-# =======================================================================
-
-
-# Plot mu --------------------------------------------------------------
+ # Define the log likelihood function
+ log_lik_beta_binomial2 <- function(i, prep) {
+   mu <- brms::get_dpar(prep, "mu", i = i)
+   phi <- brms::get_dpar(prep, "phi", i = i)
+   trials <- prep$data$vint1[i]
+   y <- prep$data$Y[i]
+   beta_binomial2_lpmf(y, mu, phi, trials)
+ }
  
- cv_plot1 <- ggplot(tab[Parameter == "mu"],
-                    aes(x = variable, y = mean,
-                        color = xp_level,
-                        shape = xp_level)) +
+ # Define function for posterior_predict
+ posterior_predict_beta_binomial2 <- function(i, prep, ...) {
+   mu <- brms::get_dpar(prep, "mu", i = i)
+   phi <- brms::get_dpar(prep, "phi", i = i)
+   trials <- prep$data$vint1[i]
+   beta_binomial2_rng(mu, phi, trials)
+ }
  
-     geom_pointrange(aes(ymin = lower_ci,
-                         ymax = upper_ci),
-                     size = 0.8,
-                     position = position_dodge(width = 0.3)) +
+ # Define function for posterior_epred
+ posterior_epred_beta_binomial2 <- function(prep) {
+   mu <- brms::get_dpar(prep, "mu")
+   trials <- prep$data$vint1
+   trials <- matrix(trials, nrow = nrow(mu), ncol = ncol(mu), byrow = TRUE)
+   mu * trials
+ }
+
+
+
+# Setup a custom theme for the plot ----------------------------------------
  
-     scale_shape_manual(name = "Total experience :",
-                         values = c(15, 16, 17)) +
-     scale_color_manual(name = "Total experience :",
-                        values = c("#999999", "#E69F00", "#00AFBB")) +
-     
-     scale_y_continuous(breaks = seq(0.1, 0.6, 0.1),
-                        limits = c(0.02, 0.6)) +
+ custom_theme <- theme(
+   # axis values size
+   axis.text.x = element_text(face = "plain", 
+                              size = 12,
+                              color = "black"),
+   axis.text.y = element_text(face = "plain", 
+                              size = 12,
+                              color = "black"),
+   # axis ticks lenght
+   axis.ticks.length = unit(.15, "cm"),
+   # axis ticks width
+   axis.ticks = element_line(size = 0.90, 
+                             color = "black"),
+   # axis titles size
+   axis.title = element_text(size = 14, 
+                             face = "plain",
+                             color = "black"),
+   axis.line = element_line(size = 0.95,
+                            color = "black"),
+   legend.position = "none",
+   panel.grid = element_blank(),
+   panel.background = element_blank()
+ )
 
-     ylab("Coefficient of variation (mean)\n") +
-     xlab("\nBehavior") +
-     
-     custom_theme +
-      theme(axis.title.x = element_blank(),
-            legend.position = "top",
-            legend.key = element_rect(fill = "transparent"),
-            legend.title = element_text(size = 15),
-            legend.text = element_text(size = 14))
+# ==========================================================================
+# ==========================================================================
 
 
 
-# Plot sigma ------------------------------------------------------------
+
+
+# ==========================================================================
+# 2. Plot 1 : GAMM fitted line
+# ==========================================================================
+
+
+
+# Prepare the plot ---------------------------------------------------------
  
- cv_plot2 <- ggplot(tab[Parameter == "sigma"],
-                    aes(x = variable, y = mean,
-                        color = xp_level,
-                        shape = xp_level)) +
+ # Conditions back-transforms to probability scale
+
+ # With intercept using built-in function
+ fig1 <- conditional_smooths(mod1, method = "fitted", robust = FALSE)
+ fig2 <- conditional_smooths(mod2, method = "fitted", robust = FALSE)
  
-     geom_pointrange(aes(ymin = lower_ci,
-                         ymax = upper_ci),
-                     size = 0.8,
-                     position = position_dodge(width = 0.3)) +
+ # Extract values in a table
+ tab1 <- fig1[[1]]
+ tab2 <- fig2[[1]]
  
-     scale_shape_manual(name = "Total experience :",
-                         values = c(15, 16, 17)) +
-     scale_color_manual(name = "Total experience :",
-                        values = c("#999999", "#E69F00", "#00AFBB")) +
-     scale_y_continuous(breaks = seq(0.1, 0.6, 0.1),
-                        limits = c(0.02, 0.6)) +
+ # Transform as data.table
+  tab1 <- data.table(tab1)
+  tab2 <- data.table(tab2)
+  
 
-     ylab("Coefficient of variation (IIV)\n") +
-     xlab("\nBehavior") +
-     
-     custom_theme +
-     theme(axis.title.x = element_blank(),
-           legend.position = "top",
-           legend.key = element_rect(fill = "transparent"),
-           legend.title = element_text(size = 15),
-           legend.text = element_text(size = 14))
+ # Back transform x-axis values
+ sequence <- (seq(0, 500, 100) - mean(data$cumul_xp_pred))
+ standev <- sd(data$cumul_xp_pred)
+ scaled_breaks <- sequence / standev
 
 
+ 
+# Produce the plot --------------------------------------------------------
+ 
+ # With conditional_effects, the predictions are on the original scale of y
+ # With conditional_smooths, the predictions are on the link scale
+ # conditional effects in GAMM context cannot handle the mean population trend
+ # IDK why is that.
 
-# Combine as one figure ------------------------------------------------
+ gamm_plot1 <- ggplot(tab1,
+                      aes(x = Zcumul_xp,
+                          y = plogis(estimate__),
+                          color = predator_id)) +
+    geom_line(size = 1) +
+    scale_color_viridis(discrete = TRUE, option = "D") + #B
+    ylab("Hunting success") +
+    scale_y_continuous(breaks = seq(0, 1, 0.25),
+                       limits = c(0, 1)) +
+    scale_x_continuous(breaks = scaled_breaks,
+                       labels = seq(0, 500, 100)) +
+    xlab("Cumulative experience") +
+    custom_theme
+ 
+ gamm_plot2 <- ggplot(tab2,
+                      aes(x = Zcumul_xp,
+                          y = plogis(estimate__),
+                          color = predator_id)) +
+    geom_line(size = 1) +
+    ylab("Hunting success") +
+    scale_y_continuous(breaks = seq(0, 1, 0.25),
+                       limits = c(0, 1)) +
+    scale_x_continuous(breaks = scaled_breaks,
+                       labels = seq(0, 500, 100)) +
+    xlab("Cumulative experience") +
+    custom_theme
 
- # Folder path
- path <- "./outputs/05_outputs_figures"
+# ==========================================================================
+# ==========================================================================
+
+
+
+
+
+# ==========================================================================
+# 3. Combine plots into 1 figure
+# ==========================================================================
+
+
+
+# Prepare figure ------------------------------------------------------------
+
  
  # Arrange paneled figure
- figure <- ggarrange(cv_plot1, cv_plot2,
-                     ncol = 2, nrow = 1,
-                     labels = c("(A)", "(B)"),
-                     common.legend = TRUE,
-                     legend = "top")
+ figure <- ggarrange(
+    NULL, gamm_plot1, NULL, gamm_plot2,
+    ncol = 4, nrow = 1,
+    labels = c("(A)", "", "(B)", ""),
+    widths = c(0.15, 1.5, 0.15, 1.5)
+ )
+ 
+# Export the figure -----------------------------------------------------
 
-
- # Save figure
+ path <- file.path(getwd(), "outputs", "05_outputs_figures")
+ 
  ggexport(figure,
           filename = file.path(path, "05_figure1.png"),
-          width = 3500,
-          height = 1600,
+          width = 4200,
+          height = 1300,
           res = 300)
 
-# =======================================================================
-# =======================================================================
+# ==========================================================================
+# ==========================================================================
