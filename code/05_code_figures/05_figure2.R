@@ -164,7 +164,7 @@
 
  # Save figure
  ggexport(figure,
-          filename = file.path(path, "05_figure1.png"),
+          filename = file.path(path, "05_figure2.png"),
           width = 3500,
           height = 1600,
           res = 300)
