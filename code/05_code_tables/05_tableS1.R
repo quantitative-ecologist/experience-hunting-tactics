@@ -20,7 +20,8 @@ library(dplyr)
 
 # Import the model
 path <- file.path("./outputs/02_outputs_models")
-mod1 <- readRDS(file.path(path, "02A1_GAMM.rds"))
+mod1 <- readRDS(file.path(path, "02A3_GAMM.rds"))
+mod2 <- readRDS(file.path(path, "02A3_prey-GAMM.rds"))
 
 # ===========================================================================
 # ===========================================================================
