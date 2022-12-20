@@ -1,6 +1,6 @@
 # ===========================================================================
 
-#                         Code to produce Table II                         #
+#                         Code to produce Table S1                          #
 
 # ===========================================================================
 
@@ -111,11 +111,11 @@ gamm_table <- estim %>%
 # Save the table
 path1 <- file.path("./outputs/05_outputs_tables")
 save_as_image(gamm_table,
-              file.path(path1, "05_table2.png"),
+              file.path(path1, "05_tableS1.png"),
               webshot = "webshot2")
 
 # Save R object
-saveRDS(gamm_table, file = file.path(path1, "05_table2.rds"))
+saveRDS(gamm_table, file = file.path(path1, "05_tableS1.rds"))
 
 # ===========================================================================
 # ===========================================================================
