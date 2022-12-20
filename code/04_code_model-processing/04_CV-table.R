@@ -24,25 +24,21 @@
  # Data
  data <- fread("./data/FraserFrancoetalXXXX-data.csv",
                select = c("predator_id",
-                          "pred_game_mode",
-                          "pred_game_duration",
+                          "game_duration",
                           "pred_speed",
                           "prey_avg_speed",
-                          "cumul_xp_killer",
-                          "total_xp_killer",
+                          "cumul_xp_pred",
+                          "total_xp_pred",
                           "hunting_success"))
  
- data <- unique(data)
- data <- data[pred_game_mode == "Online"]
- 
  # Experience column
- data[cumul_xp_killer < 100,
+ data[cumul_xp_pred < 100,
       xp_level := "novice"]
  
- data[cumul_xp_killer %between% c(100, 299),
+ data[cumul_xp_pred %between% c(100, 299),
       xp_level := "intermediate"]
  
- data[cumul_xp_killer >= 300,
+ data[cumul_xp_pred >= 300,
       xp_level := "advanced"]
  
  # Encode variables as a factor
@@ -54,8 +50,8 @@
 # Load model output -----------------------------------------------------
  
  # Model object
- fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
- fit <- readRDS("./tests/02B_DHMLM.rds")
+ path <- file.path(getwd(), "outputs", "02_outputs_models")
+ fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
 
  # Extract draws for sd of mu and sigma
  draws <- data.table(
@@ -117,7 +113,6 @@
  table[Parameter == "mu", value := value^2]
  table[Parameter == "sigma", value := exp(value^2)]
  
-
 # =======================================================================
 # =======================================================================
 
@@ -211,16 +206,16 @@
 
  cv_tab <- unique(cv_tab[, c(1:3, 5:7)])
 
-# Round values to 3 digits
-cv_tab[, c(4:6) := lapply(.SD, function (x) {round(x, digits = 3)}),
-         .SDcols = c(4:6)]
+ # Round values to 3 digits
+ cv_tab[, c(4:6) := lapply(.SD, function (x) {round(x, digits = 3)}),
+          .SDcols = c(4:6)]
 
 
 
 # Save the table --------------------------------------------------------
 
-path <- "./outputs/04_outputs_model-processing"
-saveRDS(cv_tab, file = file.path(path, "04_CV-table.rds"))
+ path <- file.path(getwd(),"outputs", "04_outputs_model-processing")
+ saveRDS(cv_tab, file = file.path(path, "04_CV-table.rds"))
 
 # =======================================================================
 # =======================================================================
