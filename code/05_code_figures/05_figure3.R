@@ -23,8 +23,8 @@
  library(ggridges)
  
  # import model
- #fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
- fit <- readRDS("./tests/02B_DHMLM.rds")
+ path <- file.path(getwd(), "outputs", "02_outputs_models")
+ fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
  
 
 
@@ -33,20 +33,15 @@
  # Data
  data <- fread("./data/FraserFrancoetalXXXX-data.csv",
                select = c("predator_id",
-                          "pred_game_mode",
-                          "total_xp_killer",
+                          "cumul_xp_pred",
                           "pred_speed"))
  
- data <- data[pred_game_mode == "Online"]
- 
  # Extract standard deviation of speed
- sd_speed1 <- sd(data[total_xp_killer < 100]$pred_speed)
- sd_speed2 <- sd(data[total_xp_killer >= 300]$pred_speed)
+ sd_speed1 <- sd(data[cumul_xp_pred < 100]$pred_speed)
+ sd_speed2 <- sd(data[cumul_xp_pred >= 300]$pred_speed)
 
  # Filter only for advanced players
- data <- data[total_xp_killer >= 300]
- 
- data <- unique(data)
+ data <- data[cumul_xp_pred >= 300]
  
  # Predator id as factor
  data[, predator_id := as.factor(predator_id)]
@@ -72,8 +67,8 @@
          regex = TRUE)
  )
 
- draws[, c(1:33, 375:715) := NULL]
- draws[, c(683:685) := NULL]
+ draws[, c(1:33, 287:540) := NULL]
+ draws[, c(506:508) := NULL]
 
 # =======================================================================
 # =======================================================================
@@ -88,23 +83,24 @@
 
 # Reshape sigma speed ---------------------------------------------------
 
-# Long format
-draws <- melt(draws,
-              measure = patterns("^r_predator_id"),
-              variable.name = "predator_id")
-
-# Add experience level
-draws[, xp_level := ifelse(predator_id %like% "novice",
-                           "novice",
-                           "advanced")]
-
-# Add predator ID
-draws[, predator_id := as.character(predator_id)]
-draws[, predator_id := gsub("[]_,a-zA-Z,[]", "", predator_id)]
-draws[, predator_id := as.factor(predator_id)]
-
-# Rename value to speed
-setnames(draws, "value", "speed_sigma")
+ # Long format
+ draws <- melt(draws,
+               measure = patterns("^r_predator_id"),
+               variable.name = "predator_id")
+ 
+ # Add experience level
+ draws[, xp_level := ifelse(predator_id %like% "novice",
+                            "novice",
+                            "advanced")]
+ 
+ # Add predator ID
+ draws[, predator_id := as.character(predator_id)]
+ draws[, predator_id := gsub("[]_,a-zA-Z,[]", "", predator_id)]
+ draws[, predator_id := gsub(" ", "", paste("pred", predator_id))]
+ draws[, predator_id := as.factor(predator_id)]
+ 
+ # Rename value to speed
+ setnames(draws, "value", "speed_sigma")
 
 
 
@@ -137,21 +133,11 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
 # 4. Compute the two plots
 # =======================================================================
 
-
-# Merging draws table with data -----------------------------------------
-
-# Only keep players that played above 300 matches
-table <- merge(unique(data[, "predator_id"]),
-               draws,
-               by = "predator_id")
-
-
-
 # Set custom theme ------------------------------------------------------
 
  custom_theme <- theme(# axis values size
                         axis.text.x = element_text(face = "plain", 
-                                                   size = 15,
+                                                   size = 12,
                                                    color = "black"),
                         axis.text.y = element_text(face = "plain", 
                                                    size = 5,
@@ -162,7 +148,7 @@ table <- merge(unique(data[, "predator_id"]),
                         axis.ticks = element_line(size = 0.90, 
                                                   color = "black"),
                         # axis titles size
-                        axis.title = element_text(size = 17, 
+                        axis.title = element_text(size = 14, 
                                                   face = "plain",
                                                   color = "black"),
                         axis.line = element_line(size = 0.95,
@@ -175,7 +161,7 @@ table <- merge(unique(data[, "predator_id"]),
 
 
 
-# Plot experts ----------------------------------------------------------
+# Plot novices ----------------------------------------------------------
 
  #scaled_breaks1 <- c(0.2 / sd_speed1,
  #                    0.6 / sd_speed1,
@@ -185,10 +171,8 @@ table <- merge(unique(data[, "predator_id"]),
  # Extract 95% CI of intercepts
  int1min <- exp(fixef(fit, pars = "sigma_speednovice_Intercept")[3])
  int1max <- exp(fixef(fit, pars = "sigma_speednovice_Intercept")[4])
- int2min <- exp(fixef(fit, pars = "sigma_speedadvanced_Intercept")[3])
- int2max <- exp(fixef(fit, pars = "sigma_speedadvanced_Intercept")[4])
 
- # Plot the distributions of advanced players
+ # Plot the distributions of novice players
  plot1 <- ggplot() +
      
      annotate("rect",
@@ -199,15 +183,15 @@ table <- merge(unique(data[, "predator_id"]),
               ymax = Inf, 
               alpha = .5) +
  
-     geom_density_ridges(data = table[xp_level == "advanced"],
+     geom_density_ridges(data = draws[xp_level == "novice"],
                          rel_min_height = 0.005,
-                         fill = "#00AFBB",
+                         fill = "#999999",
                          aes(x = exp_speed_sigma,
                              y = predator_id,
                              height = ..density..,
                              scale = 3)) +
      
-     geom_point(data = unique(table[xp_level == "advanced", c(1, 5)]),
+     geom_point(data = unique(draws[xp_level == "novice", c(1, 5)]),
                 aes(x = average_speed_sigma, 
                     y = predator_id),
                 size = 1,
@@ -219,8 +203,8 @@ table <- merge(unique(data[, "predator_id"]),
      #                   limits = c(0, 4)) +
      
      ylab("Predator ID\n") +
-     xlab("\nIntra individual variance (m/s)") +
-     labs(title = "Advanced \nIntercept = 0.281 (0.263, 0.299)") +
+     xlab("\nIntra individual standard deviation (m/s)") +
+     labs(title = "Novice \nIntercept = 0.273 (0.260, 0.288)") +
      
      custom_theme +
      theme(axis.text.y = element_blank(),
@@ -230,7 +214,7 @@ table <- merge(unique(data[, "predator_id"]),
 
 
 
-# Plot novices ----------------------------------------------------------
+# Plot experts ----------------------------------------------------------
 
  #scaled_breaks2 <- c(0.2 / sd_speed2,
  #                    0.6 / sd_speed2,
@@ -238,7 +222,10 @@ table <- merge(unique(data[, "predator_id"]),
  #                    1.4 / sd_speed2)
 
 
- # Plot the distributions of advanced players when they were novice
+ int2min <- exp(fixef(fit, pars = "sigma_speedadvanced_Intercept")[3])
+ int2max <- exp(fixef(fit, pars = "sigma_speedadvanced_Intercept")[4])
+
+ # Plot the distributions of advanced players
  plot2 <- ggplot() +
  
      annotate("rect",
@@ -249,15 +236,15 @@ table <- merge(unique(data[, "predator_id"]),
               ymax = Inf, 
               alpha = .5) +
      
-     geom_density_ridges(data = table[xp_level == "novice"],
+     geom_density_ridges(data = table[xp_level == "advanced"],
                          rel_min_height = 0.005,
-                         fill = "#999999",
+                         fill = "#00AFBB",
                          aes(x = exp_speed_sigma,
                              y = predator_id,
                              height = ..density..,
                              scale = 3)) +
      
-     geom_point(data = unique(table[xp_level == "novice", c(1, 5)]),
+     geom_point(data = unique(table[xp_level == "advanced", c(1, 5)]),
                 aes(x = average_speed_sigma, 
                     y = predator_id),
                 size = 1,
@@ -278,8 +265,8 @@ table <- merge(unique(data[, "predator_id"]),
      #                                       name = "Within individual variance (m/s)\n")) +
  
      ylab("Predator ID\n") +
-     xlab("\nIntra individual variance (m/s)") +
-     labs(title = "Novices \nIntercept = 0.279 (0.267, 0.292)") +
+     xlab("\nIntra individual standard deviation (m/s)") +
+     labs(title = "Advanced \nIntercept = 0.282 (0.267, 0.299)") +
  
      custom_theme +
      theme(axis.text.y = element_blank(),
@@ -301,16 +288,17 @@ table <- merge(unique(data[, "predator_id"]),
 # Combine as one figure -------------------------------------------------
 
  # Combine plots
- figure <- ggarrange(plot2, plot1,
-                     labels = c("(A)", "(B)"),
-                     ncol = 2, nrow = 1)
+ figure <- ggarrange(NULL, plot1, NULL, plot2,
+                     labels = c("(A)", "", "(B)", ""),
+                     widths = c(0.15, 1.5, 0.15, 1.5),
+                     ncol = 4, nrow = 1)
 
  # Folder path
- path <- "./outputs/05_outputs_figures"
+ path <- file.path(getwd(), "outputs", "05_outputs_figures")
 
  # Save figure
  ggexport(figure,
-          filename = file.path(path, "05_figure2.png"),
+          filename = file.path(path, "05_figure3.png"),
           width = 3500,
           height = 1800,
           res = 300)
