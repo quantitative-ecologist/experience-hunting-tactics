@@ -24,9 +24,9 @@
  loo_tab <- data.table(readRDS(file.path(path, "03A_lootable.rds")))
  
  # Add model column
- loo_tab[, model := c("Global smoother (GS)",
-                      "GS + group-level smoothers",
-                      "Group-level smoothers only")]
+ loo_tab[, model := c("Group-level smoothers only",
+                      "Global smoother + group-level smoothers",
+                      "Global smoother only")]
  
  # Reorder columns
  loo_tab <- loo_tab[, c(9, 1:8)]
