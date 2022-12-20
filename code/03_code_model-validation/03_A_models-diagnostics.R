@@ -240,57 +240,57 @@
  # Export the figure
  ggexport(
   stat_fig1,
-  filename = file.path(path, "03A1_GAMM-diagnostics.png"),
+  filename = file.path(path1, "03A1_GAMM-diagnostics.png"),
   width = 3000, height = 2500, res = 300
  )
  
  ggexport(
   stat_fig2,
-  filename = file.path(path, "03A2_GAMM-diagnostics.png"),
+  filename = file.path(path1, "03A2_GAMM-diagnostics.png"),
   width = 3000, height = 2500, res = 300
  )
  
  ggexport(
   stat_fig3,
-  filename = file.path(path, "03A3_GAMM-diagnostics.png"),
+  filename = file.path(path1, "03A3_GAMM-diagnostics.png"),
   width = 3000, height = 2500, res = 300
  )
  
 
  ggexport(
   stat_fig4,
-  filename = file.path(path, "03A4_GAMM-diagnostics.png"),
+  filename = file.path(path1, "03A4_GAMM-diagnostics.png"),
   width = 3000, height = 2500, res = 300
  )
  
  ggexport(
   stat_fig5,
-  filename = file.path(path, "03A5_GAMM-diagnostics.png"),
+  filename = file.path(path1, "03A5_GAMM-diagnostics.png"),
   width = 3000, height = 2500, res = 300
  )
  
  ggexport(
   stat_fig6,
-  filename = file.path(path, "03A6_GAMM-diagnostics.png"),
+  filename = file.path(path1, "03A6_GAMM-diagnostics.png"),
   width = 3000, height = 2500, res = 300
  )
 
 
  ggexport(
   stat_fig7,
-  filename = file.path(path, "03A7_GAMM-diagnostics.png"),
+  filename = file.path(path1, "03A7_GAMM-diagnostics.png"),
   width = 3000, height = 2500, res = 300
  )
  
  ggexport(
   stat_fig8,
-  filename = file.path(path, "03A8_GAMM-diagnostics.png"),
+  filename = file.path(path1, "03A8_GAMM-diagnostics.png"),
   width = 3000, height = 2500, res = 300
  )
  
  ggexport(
   stat_fig9,
-  filename = file.path(path, "03A9_GAMM-diagnostics.png"),
+  filename = file.path(path1, "03A9_GAMM-diagnostics.png"),
   width = 3000, height = 2500, res = 300
  )
 
@@ -328,7 +328,7 @@
  saveRDS(loo3, file = file.path(path1, "03A3_loo.rds"))
  
  saveRDS(loo4, file = file.path(path1, "03A4_loo.rds"))
- saveRDS(loo5, file = file.path(path1, "03A5_loo.rds"))
+ saveRDS(loo5, file = file.path(path1, "03A5_loo.rds")
  saveRDS(loo6, file = file.path(path1, "03A6_loo.rds"))
 
  saveRDS(loo7, file = file.path(path1, "03A7_loo.rds"))
