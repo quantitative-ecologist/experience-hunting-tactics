@@ -21,8 +21,8 @@
  library(export)
 
  # Model
- #fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
- fit <- readRDS("./tests/02B_DHMLM.rds")
+ path <- file.path(getwd(), "outputs", "02_outputs_models")
+ fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
  
 # =======================================================================
 # =======================================================================
@@ -122,10 +122,10 @@
 # Save the figure -----------------------------------------------------
  
  # File path
- path <- file.path("./outputs/05_outputs_figures")
+ path <- file.path(getwd(), "outputs", "05_outputs_figures")
  
  # Export to powerpoint
- graph2ppt(file = file.path(path, "05_figure3raw.pptx"), 
+ graph2ppt(file = file.path(path, "05_figure4raw-test.pptx"), 
           width = 10, height = 6)
 
  # After exporting the plot to ppt, I modify it there and save
