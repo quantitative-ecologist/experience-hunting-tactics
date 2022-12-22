@@ -79,27 +79,24 @@
 # Setup a custom theme for the plot ----------------------------------------
  
  custom_theme <- theme(
-   # axis values size
-   axis.text.x = element_text(face = "plain", 
-                              size = 12,
-                              color = "black"),
-   axis.text.y = element_text(face = "plain", 
-                              size = 12,
-                              color = "black"),
-   # axis ticks lenght
-   axis.ticks.length = unit(.15, "cm"),
-   # axis ticks width
-   axis.ticks = element_line(size = 0.90, 
+    # axis values size
+    axis.text = element_text(face = "plain", 
+                             size = 14,
                              color = "black"),
-   # axis titles size
-   axis.title = element_text(size = 14, 
-                             face = "plain",
+    # axis ticks lenght
+    axis.ticks.length = unit(.15, "cm"),
+    # axis ticks width
+    axis.ticks = element_line(size = 0.90, 
+                              color = "black"),
+    # axis titles size
+    axis.title = element_text(size = 16, 
+                              face = "plain",
+                              color = "black"),
+    axis.line = element_line(size = 0.95,
                              color = "black"),
-   axis.line = element_line(size = 0.95,
-                            color = "black"),
-   legend.position = "none",
-   panel.grid = element_blank(),
-   panel.background = element_blank()
+    legend.position = "none",
+    panel.grid = element_blank(),
+    panel.background = element_blank()
  )
 
 # ==========================================================================
@@ -152,12 +149,12 @@
                           color = predator_id)) +
     geom_line(size = 1) +
     scale_color_viridis(discrete = TRUE, option = "D") + #B
-    ylab("Hunting success") +
+    ylab("Hunting success\n") +
     scale_y_continuous(breaks = seq(0, 1, 0.25),
                        limits = c(0, 1)) +
     scale_x_continuous(breaks = scaled_breaks,
                        labels = seq(0, 500, 100)) +
-    xlab("Cumulative experience") +
+    xlab("\nCumulative experience") +
     custom_theme
  
  gamm_plot2 <- ggplot(tab2,
@@ -165,12 +162,12 @@
                           y = plogis(estimate__),
                           color = predator_id)) +
     geom_line(size = 1) +
-    ylab("Hunting success") +
+    ylab("Hunting success\n") +
     scale_y_continuous(breaks = seq(0, 1, 0.25),
                        limits = c(0, 1)) +
     scale_x_continuous(breaks = scaled_breaks,
                        labels = seq(0, 500, 100)) +
-    xlab("Cumulative experience") +
+    xlab("\nCumulative experience") +
     custom_theme
 
 # ==========================================================================

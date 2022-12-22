@@ -137,7 +137,7 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
 
  custom_theme <- theme(# axis values size
                         axis.text.x = element_text(face = "plain", 
-                                                   size = 12,
+                                                   size = 14,
                                                    color = "black"),
                         axis.text.y = element_text(face = "plain", 
                                                    size = 5,
@@ -148,7 +148,7 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
                         axis.ticks = element_line(size = 0.90, 
                                                   color = "black"),
                         # axis titles size
-                        axis.title = element_text(size = 14, 
+                        axis.title = element_text(size = 16, 
                                                   face = "plain",
                                                   color = "black"),
                         axis.line = element_line(size = 0.95,
@@ -203,7 +203,7 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
      #                   limits = c(0, 4)) +
      
      ylab("Predator ID\n") +
-     xlab("\nIntra individual standard deviation (m/s)") +
+     xlab("\nIntra individual SD (m/s)") +
      labs(title = "Novice \nIntercept = 0.273 (0.260, 0.288)") +
      
      custom_theme +
@@ -265,7 +265,7 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
      #                                       name = "Within individual variance (m/s)\n")) +
  
      ylab("Predator ID\n") +
-     xlab("\nIntra individual standard deviation (m/s)") +
+     xlab("\nIntra individual SD (m/s)") +
      labs(title = "Advanced \nIntercept = 0.282 (0.267, 0.299)") +
  
      custom_theme +
@@ -298,8 +298,8 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
  # Save figure
  ggexport(figure,
           filename = file.path(path, "05_figure3.png"),
-          width = 3500,
-          height = 1800,
+          width = 2500,
+          height = 1600,
           res = 300)
 
 # =======================================================================

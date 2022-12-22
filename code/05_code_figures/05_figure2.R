@@ -53,27 +53,26 @@
 
 # Set custom theme -----------------------------------------------------
 
- custom_theme <- theme(# axis values size
-                       axis.text.x = element_text(face = "plain", 
-                                                  size = 15,
-                                                  color = "black"),
-                       axis.text.y = element_text(face = "plain", 
-                                                  size = 15,
-                                                  color = "black"),
-                       # axis ticks lenght
-                       axis.ticks.length = unit(.15, "cm"),
-                       # axis ticks width
-                       axis.ticks = element_line(size = 0.90, 
-                                                 color = "black"),
-                       # axis titles size
-                       axis.title = element_text(size = 17, 
-                                                 face = "plain",
-                                                 color = "black"),
-                       axis.line = element_line(size = 0.95,
-                                                color = "black"),
-                       panel.grid = element_blank(),
-                       panel.background = element_blank())
-
+ custom_theme <- theme(
+    # axis values size
+    axis.text = element_text(face = "plain", 
+                             size = 12,
+                             color = "black"),
+    # axis ticks lenght
+    axis.ticks.length = unit(.15, "cm"),
+    # axis ticks width
+    axis.ticks = element_line(size = 0.90, 
+                              color = "black"),
+    # axis titles size
+    axis.title = element_text(size = 14, 
+                              face = "plain",
+                              color = "black"),
+    axis.line = element_line(size = 0.95,
+                             color = "black"),
+    panel.grid = element_blank(),
+    panel.background = element_blank()
+ )
+ 
 # =======================================================================
 # =======================================================================
 
@@ -98,9 +97,9 @@
                      size = 0.8,
                      position = position_dodge(width = 0.3)) +
  
-     scale_shape_manual(name = "Total experience :",
+     scale_shape_manual(name = "Experience level :",
                          values = c(15, 16, 17)) +
-     scale_color_manual(name = "Total experience :",
+     scale_color_manual(name = "Experience level :",
                         values = c("#999999", "#E69F00", "#00AFBB")) +
      
      scale_y_continuous(breaks = seq(0.1, 0.6, 0.1),
@@ -130,9 +129,9 @@
                      size = 0.8,
                      position = position_dodge(width = 0.3)) +
  
-     scale_shape_manual(name = "Total experience :",
+     scale_shape_manual(name = "Experience level :",
                          values = c(15, 16, 17)) +
-     scale_color_manual(name = "Total experience :",
+     scale_color_manual(name = "Experience level :",
                         values = c("#999999", "#E69F00", "#00AFBB")) +
      scale_y_continuous(breaks = seq(0.1, 0.6, 0.1),
                         limits = c(0.02, 0.6)) +
@@ -165,8 +164,8 @@
  # Save figure
  ggexport(figure,
           filename = file.path(path, "05_figure2.png"),
-          width = 3500,
-          height = 1600,
+          width = 2500,
+          height = 1200,
           res = 300)
 
 # =======================================================================
