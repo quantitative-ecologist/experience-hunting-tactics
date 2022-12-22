@@ -21,14 +21,13 @@ library(officer)
 
 need to talk about priors here for the gamms etc
 
-
-```{r, ft.align = "left"}
+```{r tableS1, ft.align = "left"}
 
 tab1 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table1.rds"))
 
 set_caption(
   tab1,
-  caption = "LOO table",
+  caption = "Posterior mean values, standard errors, and 95% credible intervals for the GAMM with a common global smoother. The values are presented on the logit scale.",
   style = "Table Caption"
 )
 
