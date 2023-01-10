@@ -162,6 +162,7 @@
                           y = plogis(estimate__),
                           color = predator_id)) +
     geom_line(size = 1) +
+    scale_color_viridis(discrete = TRUE, option = "D") + #B
     ylab("Hunting success\n") +
     scale_y_continuous(breaks = seq(0, 1, 0.25),
                        limits = c(0, 1)) +
@@ -200,8 +201,8 @@
  
  ggexport(figure,
           filename = file.path(path, "05_figure1.png"),
-          width = 4200,
-          height = 1300,
+          width = 3000,
+          height = 1200,
           res = 300)
 
 # ==========================================================================
