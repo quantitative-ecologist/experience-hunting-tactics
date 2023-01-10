@@ -113,10 +113,9 @@
 
 
 # Prepare the plot ---------------------------------------------------------
- 
- # Conditions back-transforms to probability scale
 
- # With intercept using built-in function
+ # Using built-in function
+ # With conditional_smooths, the predictions are on the link scale
  fig1 <- conditional_smooths(mod1, method = "fitted", robust = FALSE)
  fig2 <- conditional_smooths(mod2, method = "fitted", robust = FALSE)
  
@@ -137,11 +136,6 @@
 
  
 # Produce the plot --------------------------------------------------------
- 
- # With conditional_effects, the predictions are on the original scale of y
- # With conditional_smooths, the predictions are on the link scale
- # conditional effects in GAMM context cannot handle the mean population trend
- # IDK why is that.
 
  gamm_plot1 <- ggplot(tab1,
                       aes(x = Zcumul_xp,

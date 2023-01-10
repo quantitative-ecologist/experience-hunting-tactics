@@ -17,6 +17,7 @@ library(data.table)
 library(flextable)
 library(officer)
 library(dplyr)
+library(brms)
 
 # Import the model
 path <- file.path("./outputs/02_outputs_models")
