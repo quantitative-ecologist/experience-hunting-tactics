@@ -113,6 +113,8 @@
  table[Parameter == "mu", value := value^2]
  table[Parameter == "sigma", value := exp(value^2)]
  
+ # Need to confirm if exp should be computed before or after squaring***
+ 
 # =======================================================================
 # =======================================================================
 
