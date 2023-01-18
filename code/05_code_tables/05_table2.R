@@ -13,25 +13,25 @@
 # ===========================================================================
 
 
-# Load libraries
-library(data.table)
-library(flextable)
-library(officer)
-library(dplyr)
-library(brms)
+ # Load libraries
+ library(data.table)
+ library(flextable)
+ library(officer)
+ library(dplyr)
+ library(brms)
 
-# path
-path <- file.path(getwd(), "outputs")
+ # path
+ path <- file.path(getwd(), "outputs")
   
-# Import the model
-fit <- readRDS(
-  file.path(path, "02_outputs_models", "02B_DHMLM.rds")
-)
+ # Import the model
+ fit <- readRDS(
+   file.path(path, "02_outputs_models", "02B_DHMLM.rds")
+ )
 
-# Import the CV table
-cv <- readRDS(
-  file.path(path, "04_outputs_model-processing", "04_CV-table.rds")
-)
+ # Import the CV table
+ cv <- readRDS(
+   file.path(path, "04_outputs_model-processing", "04_CV-table.rds")
+ )
 
 # ===========================================================================
 # ===========================================================================
@@ -121,6 +121,9 @@ cv <- readRDS(
  
  # Reorder columns
  eff_tab <- eff_tab[, c(1,2,5,4,3)]
+ 
+ # Reorder rows
+ eff_tab
  
 # ===========================================================================
 # ===========================================================================
@@ -372,39 +375,47 @@ cv <- readRDS(
 # 5. Create the table using flextable
 # ===========================================================================
  
+ # Put the trait column first instead
+ eff_tab <- eff_tab[, c(2,1,3,4,5)]
+ ranef_tab <- ranef_tab[, c(2,1,3,4,5)]
+ cv <- cv[, c(2,1,3,4,5)]
+ 
+ 
  # Combine the two tables together
  table <- rbind(
    data.frame(
-     parameter = "Fixed effects",
-     trait = NA,
+     trait = "Fixed effects",
+     parameter = NA,
      novice = NA,
      intermediate = NA,
      advanced = NA),
    eff_tab,
    data.frame(
-     parameter = "Random effects",
-     trait = NA,
+     trait = "Random effects",
+     parameter = NA,
      novice = NA,
      intermediate = NA,
      advanced = NA),
    ranef_tab,
    data.frame(
-     parameter = "Coefficient of variation",
-     trait = NA,
+     trait = "Coefficient of variation",
+     parameter = NA,
      novice = NA,
      intermediate = NA,
      advanced = NA),
    cv
  )
  
- # Prepare the table parameters ----------------------------------------------
+ 
+
+# Prepare the table parameters ----------------------------------------------
  
  # Custom header
  my_header <- data.frame(
-   col_keys = c("parameter", "trait",
+   col_keys = c("trait", "parameter",
                 "novice", "intermediate", "advanced"),
-   line1 = c("Parameter",
-             "Trait",
+   line1 = c("Trait",
+             "Parameter",
              "Novice",
              "Intermediate",
              "Advanced"),
@@ -425,12 +436,12 @@ cv <- readRDS(
  }
  
  
- 
- # Create the table ----------------------------------------------------------
+
+# Create the table ----------------------------------------------------------
  
  mdhglm_table <- 
    table %>%
-   select(parameter, trait,
+   select(trait, parameter,
           novice, intermediate, advanced) %>%
    flextable(col_keys = my_header$col_keys) %>%
    set_header_df(mapping = my_header, key = "col_keys") %>%

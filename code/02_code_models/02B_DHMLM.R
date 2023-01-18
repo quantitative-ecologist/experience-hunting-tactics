@@ -49,7 +49,8 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
                          "game_duration",
                          "pred_speed",
                          "total_chase_duration",
-                         "prey_avg_speed"))
+                         "prey_avg_speed",
+                         "prey_avg_rank"))
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
@@ -107,18 +108,15 @@ data[, sub3 := ifelse(xp_level == "advanced", 1, 0)]
 
 
 
-# Standardize the variables (Z-scores) ----------------------------------
-
-# Create the function
-standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)}
+# Transform the variables (sqrt) ----------------------------------------
 
 # Apply the function and create new columns
 # The function standardizes the variables by group :
 # in this case, by level of experience
 
-data[, Zgame_duration :=
-       lapply(.SD, standardize), 
-       .SDcols = "game_duration",
+data[, c("sqrt_game_duration", "sqrt_prey_avg_rank") :=
+       lapply(.SD, function (x) {sqrt(x)}), 
+       .SDcols = c("game_duration", "prey_avg_rank"),
        by = xp_level]
 
 # Compute the new columns for each level of experience
@@ -154,34 +152,34 @@ data[, ":=" (speed_novice        = ifelse(xp_level == "novice", pred_speed, NA),
 
 speed_novice <- bf(
   speed_novice | subset(sub1) ~
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~  
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id)
 ) + gaussian()
 
 speed_intermediate <- bf(
   speed_interm | subset(sub2) ~
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~  
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id)
 ) + gaussian()
 
 speed_advanced <- bf(
   speed_advanced | subset(sub3) ~
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~  
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id)
 ) + gaussian()
 
@@ -191,34 +189,34 @@ speed_advanced <- bf(
 
 prey_speed_novice <- bf(
   prey_speed_novice | subset(sub1) ~
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~  
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id)
 ) + gaussian()
 
 prey_speed_intermediate <- bf(
   prey_speed_interm | subset(sub2) ~
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~ 
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id)
 ) + gaussian()
 
 prey_speed_advanced <- bf(
   prey_speed_advanced | subset(sub3) ~
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~  
-      1 + Zgame_duration +
+      1 + sqrt_prey_avg_rank +
       (1 |a| predator_id)
 ) + gaussian()
 
@@ -250,19 +248,19 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 # Sub models
 success_novice <- bf(
   success_novice | vint(4) + subset(sub1) ~ 
-      1 + Zgame_duration +
+      1 + sqrt_game_duration +
       (1 |a| predator_id)
 ) + beta_binomial2
 
 success_interm <- bf(
   success_interm | vint(4) + subset(sub2) ~
-      1 + Zgame_duration +
+      1 + sqrt_game_duration +
       (1 |a| predator_id)
 ) + beta_binomial2
 
 success_advanced <- bf(
   success_advanced | vint(4) + subset(sub3) ~
-      1 + Zgame_duration +
+      1 + sqrt_game_duration +
       (1 |a| predator_id)
 ) + beta_binomial2
 
@@ -272,18 +270,22 @@ success_advanced <- bf(
 
 priors <- c(
   # Prior on game duration
-  set_prior("normal(0, 2)", 
+  set_prior("normal(10, 2)", 
             class = "b",
-            coef = "Zgame_duration",
+            coef = "sqrt_game_duration",
+            resp = c("successnovice",
+                     "successinterm",
+                     "successadvanced")),
+  # Prior on prey rank
+  set_prior("normal(2.5, 1)", 
+            class = "b",
+            coef = "sqrt_prey_avg_rank",
             resp = c("speednovice",
                      "speedinterm",
                      "speedadvanced",
                      "preyspeednovice",
                      "preyspeedinterm",
-                     "preyspeedadvanced",
-                     "successnovice",
-                     "successinterm",
-                     "successadvanced")),
+                     "preyspeedadvanced")),
   # priors on var. parameters (brms automatically detects half-normal)
   set_prior("normal(0, 1)",
             class = "sd", # applies to all variance parameters
