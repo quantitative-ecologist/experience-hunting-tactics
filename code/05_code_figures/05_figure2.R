@@ -266,7 +266,7 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
  
      ylab("Predator ID\n") +
      xlab("\nIntra individual SD (m/s)") +
-     labs(title = "Advanced \nIntercept = 0.282 (0.267, 0.299)") +
+     labs(title = "Advanced \nIntercept = 0.289 (0.268, 0.311)") +
  
      custom_theme +
      theme(axis.text.y = element_blank(),
