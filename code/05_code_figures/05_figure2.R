@@ -1,6 +1,6 @@
 # =======================================================================
 
-#          Plot distribution of players from novice to advanced
+#          Plot distribution of players from novice to advanced         #
 
 # =======================================================================
 
@@ -67,8 +67,8 @@
          regex = TRUE)
  )
 
- draws[, c(1:33, 287:540) := NULL]
- draws[, c(506:508) := NULL]
+ draws[, c(1:33, 287:539) := NULL]
+ draws[, c(507:509) := NULL]
 
 # =======================================================================
 # =======================================================================
@@ -177,8 +177,8 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
      
      annotate("rect",
               fill = "firebrick2",
-              xmin = int2min,
-              xmax = int2max,
+              xmin = int1min,
+              xmax = int1max,
               ymin = -Inf,
               ymax = Inf, 
               alpha = .5) +
