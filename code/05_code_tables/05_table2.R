@@ -101,7 +101,16 @@
  ]
  
  # Rename parameter
- eff_tab[, parameter := rep(c(rep("Intercept", 5), rep("Z Match duration", 5)), 3)]
+ eff_tab[
+    , parameter := rep(
+       c(
+          rep("Intercept", 5),
+          rep("Mean prey rank", 4),
+          "Match duration"
+       ),
+       3
+    )
+ ]
  
  # Paste upper and lower ci with estimate
  eff_tab[ , estimate := paste(format(Estimate, digits = 3), "(")]
@@ -115,15 +124,12 @@
  # Reshape
  eff_tab <- dcast(
    eff_tab,
-   parameter + trait ~ xp_level,
+   trait + parameter ~ xp_level,
    value.var = "estimate"
  )
  
  # Reorder columns
  eff_tab <- eff_tab[, c(1,2,5,4,3)]
- 
- # Reorder rows
- eff_tab
  
 # ===========================================================================
 # ===========================================================================
@@ -305,7 +311,7 @@
  # Reshape
  ranef_tab <- dcast(
     ranef_tab,
-    parameter + trait ~ xp_level,
+    trait + parameter ~ xp_level,
     value.var = "estimate"
  )
  
@@ -355,13 +361,12 @@
  # Reshape the table into wide format
  cv <- dcast(
    cv,
-   parameter + trait ~ xp_level,
+   trait + parameter ~ xp_level,
    value.var = "estimate"
  )
  
  # Reorder columns and rows
  cv <- cv[, c(1,2,5,4,3)]
- cv <- cv[c(3,4,1,2)]
  setnames(cv, "interm", "intermediate")
  
 # ===========================================================================
@@ -374,12 +379,6 @@
 # ===========================================================================
 # 5. Create the table using flextable
 # ===========================================================================
- 
- # Put the trait column first instead
- eff_tab <- eff_tab[, c(2,1,3,4,5)]
- ranef_tab <- ranef_tab[, c(2,1,3,4,5)]
- cv <- cv[, c(2,1,3,4,5)]
- 
  
  # Combine the two tables together
  table <- rbind(
