@@ -28,11 +28,6 @@
    file.path(path, "02_outputs_models", "02B_DHMLM.rds")
  )
 
- # Import the CV table
- cv <- readRDS(
-   file.path(path, "04_outputs_model-processing", "04_CV-table.rds")
- )
-
 # ===========================================================================
 # ===========================================================================
 
@@ -94,8 +89,8 @@
  # Create trait column
  eff_tab[
    , trait := rep(c(
-     "mu predator speed", "sigma predator speed", 
-     "mu prey speed", "sigma prey speed", "mu success"), 
+     "mean predator speed", "sigma predator speed", 
+     "mean prey speed", "sigma prey speed", "mean success"), 
      6
    )
  ]
@@ -104,9 +99,9 @@
  eff_tab[
     , parameter := rep(
        c(
-          rep("Intercept", 5),
-          rep("Mean prey rank", 4),
-          "Match duration"
+          rep("intercept", 5),
+          rep("mean prey rank", 4),
+          "match duration"
        ),
        3
     )
@@ -131,6 +126,9 @@
  # Reorder columns
  eff_tab <- eff_tab[, c(1,2,5,4,3)]
  
+ # Reorder rows
+ eff_tab <- eff_tab[c(1,2,7,8,3,4,9,10,5,6)]
+ 
 # ===========================================================================
 # ===========================================================================
 
@@ -146,104 +144,35 @@
 # Prepare data --------------------------------------------------------------
  
  # Extract the random effect variances
- var_draws <- data.table(
+ sd_draws <- data.table(
     as_draws_df(
        fit, variable = "^sd_", regex = TRUE
     )
  )
  
- var_draws[, c(4,6,8,10,12,14,28:30) := NULL]
-
- 
- # Extract the residual variance (intercepts)
- var_draws1 <- data.table(
-    as_draws_df(
-       fit, variable = c(
-          "b_sigma_speednovice_Intercept",
-          "b_sigma_speedinterm_Intercept",
-          "b_sigma_speedadvanced_Intercept",
-          "b_sigma_preyspeednovice_Intercept",
-          "b_sigma_preyspeedinterm_Intercept",
-          "b_sigma_preyspeedadvanced_Intercept"
-       )
-    )
- )
- 
- var_draws1[, c(7:9) := NULL]
- 
- 
- # Combine the tables
- var_draws <- cbind(var_draws, var_draws1)
+ sd_draws[, c(28:30) := NULL]
 
 
 
 # Calculate parameters -------------------------------------------------------
  
  # Take the exponent of sigma parameters
- var_draws[
-    , c("b_sigma_speednovice_Intercept",
-        "b_sigma_speedinterm_Intercept",
-        "b_sigma_speedadvanced_Intercept",
-        "b_sigma_preyspeednovice_Intercept",
-        "b_sigma_preyspeedinterm_Intercept",
-        "b_sigma_preyspeedadvanced_Intercept"
+ sd_draws[
+    , c("sd_predator_id__sigma_speednovice_Intercept",
+        "sd_predator_id__sigma_speedinterm_Intercept",
+        "sd_predator_id__sigma_speedadvanced_Intercept",
+        "sd_predator_id__sigma_preyspeednovice_Intercept",
+        "sd_predator_id__sigma_preyspeedinterm_Intercept",
+        "sd_predator_id__sigma_preyspeedadvanced_Intercept"
     ) 
     := lapply(.SD, function (x) {exp(x)}),
     .SDcols = c(
-       "b_sigma_speednovice_Intercept",
-       "b_sigma_speedinterm_Intercept",
-       "b_sigma_speedadvanced_Intercept",
-       "b_sigma_preyspeednovice_Intercept",
-       "b_sigma_preyspeedinterm_Intercept",
-       "b_sigma_preyspeedadvanced_Intercept"
-    )
- ]
- 
- 
- # Square values to obtain the variance
- var_draws[
-    , c(1:27) := 
-       lapply(.SD, function (x) {(x)^2}),
-    .SDcols = c(1:27)]
-
-
-
-# Compute Intra class correlation coefficients --------------------------------
- 
- # Calculate total variance for each trait
- var_draws[
-    , ":=" (
-       var_total_speednovice = rowSums(var_draws[,c(1,2,3,22)]),
-       var_total_preyspeednovice = rowSums(var_draws[,c(6,16,17,25)]),
-       var_total_speedinterm = rowSums(var_draws[,c(4,12,13,23)]),
-       var_total_preyspeedinterm = rowSums(var_draws[,c(7,18,19,26)]),
-       var_total_speedadvanced = rowSums(var_draws[,c(5,15,14,24)]),
-       var_total_preyspeedadvanced = rowSums(var_draws[,c(8,20,21,27)])
-    )
- ]
- 
- 
- # Ratio of variance (ICC)
- var_draws[
-    , ":=" (
-       icc_env_speednovice = sd_environment_id__speednovice_Intercept / var_total_speednovice,
-       icc_avatar_speednovice = sd_avatar_id__speednovice_Intercept / var_total_speednovice,
-       icc_id_speednovice = sd_predator_id__speednovice_Intercept / var_total_speednovice,
-       icc_env_speedinterm = sd_environment_id__speedinterm_Intercept / var_total_speedinterm,
-       icc_avatar_speedinterm = sd_avatar_id__speedinterm_Intercept / var_total_speedinterm,
-       icc_id_speedinterm = sd_predator_id__speedinterm_Intercept / var_total_speedinterm,
-       icc_env_speedadvanced = sd_environment_id__speedadvanced_Intercept / var_total_speedadvanced,
-       icc_avatar_speedadvanced = sd_avatar_id__speedadvanced_Intercept / var_total_speedadvanced,
-       icc_id_speedadvanced = sd_predator_id__speedadvanced_Intercept / var_total_speedadvanced,
-       icc_env_preyspeednovice = sd_environment_id__preyspeednovice_Intercept / var_total_preyspeednovice,
-       icc_avatar_preyspeednovice = sd_avatar_id__preyspeednovice_Intercept / var_total_preyspeednovice,
-       icc_id_preyspeednovice = sd_predator_id__preyspeednovice_Intercept / var_total_preyspeednovice,
-       icc_env_preyspeedinterm = sd_environment_id__preyspeedinterm_Intercept / var_total_preyspeedinterm,
-       icc_avatar_preyspeedinterm = sd_avatar_id__preyspeedinterm_Intercept / var_total_preyspeedinterm,
-       icc_id_preyspeedinterm = sd_predator_id__preyspeedinterm_Intercept / var_total_preyspeedinterm,
-       icc_env_preyspeedadvanced = sd_environment_id__preyspeedadvanced_Intercept / var_total_preyspeedadvanced,
-       icc_avatar_preyspeedadvanced = sd_avatar_id__preyspeedadvanced_Intercept / var_total_preyspeedadvanced,
-       icc_id_preyspeedadvanced = sd_predator_id__preyspeedadvanced_Intercept / var_total_preyspeedadvanced
+       "sd_predator_id__sigma_speednovice_Intercept",
+       "sd_predator_id__sigma_speedinterm_Intercept",
+       "sd_predator_id__sigma_speedadvanced_Intercept",
+       "sd_predator_id__sigma_preyspeednovice_Intercept",
+       "sd_predator_id__sigma_preyspeedinterm_Intercept",
+       "sd_predator_id__sigma_preyspeedadvanced_Intercept"
     )
  ]
 
@@ -251,11 +180,8 @@
 
 # Reshape the table -----------------------------------------------------------
  
- # Only keep ICC columns + success var
- var_draws <- var_draws[, c(9:11, 34:51)]
- 
   ranef_tab <- melt(
-     var_draws,
+     sd_draws,
      variable.name = "parameter"
   )
 
@@ -295,16 +221,30 @@
  ranef_tab[, estimate := paste(estimate, ")", sep = "")]
  ranef_tab[, c("mean", "lower_ci", "upper_ci") := NULL]
  
- # Parameter and trait column
- ranef_tab[parameter %like% "id", parameter1 := "ICC predator ID"]
- ranef_tab[parameter %like% "avatar", parameter1 := "ICC avatar ID"]
- ranef_tab[parameter %like% "env", parameter1 := "ICC environment ID"]
- ranef_tab[parameter %like% "success", parameter1 := "Variance predator ID"]
+ # Parameter column
+ ranef_tab[parameter %like% "id", parameter1 := "SD predator ID"]
+ ranef_tab[parameter %like% "avatar", parameter1 := "SD avatar ID"]
+ ranef_tab[parameter %like% "env", parameter1 := "SD environment ID"]
+ ranef_tab[parameter %like% "success", parameter1 := "SD predator ID"]
  
- ranef_tab[parameter %like% "speed", trait := "mu predator speed"]
- ranef_tab[parameter %like% "preyspeed", trait := "mu prey speed"]
- ranef_tab[parameter %like% "success", trait := "mu success"]
+ # Trait column
+ ranef_tab[parameter %like% "speed", 
+           trait := ifelse(
+              parameter %like% "sigma_speed" ,
+              "sigma predator speed",
+              "mean predator speed"
+           )
+ ]
+ ranef_tab[parameter %like% "preyspeed",
+           trait := ifelse(
+              parameter %like% "sigma_preyspeed" ,
+              "sigma prey speed",
+              "mean prey speed"
+           )
+ ]
+ ranef_tab[parameter %like% "success", trait := "mean success"]
  
+ # Remove old parameter column and replace by new
  ranef_tab[, parameter := NULL]
  setnames(ranef_tab, "parameter1", "parameter")
  
@@ -318,64 +258,16 @@
  # Reorder columns
  ranef_tab <- ranef_tab[, c(1,2,5,4,3)]
  
-# ===========================================================================
-# ===========================================================================
-
- 
- 
- 
- 
-# ===========================================================================
-# 4. Arrange the coefficient of variation table
-# ===========================================================================
-
- # Paste upper and lower ci with estimate
- cv[ , estimate := paste(format(mean, digits = 3), "(")]
- cv[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
- cv[, estimate := paste(estimate, ",", sep = "")]
- cv[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
- cv[, estimate := paste(estimate, ")", sep = "")]
- cv[, c("mean", "lower_ci", "upper_ci") := NULL]
- 
- # Change character values
- cv[
-   , variable := c(
-     rep("mu predator speed", 3),
-       rep("mu prey speed", 3),
-       rep("sigma predator speed", 3),
-       rep("sigma prey speed", 3)
-     )
- ]
- 
- # Rename variable to parameter
- cv[, Parameter := NULL]
- setnames(cv, "variable", "trait")
- 
- # Add parameter column
- cv[
-   , parameter := c(
-     rep("CVi predator ID", 6), rep("CPp predator ID", 6)
-   )
- ]
- 
- # Reshape the table into wide format
- cv <- dcast(
-   cv,
-   trait + parameter ~ xp_level,
-   value.var = "estimate"
- )
- 
- # Reorder columns and rows
- cv <- cv[, c(1,2,5,4,3)]
- setnames(cv, "interm", "intermediate")
+ # Reorder rows
+ ranef_tab <- ranef_tab[c(1:3,8,4:6,9,7)]
  
 # ===========================================================================
 # ===========================================================================
 
 
 
- 
- 
+
+
 # ===========================================================================
 # 5. Create the table using flextable
 # ===========================================================================
@@ -395,14 +287,7 @@
      novice = NA,
      intermediate = NA,
      advanced = NA),
-   ranef_tab,
-   data.frame(
-     trait = "Coefficient of variation",
-     parameter = NA,
-     novice = NA,
-     intermediate = NA,
-     advanced = NA),
-   cv
+   ranef_tab
  )
  
  
@@ -449,7 +334,7 @@
    merge_h(part = "header") %>%
    fontsize(size = 10, part = "all") %>%
    font(fontname = "Times New Roman", part = "all") %>%
-   italic(i = c(1, 12, 20), j = 1, part = "body") %>%
+   italic(i = c(1, 12), j = 1, part = "body") %>%
    align(align = "left", part = "all", j = 1) %>%
    align(align = "left", part = "all", j = 2) %>%
    align(align = "center", part = "all", j = 3) %>%
