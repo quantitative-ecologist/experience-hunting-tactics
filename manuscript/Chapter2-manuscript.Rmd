@@ -1,5 +1,5 @@
 ---
-title: "Experience and prey behaviour jointly shape individual foraging specialisation and success in a predator-prey videogame"
+title: "Hunting experience and prey behaviour shape individual foraging specialisation in a predator-prey videogame"
 output: 
   word_document:
     reference_docx: Chapter2-styles.docx
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(data.table)
 library(brms)
 library(flextable)
-library(officer)
+#library(officer)
 library(tidyr)
 
 ```
@@ -98,17 +98,6 @@ Because a maximum of four prey can be captured in the game, and to control for o
 
 We used the default number of basis functions (K) in "brms" for the models to estimate the relationship between hunting success and experience. We assumed that the random intercepts for the predator ID ($id$) followed a Gaussian distribution with estimated variance ($id \sim N(0,\ I\ \sigma^2_{id})$). We estimated the parameters in all models using four MCMC chains with 1000 posterior samples for each parameter. To do so, we ran 2500 iterations for the first model with a thinning set to eight, and 1500 iterations with a thinning set to four for the second and third models; burn-in was set to 500 iterations in each model. We provide a description of how we specified the priors for each model in the supporting information. After fitting the three models, we proceeded to select the one with the best predictive accuracy using approximate leave-one-out cross-validation with Pareto-smoothed importance sampling [@Vehtari.etal2017;@Piironen.Vehtari2017;@Vehtari.etal2022].
 
-```{r}
-#\[
-#\begin{align}
-#logit (P_{i}) &= (\beta_{0} + id_{0,i}) \\
-#&\text{ } + \text{ } \beta_{1} \textit{match duration}_{i} \\
-#&\text{ } + \text{ } f(\textit{cumulative xp}_{i}) \\
-#\end{align}
-#\tag{1}
-#\]
-```
-
 ### Foraging behaviour and success, prey behaviour, and their relationships, at each level of experience
 
 We tested whether foraging behaviour changed with experience, and compared the success of generalists vs specialists, using a multivariate, double-hierarchical generalized linear model (MDHGLM) [@leeDoubleHierarchicalGeneralized2006;@cleasbyQuantifyingPredictabilityBehaviour2015;@westneatBiologyHiddenResidual2014;@Mitchell.etal2016a;@ODea.etal2022]. We categorized the predators by their experience based on the number of matches they played (i.e. their cumulative experience). We assigned the status of "novice" to any predator-player that had a cumulative experience below 100 matches. For example, a predator player that played 500 matches in total would be labelled as a novice in its first 100 matches. Following this logic, we labelled predators as "intermediate" hunters when they had a cumulative experience between 100 and 299 and matches. For the third and last group, we defined predators as "advanced" hunters when they had a cumulative experience equal or above 300, with a maximum of 499 cumulated matches.
@@ -150,30 +139,7 @@ Lastly we calculated the intra-class correlation coefficients ($ICC$, i.e. repea
 
 Our results confirm that individual predators displayed important differences in the development of their expertise, as the best model was the one with group-level smoothers exclusively (Table I). For instance, with experience, some predators steadily increased their hunting success while others displayed a decrease in prey capture (Figure 1A-S1A-S1B). Otherwise, there were players that maintained either a high or low success across their experience (Figure 1A). Another pattern that emerged was that some individuals optimized their success at an experience level that was below what we considered as "advanced" (i.e. >300 matches played).
 
-```{r table1, ft.align = "left"}
 
-tab1 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table1.rds"))
-
-tab1 <- autofit(tab1)
-
-tab1 <- tab1 %>% 
-  footnote(
-    i = 1, j = 1,
-    part = "header",
-    value = as_paragraph(
-      "* 'elpd' refers to the 'expected log pointwise density' and is the value chosen to select the best model"),
-    ref_symbols = " "
-  ) %>%
-  fontsize(size = 11, part = "all") %>%
-  font(fontname = "Times New Roman", part = "all")
-
-set_caption(
-  tab1,
-  caption = "Leave-one-out cross-validation table of the three hierarchical GAMMs relating hunting success to player experience.",
-  style = "Table Caption"
-)
-
-```
 
 We predicted that the relationship between hunting success and experience would differ among predators because they should encounter different prey. However, after controlling for prey speed, we did not find evidence confirming our hypothesis, such that differences among predators in the relationship between hunting success and experience remained mostly the same (Figure 1B).
 
@@ -201,7 +167,7 @@ tab2 <- tab2 %>%
     i = 1, j = 1,
     part = "header",
     value = as_paragraph(
-      "* We applied the exponent to the intercept values of sigma parameters, estimated on a log scale, and then squared them, such that values are mean posterior residual variances. We back-transformed the hunting success values, estimated on a logit scale, back to a probability scale."),
+      "* We applied the exponent to the parameter values for sigma (intercepts and predator ID), estimated on a log scale, such that values are mean posterior standard deviations (SD). We back-transformed the hunting success values, estimated on a logit scale, back to a probability scale."),
     ref_symbols = " "
   ) %>%
   font(fontname = "Times New Roman", part = "all") %>%
@@ -212,7 +178,6 @@ set_caption(
   caption = "Posterior mean estimates and 95% credible intervals computed by the multivariate double-hierarchical generalized linear model of predator speed, prey speed, and predator hunting success.",
   style = "Table Caption"
 )
-
 ```
 
 As we predicted, individual predators encountered prey with varying levels of speed ($ICC\ predator\ ID$, Table 2). Similar to the predator's speed, prey encounters varied more among predators at the novice and advanced levels, and predators differed more in the mean speed of prey that they encountered at the advanced stage (Table 2). Thus, some individuals encountered prey that were on average slower, while others encountered prey that where on average faster. These encounters also varied slightly among the predator avatars and virtual environments, but did not change with experience (Table 2). However, predators differed only weakly in the variability between prey encounters that they experienced ($CV_p\ predator\ ID$, Table 2). Hence, while predators did differ in the mean speed of the prey that they encountered, they all experienced similar degrees of variation among encounters (Table 2).
@@ -226,7 +191,7 @@ knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure2.
 
 ## Relationship between behavioural specialization and prey variability
 
-```{r}
+```{r, eval=FALSE}
 
 # =======================================================================
 
@@ -299,7 +264,7 @@ knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure2.
 ```
 
 
-At all experience levels, predators that were on average faster (mean) were also travelling faster in all their matches (IIV) ($cor_{novice}$ = `r toString(format(cor_tab[1,2]))` [`r toString(format(cor_tab[1,3]))`, `r toString(format(cor_tab[1,4]))`], $cor_{interm}$ = `r toString(format(cor_tab[6,2]))` [`r toString(format(cor_tab[6,3]))`, `r toString(format(cor_tab[6,4]))`], $cor_{adv}$ = `r toString(format(cor_tab[15,2]))` [`r toString(format(cor_tab[15,3]))`, `r toString(format(cor_tab[15,4]))`]) (i.e. they were more specialized at travelling fast). Thus, slower predators were also more flexible in their movement through time (Figure 3). In general, predators tended to be faster (mean) when they encountered prey that were on average faster (mean) ($cor_{novice}$ = `r toString(format(cor_tab[16,2]))` [`r toString(format(cor_tab[16,3]))`, `r toString(format(cor_tab[16,4]))`], $cor_{interm}$ = `r toString(format(cor_tab[31,2]))` [`r toString(format(cor_tab[31,3]))`, `r toString(format(cor_tab[31,4]))`], $cor_{adv}$ = `r toString(format(cor_tab[50,2]))` [`r toString(format(cor_tab[50,3]))`, `r toString(format(cor_tab[50,4]))`]) (Figure 4). At the three experience levels, there were only weak correlations between predator IIV and mean prey speed ($cor_{novice}$ = `r toString(format(cor_tab[17,2]))` [`r toString(format(cor_tab[17,3]))`, `r toString(format(cor_tab[17,4]))`], $cor_{interm}$ = `r toString(format(cor_tab[32,2]))` [`r toString(format(cor_tab[32,3]))`, `r toString(format(cor_tab[32,4]))`], $cor_{adv}$ = `r toString(format(cor_tab[51,2]))` [`r toString(format(cor_tab[51,3]))`, `r toString(format(cor_tab[51,4]))`]) (Figure 3). Similarly, predators specialized in a faster foraging mode (IIV) when encounters with prey were more predictable (IIV) ($cor_{novice}$ = `r toString(format(cor_tab[23,2]))` [`r toString(format(cor_tab[23,3]))`, `r toString(format(cor_tab[23,4]))`], $cor_{interm}$ = `r toString(format(cor_tab[40,2]))` [`r toString(format(cor_tab[40,3]))`, `r toString(format(cor_tab[40,4]))`], $cor_{adv}$ = `r toString(format(cor_tab[61,2]))` [`r toString(format(cor_tab[61,3]))`, `r toString(format(cor_tab[61,4]))`]), but the correlations were weak (Figure 3). In the four cases described above, the correlations became stronger as predators gained experience (Figure 3).
+At all experience levels, predators that were on average faster (mean) were also travelling faster in all their matches (IIV) (Figure 3-S1). Thus, faster predators specialized at travelling fast, while slower predators were more flexible in their movement through time. In general, predators tended to be faster (mean) when they encountered prey that were on average faster (mean) (Figure 3-S1). At the three experience levels, there were only weak correlations between predator IIV and mean prey speed (Figure 3-S1). Similarly, predators specialized in a faster foraging mode (IIV) when encounters with prey were more predictable (IIV), but the correlations were weak (Figure 3-S1). In the four cases described above, the correlations became stronger as predators gained experience (Figure 3-S1).
 
 The foraging strategies of predators, that is, the correlations between the mean and IIV of speed, remained structurally stable among the levels of experience. For instance, novice predators that tended to be faster also kept this strategy as they gained experience (Figure 3 inside the black squares). Overall, we detected the same patterns for within-experience state correlations. The correlations between trait values were also stronger among novice-intermediate and intermediate-advanced states than between novice-advanced states, indicating that behavioural changes in predators occurred as they gained experience.
 
@@ -312,7 +277,7 @@ knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure3.
 
 ## Hunting success of behavioural specialists vs generalists
 
-We did not detect strong correlations between the predators' average speed and hunting success ($cor_{novice}$ = `r toString(format(cor_tab[67,2]))` [`r toString(format(cor_tab[67,3]))`, `r toString(format(cor_tab[67,4]))`], $cor_{interm}$ = `r toString(format(cor_tab[81,2]))` [`r toString(format(cor_tab[81,3]))`, `r toString(format(cor_tab[81,4]))`], $cor_{adv}$ = `r toString(format(cor_tab[96,2]))` [`r toString(format(cor_tab[96,3]))`, `r toString(format(cor_tab[96,4]))`]), nor between the IIV in speed and hunting success ($cor_{novice}$ = `r toString(format(cor_tab[68,2]))` [`r toString(format(cor_tab[68,3]))`, `r toString(format(cor_tab[68,4]))`], $cor_{interm}$ = `r toString(format(cor_tab[82,2]))` [`r toString(format(cor_tab[82,3]))`, `r toString(format(cor_tab[82,4]))`], $cor_{adv}$ = `r toString(format(cor_tab[97,2]))` [`r toString(format(cor_tab[97,3]))`, `r toString(format(cor_tab[97,4]))`]), suggesting that both slower/flexible and faster/specialist predators were both equally successful (Figure 3). However, when predators were novice, there was a strong negative correlation between the average speed of the prey that they encountered and their hunting success ($cor_{novice}$ = `r toString(format(cor_tab[73,2]))` [`r toString(format(cor_tab[73,3]))`, `r toString(format(cor_tab[68,4]))`]). Hence, novice individuals that encountered faster prey were less successful. This relationship was decoupled at the later experience levels, such that encounters with faster prey at intermediate and advanced stages were not as strongly correlated with hunting success anymore ($cor_{interm}$ = `r toString(format(cor_tab[87,2]))` [`r toString(format(cor_tab[87,3]))`, `r toString(format(cor_tab[87,4]))`], $cor_{adv}$ = `r toString(format(cor_tab[102,2]))` [`r toString(format(cor_tab[102,3]))`, `r toString(format(cor_tab[102,4]))`]).
+We did not detect strong correlations between the predators' average speed and hunting success (Figure 3-S1), nor between the IIV in speed and hunting success (Figure 3-S1), suggesting that both slower/flexible and faster/specialist predators were both equally successful. However, when predators were novice, there was a strong negative correlation between the average speed of the prey that they encountered and their hunting success (Figure 3-S1). Hence, novice individuals that encountered faster prey were less successful. This relationship was decoupled at the later experience levels, such that encounters with faster prey at intermediate and advanced stages were not as strongly correlated with hunting success anymore (Figure 3-S1).
 
 
 
