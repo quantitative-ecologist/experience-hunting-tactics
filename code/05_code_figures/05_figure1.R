@@ -133,7 +133,26 @@
  standev <- sd(data$cumul_xp_pred)
  scaled_breaks <- sequence / standev
 
+ 
+ 
+# Cut fitted values based on player XP ------------------------------------
 
+ # Extract player IDs with their total XP from the original data
+ xp <- unique(data[,.(predator_id, total_xp_pred)])
+ 
+ # Compute non standardized cumulative XP
+ tab1[, cumul_xp := (Zcumul_xp*standev)+mean(data$cumul_xp_pred)]
+ tab2[, cumul_xp := (Zcumul_xp*standev)+mean(data$cumul_xp_pred)]
+ 
+ # Now merge the two tables adding the total XP
+ tab1 <- merge(tab1, xp, by = "predator_id")
+ tab2 <- merge(tab2, xp, by = "predator_id")
+ 
+ # Cut all matches where fitted values are above total XP
+ tab1 <- tab1[cumul_xp <= total_xp_pred,]
+ tab2 <- tab2[cumul_xp <= total_xp_pred,]
+ 
+ 
  
 # Produce the plot --------------------------------------------------------
 
