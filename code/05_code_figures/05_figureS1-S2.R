@@ -184,7 +184,7 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
 
 
 # ==========================================================================
-# 4. Prepare data from the gamm
+# 4. Prepare data for the plots
 # ==========================================================================
 
 fig1 <- conditional_smooths(fit1, method = "fitted", robust = FALSE)
@@ -228,11 +228,11 @@ table <- merge(
 table <- unique(
   table[
     difference > 0.1 | difference < -0.1, 
-    .(predator_id, difference)
+    .(predator_id, difference, Zcumul_xp, estimate__)
   ]
 )
 draws <- draws[, .(predator_id, xp_level, exp_speed_sigma, average_speed_sigma)]
-dat <- merge(draws, table, by = "predator_id")
+dat <- merge(draws, unique(table[, .(predator_id, difference)]), by = "predator_id")
 dat[, difference := ifelse(difference > 0.1, 1, 0)]
 
 # ==========================================================================
@@ -252,11 +252,26 @@ standev <- sd(data$cumul_xp_pred)
 scaled_breaks <- sequence / standev
 
 
+# Cut fitted values based on player XP ------------------------------------
+
+# Extract player IDs with their total XP from the original data
+xp <- unique(data[,.(predator_id, total_xp_pred)])
+
+# Compute non standardized cumulative XP
+table[, cumul_xp := (Zcumul_xp*standev)+mean(data$cumul_xp_pred)]
+
+# Now merge the two tables adding the total XP
+table <- merge(table, xp, by = "predator_id")
+
+# Cut all matches where fitted values are above total XP
+table <- table[cumul_xp <= total_xp_pred,]
+
+
 
 # Plot for players that had an increase in success -------------------------
 
 length(unique(table[difference > 0, predator_id]))
-# 146 players had an increase in hunting success
+# 56 players had an increase in hunting success
 
 gamm_plot1 <- ggplot(table[difference > 0.1,],
                      aes(x = Zcumul_xp,
@@ -277,7 +292,7 @@ gamm_plot1 <- ggplot(table[difference > 0.1,],
 # Plot for players that had a reduction in success -------------------------
 
 length(unique(table[difference < 0, predator_id]))
-# 106 players had an increase in hunting success
+# 27 players had an increase in hunting success
 
 gamm_plot2 <- ggplot(table[difference < -0.1,],
                      aes(x = Zcumul_xp,
