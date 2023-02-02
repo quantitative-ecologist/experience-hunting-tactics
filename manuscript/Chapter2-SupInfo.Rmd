@@ -1,5 +1,5 @@
 ---
-title: "Hunting experience and prey behaviour shape individual foraging specialisation in a predator-prey videogame"
+title: "Online supporting information for : \nHunting experience shapes individual foraging specialisation and predator-prey interactions in an online videogame"
 output: 
   word_document:
     reference_docx: Chapter2-styles.docx
@@ -36,5 +36,10 @@ knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figureS2
 ```
 
 
+```{r figS4, out.width = "100%", fig.cap = "**Figure S4.** Posterior median differences and 95% credible intervals between the parameter values of each predator experience level predicted by the MDHGLM."}
+
+knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figureS4.png"))
+
+```
 
 
