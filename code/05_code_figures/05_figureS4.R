@@ -15,6 +15,7 @@
 # Load libraries
 library(brms)
 library(ggplot2)
+library(viridis)
 
 path <- file.path(getwd(), "outputs", "02_outputs_models")
 fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
@@ -191,36 +192,36 @@ fig <- ggplot(
     tab,
     aes(x = test, y = Estimate, fill = trait, shape = trait)
 ) +
-geom_hline(
-    yintercept = 0, size = 1, colour = "red",
-    linetype = "dashed", alpha = 0.5
-) +
-geom_pointrange(
-    aes(ymin = CI.Lower, ymax = CI.Upper),
-    size = 0.8, position = position_dodge(width = 0.8)
-) +
-scale_shape_manual(
-    name = "Trait :",
-    values = c(22,23,24,25,21)
-) +
-scale_fill_viridis(
-    name = "Trait :",
-    discrete = TRUE, option = "D"
-) +
-ylab("\nEstimate") +
-coord_flip() +
-theme_bw() +
-facet_wrap(~ group) +
-theme(
-    axis.title.y = element_blank(),
-    axis.text = element_text(face = "plain", size = 12, color = "black"),
-    axis.title = element_text(size = 14, face = "plain", color = "black"),
-    strip.text = element_text(size = 12),
-    legend.position = "top",
-    legend.key = element_rect(fill = "transparent"),
-    legend.title = element_text(size = 14),
-    legend.text = element_text(size = 12)
-)
+    geom_hline(
+        yintercept = 0, size = 1, colour = "red",
+        linetype = "dashed", alpha = 0.5
+    ) +
+    geom_pointrange(
+        aes(ymin = CI.Lower, ymax = CI.Upper),
+        size = 0.8, position = position_dodge(width = 0.8)
+    ) +
+    scale_shape_manual(
+        name = "Trait :",
+        values = c(22,23,24,25,21)
+    ) +
+    scale_fill_viridis(
+        name = "Trait :",
+        discrete = TRUE, option = "D"
+    ) +
+    ylab("\nEstimate") +
+    coord_flip() +
+    theme_bw() +
+    facet_wrap(~ group) +
+    theme(
+        axis.title.y = element_blank(),
+        axis.text = element_text(face = "plain", size = 11, color = "black"),
+        axis.title = element_text(size = 13, face = "plain", color = "black"),
+        strip.text = element_text(size = 11),
+        legend.position = "top",
+        legend.key = element_rect(fill = "transparent"),
+        legend.title = element_text(size = 13),
+        legend.text = element_text(size = 11)
+    )
 
 
 
@@ -233,9 +234,9 @@ path <- file.path(getwd(), "outputs", "05_outputs_figures")
 ggsave(
     filename = file.path(path, "05_figureS4.png"),
     plot = fig,
-    width = 32, height = 14,
+    width = 32, height = 14, # 32 14
     units = "cm",
-    dpi = 300
+    dpi = 300, scale = 0.9
 )
 
 # =======================================================================
