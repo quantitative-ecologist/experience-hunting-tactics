@@ -237,50 +237,61 @@
  # Create the table ----------------------------------------------------------
 
  cor_table <-
-   # Select table content
-   table %>%
-   select(my_header$col_keys) %>%
-   flextable() %>%
-   
-   # modify column names
-   set_header_df(mapping = my_header, key = "col_keys") %>%
-   # modify row names on column 1
-   mk_par(j = 1, value = as_paragraph(column_names[-1])) %>%
-   # Add header rows (for XP levels)
-   add_header_row(
-     values = c(NA, "Novice", "Intermediate", "Advanced"),
-     colwidths = c(1, 5, 5, 5)
-   ) %>%
-   
-   # Add theme
-   my_theme() %>%
-   # Add borders
-   hline(
-     i = 1, part = "header",
-     border = fp_border(width = 1, color = "black")
-   ) %>%
-   hline_top(
-     part = "header",
-     border = fp_border(width = 1, color = "black")
-   ) %>%
-   hline_bottom(
-     part = "body", 
-     border = fp_border(width = 1, color = "black")
-   ) %>%
-   
-   # Customizing the table layout
-   fontsize(size = 9, part = "all") %>%
-   font(fontname = "Times New Roman", part = "all") %>%
-   #width(j = c(1:16), width = 3.7, unit = "cm") %>%
-   align(align = "left", part = "all", j = 1) %>%
-   align(align = "center", part = "all", j = c(2:16))
+    # Select table content
+    table %>%
+    select(my_header$col_keys) %>%
+    flextable() %>%
+    
+    # modify column names
+    set_header_df(mapping = my_header, key = "col_keys") %>%
+    # modify row names on column 1
+    mk_par(j = 1, value = as_paragraph(column_names[-c(1)])) %>%
+    # Add header rows (for XP levels)
+    add_header_row(
+       values = c(NA, "Novice", "Intermediate", "Advanced"),
+       colwidths = c(1, 5, 5, 5)
+    ) %>%
+    
+    # Add theme
+    my_theme() %>%
+    # Add borders
+    hline(
+       i = 1, part = "header",
+       border = fp_border(width = 1, color = "black")
+    ) %>%
+    hline_top(
+       part = "header",
+       border = fp_border(width = 1, color = "black")
+    ) %>%
+    hline_bottom(
+       part = "body", 
+       border = fp_border(width = 1, color = "black")
+    ) %>%
+    
+    # Customizing the table layout
+    fontsize(size = 8, part = "all") %>%
+    font(fontname = "Times New Roman", part = "all") %>%
+    align(align = "left", part = "all", j = 1) %>%
+    align(align = "center", part = "all", j = c(2:16)) %>%
+    
+    # Color for novices
+    bg(i = c(1:5), j = c(2:6), bg = "#999999", part = "body") %>%
+    color(j = c(1:6), color = "#999999", part = "header") %>%
+    color(i = c(1:5), j = c(1), color = "#999999", part = "body") %>%
+    # Color for intermediates
+    bg(i = c(6:10), j = c(7:11), bg = "#E69F00", part = "body") %>%
+    color(j = c(7:11), color = "#E69F00", part = "header") %>%
+    color(i = c(6:10), j = c(1), color = "#E69F00", part = "body") %>%
+    # Color for advanced
+    bg(i = c(11:15), j = c(12:16), bg = "#00AFBB", part = "body") %>%
+    color(j = c(12:16), color = "#00AFBB", part = "header") %>%
+    color(i = c(11:15), j = c(1), color = "#00AFBB", part = "body")
  
  # Save the table
  path1 <- file.path("./outputs/05_outputs_tables")
  
  # Save R object
  saveRDS(cor_table, file = file.path(path1, "05_tableS1.rds"))
- 
  # Image was saved from the Rstudio export option
  
 # ===========================================================================
