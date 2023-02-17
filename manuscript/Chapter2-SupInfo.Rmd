@@ -30,11 +30,6 @@ library(tidyr)
 
 ## Statistical analyses
 
-### Prior specifications
-
-need to talk about priors here for the gamms etc
-
-
 ### Variance partitionning
 
 We calculated the intra-class correlation coefficients ($ICC$, i.e. repeatability) of each random effect on the mean part of the predator's speed and prey speed to estimate the percentage of variation in speed attributed to differences among environments, avatars, and individuals. We also report the coefficient of variation in the mean (termed $CV_I$) and dispersion (termed $CV_p$) part of the predator and prey's speed, at each stage of experience, to report standardized effect sizes of individual variation for comparison across traits and studies [@cleasbyQuantifyingPredictabilityBehaviour2015;@Holtmann.etal2017;@Dingemanse.etal2022]. This also allowed us to evaluate whether predators displayed increasing/decreasing differences in specialization at each stage of experience.
