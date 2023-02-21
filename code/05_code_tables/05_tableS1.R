@@ -293,6 +293,8 @@
  # Save R object
  saveRDS(cor_table, file = file.path(path1, "05_tableS1.rds"))
  # Image was saved from the Rstudio export option
+ # width = 1630  height = 570 on large computer screen from the viewer in Rstudio
+ 
  
 # ===========================================================================
 # ===========================================================================
