@@ -26,17 +26,6 @@ library(tidyr)
 
 
 \newpage
-# Materials and methods
-
-## Statistical analyses
-
-### Variance partitionning
-
-We calculated the intra-class correlation coefficients ($ICC$, i.e. repeatability) of each random effect on the mean part of the predator's speed and prey speed to estimate the percentage of variation in speed attributed to differences among environments, avatars, and individuals. We also report the coefficient of variation in the mean (termed $CV_I$) and dispersion (termed $CV_p$) part of the predator and prey's speed, at each stage of experience, to report standardized effect sizes of individual variation for comparison across traits and studies [@cleasbyQuantifyingPredictabilityBehaviour2015;@Holtmann.etal2017;@Dingemanse.etal2022]. This also allowed us to evaluate whether predators displayed increasing/decreasing differences in specialization at each stage of experience.
-
-
-\newpage
-# Results
 
 ```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Among individual differences in the development of hunting expertise. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. (A) Individuals with the greatest increase in hunting success with experience (B) Individuals with the greatest decrease in hunting success with experience."}
 
@@ -57,5 +46,3 @@ knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figureS2
 knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figureS4.png"))
 
 ```
-
-
