@@ -1,12 +1,12 @@
 ---
-title: "Hunting experience shapes individual foraging specialisation and predator-prey interactions in an online videogame"
+title: "Hunting experience shapes individual foraging specialization and predator-prey interactions in an online videogame"
 output: 
   word_document:
     reference_docx: Chapter2-styles.docx
     fig_caption: yes
     pandoc_args: ["-Fpandoc-crossref"] # to have eq. numbers
 bibliography: references.bib
-csl: e-letters.csl
+csl: ecology.csl
 ---
 
 ```{r setup, include = FALSE}
@@ -39,10 +39,26 @@ dat[, date := as.POSIXct(sub(" .*", "", timestamp))]
 
 ```
 
+Journal name : Ecology 
+
+Manuscript type : article
+
+Authors : Maxime Fraser Franco^1^, Francesca Santostefano^1,2^, Julien G. A. Martin^3^, Clint D. Kelly^1^, Pierre-Olivier Montiglio^1^ 
+
+Affiliations : ^1^ Département des Sciences Biologiques, Université du Québec à Montréal, Montréal, QC, Canada. ^2^ Centre for Ecology and Conservation, Penryn Campus, University of Exeter, Cornwall, United Kingdom. ^3^ Department of Biology, University of Ottawa, Ottawa, ON, Canada. 
+
+Corresponding author : fraser_franco.maxime@courrier.uqam.ca 
+
+Open research statement : The data and code used to produce the results in this manuscript are freely available on GitHub https://github.com/quantitative-ecologist/experience-hunting-tactics
+
+Keywords: foraging behaviour, individual specialization, learning, behavioural plasticity, prey predictability, online videogames
+
+
+
+
 \newpage
 # ABSTRACT {.unnumbered}
 
-Keywords: foraging behaviour, individual specialization, experience, learning, prey predictability, online videogames
 
 
 
@@ -51,9 +67,9 @@ Keywords: foraging behaviour, individual specialization, experience, learning, p
 
 Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [@Griffen.etal2012;@Michalko.Pekar2016;@Moran.etal2017;@Michalko.etal2021]. Indeed, predator populations often comprise assemblages of individuals specializing in different foraging tactics or resources irrespective of sexual, morphological, or age-related differences [@Estes.etal2003;@Tinker.etal2008;@kernaleguenDeterminantsIndividualForaging2015;@Phillips.etal2017]. A growing body of evidence suggests that ecological interactions, such as predator-prey interactions, can be major drivers of such individual foraging specialization [@Araujo.etal2011;@toscanoPersonalityForagingBehavior2016]. When they hunt, predators often use techniques that are fine-tuned to the type of prey that they encounter [@Davoren.etal2003;@Estes.etal2003;@Woo.etal2008;@Courbin.etal2018], and their capacity to use them effectively is contingent on periods of extensive practice (i.e. experience). While hunting experience may be essential to maintain or improve foraging success, we have limited empirical assessments of its role in predator foraging specialization [@Dukas2019], nor its consequences on predator-prey interactions.
 
-The development of foraging tactics is crucial for young predators to reach adulthood and survive [@Phillips.etal2017;@Heithaus.etal2018]. Theory predicts that foraging specialization may emerge via learning, limitations in memorizing multiple complex hunting skills, and expertise [@Tinker.etal2009;@Dukas2019]. @Dukas2019 defines expertise as the characteristics, skills, and knowledge allowing individuals with extensive experience to outperform novices on complex tasks. This body of work suggests that the development of expertise through extensive practice is an optimizing process that promotes foraging specialization. Empirical studies on human and non-human hunters show that experience optimizes the efficiency (e.g. search and handling times, return rates) of their foraging tactics potentially via associative images or reliance on prey and environmental cues [@Edwards.Jackson1994;@Morse2000;@macdonaldCrossculturalComparisonLearning2007;@Reid.etal2010;@Wilson-Rankin2015]. Such optimization may thus reinforce the use of the same tactic (i.e. specialization) if its success is constant each time a prey is encountered. It may also be costly to attempt different hunting tactics by trial and error when prey are scarce or highly unpredictable [@Dukas1998;@Estes.etal2003;@Mery.Burns2010]. An alternative mechanism is that the costs/risks faced by hunters when switching foraging tactics may be offset by gaining experience and information on their prey, leading to increased individual foraging flexibility [@Ishii.Shimada2010;@Mery.Burns2010;Kelley.Magurran2011;@Snell-Rood2013]. To develop proper responses to fluctuating resources, individuals would need to sample their environment broadly during an extensive period of time, followed by higher performance at later stages of development [reviewed in @Snell-Rood2013]. However, individuals may differ in the challenges that they face during their lifetime, which could lead to both mechanisms operating at the same time within a predator population.
+The development of foraging tactics is crucial for young predators to reach adulthood and survive [@Phillips.etal2017;@Heithaus.etal2018]. Theory predicts that foraging specialization may emerge via learning, limitations in memorizing multiple complex hunting skills, and expertise [@Tinker.etal2009;@Dukas2019]. @Dukas2019 defines expertise as the characteristics, skills, and knowledge allowing individuals with extensive experience to outperform novices on complex tasks. This body of work suggests that the development of expertise through extensive practice is an optimizing process that promotes foraging specialization. Empirical studies on human and non-human hunters show that experience optimizes the efficiency (e.g. search and handling times, return rates) of their foraging tactics potentially via associative images or reliance on prey and environmental cues [@Edwards.Jackson1994;@Morse2000;@macdonaldCrossculturalComparisonLearning2007;@Reid.etal2010;@Wilson-Rankin2015]. Such optimization may thus reinforce the use of the same tactic (i.e. specialization) if its success is constant each time a prey is encountered. It may also be costly to attempt different hunting tactics by trial and error when prey are scarce or highly unpredictable [@Dukas1998;@Estes.etal2003;@Mery.Burns2010]. An alternative mechanism is that the costs/risks faced by hunters when switching foraging tactics may be offset by gaining experience and information on their prey, leading to increased individual foraging flexibility [@Stephens1993;@Ishii.Shimada2010;@Mery.Burns2010;Kelley.Magurran2011;@Snell-Rood2013]. To develop proper responses to fluctuating resources, individuals would need to sample their environment broadly during an extensive period of time, followed by higher performance at later stages of development [reviewed in @Snell-Rood2013]. However, individuals may differ in the challenges that they face during their lifetime, which could lead to both mechanisms operating at the same time within a predator population.
 
-There is currently a lack of consensus on the fitness advantages of specialized vs flexible foraging. Importantly, we have limited information on the ecological contexts - except for competition - that favour specialization over flexibility. This is reflected in the literature showing contrasting results in the links between specialization and fitness. For instance, some studies report increasing benefits of specialization [@Patrick.Weimerskirch2014a;@vandenBosch.etal2019], some report that flexible foraging has greater benefits [@Paull.etal2012;@Manlick.etal2021], and others find equal benefits depending on timescales [@Woo.etal2008;@Potier.etal2015]. While quantifying the fitness consequences of specialization is a daunting task, in predator-prey systems, some clues indicate that fluctuations in the predictability of prey encounters throughout a predator's lifetime may be a key factor [@Weimerskirch2007;@Woo.etal2008;@Chang.etal2017;@Phillips.etal2017;@Courbin.etal2018]. The resource-predictability hypothesis argues that when resources are predictable, individual specialists should have higher delivery rates by reducing the energy and time required to search for and handle prey. In contrast, individual generalists should benefit when resources fluctuate, as fine adjustments to resources are key for a predator's success and survival [@Karkarey.etal2017;@Holm.etal2019;@Santoro.etal2019]. This hypothesis has, however, not been tested in systems where behavioural interactions are simultaneously monitored between predator and prey individuals. Thus, uncovering the mechanisms shaping direct predator-prey interactions would enable researchers to better predict the behavioural decisions that predators take when they are hunting.
+There is currently a lack of consensus on the fitness advantages of specialized vs flexible foraging. Importantly, we have limited information on the ecological contexts - except for competition - that favour specialization over flexibility. This is reflected in the literature showing contrasting results in the links between specialization and fitness. For instance, some studies report increasing benefits of specialization [@Pintor.etal2014;@Patrick.Weimerskirch2014a;@vandenBosch.etal2019], some report that flexible foraging has greater benefits [@Paull.etal2012;@Manlick.etal2021], and others find equal benefits depending on timescales [@Woo.etal2008;@Potier.etal2015]. While quantifying the fitness consequences of specialization is a daunting task, in predator-prey systems, some clues indicate that fluctuations in the predictability of prey encounters throughout a predator's lifetime may be a key factor [@Weimerskirch2007;@Woo.etal2008;@Chang.etal2017;@Phillips.etal2017;@Courbin.etal2018]. The resource-predictability hypothesis argues that when resources are predictable, individual specialists should have higher delivery rates by reducing the energy and time required to search for and handle prey. In contrast, individual generalists should benefit when resources fluctuate, as fine adjustments to resources are key for a predator's success and survival [@Karkarey.etal2017;@Holm.etal2019;@Santoro.etal2019]. At the phenotypic interface, empirical evidence shows coevolutionary patterns of predator-prey phenotypic matching across space and time [@Kishida.etal2006;@Hanifin.etal2008;@Reimche.etal2020]. However, we do not know how experience influences these interactions in systems where behavioural interactions between predators and prey are directly monitored. Thus, uncovering how learning mechanisms shape direct predator-prey interactions would enable researchers to better predict the behavioural decisions that predators take when they are hunting.
 
 The integration of individual behavioural variation in the study of predator-prey interactions has gained traction in recent years, with empirical studies revealing important consequences for habitat use, functional responses, prey choice, and foraging rate [@Kobler.etal2009;@toscanoTraitmediatedFunctionalResponses2014;@Patrick.Weimerskirch2014;@Matsumura.Miyatake2022a]. However, an important and recurring challenge impeding research on predator-prey behavioural interactions, at the individual level, is the need to collect data simultaneously on both the predator and prey. We recently demonstrated with behavioural data from an online predator-prey videogame that virtual systems can overcome this challenge and help uncovering the mechanisms that shape predator-prey interactions [@FraserFranco.etal2022]. For instance, we found that the classical locomotor crossover hypothesis [@Huey.Pianka1981] applied only for cursorial hunters [see also: @Matsumura.Miyatake2022a], suggesting that virtual systems could be useful in identifying general ecological patterns, which might in turn help to advance the current gaps in predator-prey research. Other studies on virtual predator-prey systems show that predation regimes can drive individual variation in risk perception [@Beauchamp2020], that familiarity between prey has a positive indirect effect on survival [@Cere.etal2021], and that prey face contrasting natural and social selection regimes (Santostefano et al. in prep). Because virtual predator-prey systems generate large volumes of data on interacting players throughout their lifetime in the game, they offer the opportunity to tackle fundamental questions about the role of experience and prey behaviour on individual predator foraging specialization along with its potential fitness consequences.
 
@@ -61,7 +77,7 @@ In this study, we test how hunting experience shapes predator foraging specializ
 
 
 
-\newpage
+
 # MATERIALS AND METHODS {.unnumbered}
 
 
@@ -88,7 +104,7 @@ We analyzed the predator's average speed and the average speed of the prey encou
 
 ### Software and computer specifications
 
-All our statistical analyses were executed on Cedar (https://docs.alliancecan.ca/wiki/Cedar), a computer cluster maintained by the Digital Research Alliance of Canada. The operating system for Cedar is CentOS Linux 7. The models were fitted in R (version 4.1.2) using Markov chain Monte Carlo sampling with the package "brms" version 2.16.3 [@Burkner2017], and "cmdstanr" version 0.4.0 [@Gabry.Cesnovar2021] as the backend for estimation (cmdstan installation version 2.28.2).
+All our statistical analyses were executed on Cedar (https://docs.alliancecan.ca/wiki/Cedar), a computer cluster maintained by the Digital Research Alliance of Canada. The operating system for Cedar is CentOS Linux 7. The models were fitted in R (version 4.1.2) using Markov chain Monte Carlo (MCMC) sampling with the package "brms" version 2.16.3 [@Burkner2017], an R front-end for the STAN software [@StanDevelopmentTeam2023], and "cmdstanr" version 0.4.0 [@Gabry.Cesnovar2021] as the back-end for estimation (cmdstan installation version 2.28.2).
 
 ### Effect of experience on hunting success
 
@@ -96,7 +112,7 @@ We tested whether predators varied in the development of their expertise using t
 
 Because a maximum of four prey can be captured in the game, and to control for overdispersion, we computed the three models using a modified version of the beta-binomial distribution implemented in "brms". Thus, hunting success was estimated as the probability of capturing the four prey ($\mu_i$), drawn from a Beta distribution ($Beta(\mu_i, \phi)$) with mean ($\mu \in [0,1]$) and precision ($\phi > 0$) parameters. We used a logit link function to estimate $\mu_i$ where $\mu_i = \frac{exp(\eta_i)}{exp(\eta_i) + 1}$ and $\eta_i$ is the linear predictor, while the precision parameter ($\phi$) was estimated with an identity link for all models. 
 
-We used the default number of basis functions (K) in "brms" for the models to estimate the relationship between hunting success and experience. We assumed that the random intercepts for the predator ID ($id$) followed a Gaussian distribution with estimated standard deviation ($id \sim N(0,\ I\ \sigma_{id})$). We used Gaussian priors for the game duration ($N(0,\ 1)$), the intercept ($N(0,\ 0.5)$), and the precision paremeter ($N(2,\ 0.5)$). We employed the default Student t priors for the smoothing parameter ($t(3,\ 0,\ 2.5)$). In all models, we specified four MCMC chains to estimate the parameters, with 1000 posterior samples for each parameter. To do so, we ran 2500 iterations for the first model with a thinning set to eight, and 1500 iterations with a thinning set to four for the second and third models; burn-in was set to 500 iterations in each model. After fitting the three models, we proceeded to select the one with the best predictive accuracy using approximate leave-one-out cross-validation with Pareto-smoothed importance sampling [@Vehtari.etal2017;@Piironen.Vehtari2017;@Vehtari.etal2022].
+We used the default number of basis functions (K) in "brms" for the models to estimate the relationship between hunting success and experience. We assumed that the random intercepts for the predator ID ($id$) followed a Gaussian distribution with estimated standard deviation ($id \sim N(0,\ I\ \sigma_{id})$). We used Gaussian priors for the game duration ($N(0,\ 1)$), the intercept ($N(0,\ 0.5)$), and the precision paremeter ($N(2,\ 0.5)$). We employed the default Student t priors for the smoothing parameter ($t(3,\ 0,\ 2.5)$). In all models, we specified four MCMC chains to estimate the parameters, with 1000 posterior samples for each parameter. To do so, we ran 2500 iterations for the first model with a thinning set to eight, and 1500 iterations with a thinning set to four for the second and third models; burn-in was set to 500 iterations in each model. We assessed the convergence of the MCMC chains using trace plots, R-hat diagnostics with a threshold of <1.05, and effective sample sizes (ESS) with a threshold of >100 for the bulk-ESS and tail-ESS [@Vehtari.etal2021]. After fitting the three models, we proceeded to select the one with the best predictive accuracy using approximate leave-one-out cross-validation with Pareto-smoothed importance sampling [@Vehtari.etal2017;@Piironen.Vehtari2017;@Vehtari.etal2022].
 
 ### Foraging behaviour and success, prey behaviour, and their relationships, at each level of experience
 
@@ -132,7 +148,7 @@ We estimated the correlation between the individual random effect on the mean an
 
 
 
-\newpage
+
 # RESULTS {.unnumbered}
 
 
@@ -306,33 +322,58 @@ We did not detect strong correlations between the predators' average speed and t
 
 
 
+
 # Discussion
 
-Hunting experience has long been hypothesized to play an important role in predator-prey interactions []. Yet, the lack of empirical evidence has led the existing literature to predict conflicting outcomes []. It has thus remained unclear whether predators specialize in their tactic with experience, how such specialization emerges depending on the type of prey that predators encounter, and whether specialization with experience leads to an increase in hunting success. We adressed these questions by capitalizing on an online videogame system simulating a predator-prey interaction, where both the predator and the prey behaviours are simultaneously monitored. Our results show that experience does not generate responses at the population level. Instead, experience appears to be a property of individuals, such that each predator developed, through extensive practice, their own behavioural trajectory. Individuals became increasingly distinct hunters with experience; some specialized at fast-paced hunting, while others adopted a slower and more flexible tactic. The predators' tactics were also associated with prey encounters, such that those that adopted a specialized cursorial tactic experienced more predictable encounters, while slower and flexible hunters experienced more unpredictable encounters, with no difference in success between the two types of hunters. With experience, this predator-prey behavioural relationship grew stronger, while the relationship between the prey's behaviour and hunting success diminished. Together, our observations suggest that predators use their experience to adjust their hunting tactic, and the degree at which they specialize in it, based on the prey that they encountered throughout their lifetime. Moreover, the stronger predator-prey interaction through experience may imply the emergence of an arms race mediated through learning.
+Hunting experience is predicted to imbue an increase in predator foraging specialization when resources are predictable [@Estes.etal2003;@Tinker.etal2008;@Tinker.etal2009;@Dukas2019]. Other lines of research view learning from experience as a form of behavioural plasticity [@Ishii.Shimada2010;@Mery.Burns2010;@Snell-Rood2013;@Wright.etal2022], with theoretical models predicting an increase in flexibility from experience when resources are variable [@Stephens1993]. Our results challenge the hypothesis that experience generates population-level behavioural responses. Instead, experience appears to be a property of individuals, such that each predator developed, through extensive practice, their own behavioural trajectory; some specialized at fast-paced hunting, while others adopted a slower and more flexible tactic. The predators' tactics were matched to prey encounters, such that specialized cursorial hunters experienced more predictable encounters, while slower and flexible hunters experienced more unpredictable encounters, with no difference in success between the two predator-types. This predator-prey behavioural matching grew stronger with predator experience, while the relationship between the prey's behaviour and hunting success diminished. Together, our observations suggest that predators learn to adjust their hunting tactic with experience, and the degree at which they specialize in it, based on the behaviour of the prey that they encountered throughout their lifetime. Moreover, the intensification of the interaction through experience suggests that learning may be a catalyst for predator-prey's arms races.
 
-## The role of hunting experience on the predator's foraging behaviour
+## How hunting experience shapes foraging behaviour
 
-- Individuals differ in the development of their expertise
+*- Individuals differ in the development of their expertise*
+One of the main results of our study is that predators develop their own... (parler d'expertise et comportement)
 
-- Specialization does not change with experience at the population level
+*- Specialization does not change with experience at the population level*
 
-- Individuals either specialize or increase their flexiblity with experience
-
-
-*This has important implications for future theoretical models predicting a directional increase in specialization or flexibility. should incorporate individual variation if both mechanisms operate at the same time*
+*- Individuals either specialize or increase their flexiblity with experience*
 
 
-## Predator-prey interactions change with experience
+This has important implications for future theoretical models predicting a directional increase in specialization or flexibility. should incorporate individual variation if both mechanisms operate at the same time.
 
-- Experience strenghtens predator-prey interactions
+**keep Warburton, 2003 in mind as a ref**
+**Check Endler 1991 too from Kelley and Magurran**
+**Try to find again the ref saying that high speed prey are more difficult**
 
-- Experience dampens the relationship between behaviour and success
+
+## Consequences of hunting experience for predator-prey interactions
+
+*- Experience strengthens predator-prey interactions*
+
+Contrary to Hanifin et al. 2008, we find a directional symmetry (i.e. trait matching).
+Our results are similar to Szopa-Comley and Ioannou 2022. Adjustments based on prey. Le predateur s'ajuste dans le traitement unpredictable.
+In abrams 2000, we read : "The interaction of predator and prey traits in determining capture rate seems to be the most important factor determining the stability of the entire system. Most studies in which cycles are a commonly observed outcome assume that the predator maximizes its rate of capture of the prey by matching the prey's phenotype"
+We can also read : "If there is sufficiently strong stabilizing selection based on the costs of extreme trait values in both species, then stable equilibria are likely"
+In Reimche et al. 2020 : in the discussion we can read that we still don't understand the factors driving phenotypic (mis)matching. In my case, it appears that learning may play a role.
+Revoir mes résultats dans le cadre des résultats de Glaudas et al. 2019. Les 2 concordent bien.
+Voir Miszei comme exemple parmi d'autres pour trait matching.
+check Mougi etal. 2011 for arms-races based on phenotypic plasticity!
+
+Our results also have implications also for predator-prey models of trait-matching, because such models are usually studied at the evolutionary scale.
+
+*- Experience dampens the relationship between behaviour and success*
 
 
+**Check if I should add the role of phenotypic matching in the intro, and the role of learning**
 
+# Aknowledgements
+
+...
+
+# Conflict of Interest Statement
+
+The authors declare no conflict of interest
 
 \newpage
-# LITTERATURE CITED {.unnumbered}
+# REFERENCES {.unnumbered}
 
 <div id="refs"></div>
 
