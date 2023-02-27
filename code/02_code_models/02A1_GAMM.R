@@ -33,7 +33,7 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
                     "maxime11", "phd_project", "data")
 
 # Load data on compute canada
-data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
+data <- fread(file.path(folder, "FraserFrancoetal2023-data.csv"),
               select = c("predator_id",
                          "hunting_success",
                          "game_duration",
