@@ -165,7 +165,7 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 
 # Sub models
 success <- bf(
-  success | vint(4) ~ 
+  hunting_success | vint(4) ~ 
       1 + sqrt_game_duration +
       cumul_xp_pred +
       total_xp_pred +
@@ -182,23 +182,23 @@ priors <- c(
   set_prior("normal(1, 0.5)", 
             class = "b",
             coef = "sqrt_game_duration",
-            resp = "success"),
+            resp = "huntingsuccess"),
   # Prior on prey rank
   set_prior("normal(2.5, 1)", 
             class = "b",
             coef = "sqrt_prey_avg_rank",
             resp = c("predspeed",
-                     "preyspeed")),
+                     "preyavgspeed")),
   # priors on var. parameters (brms automatically detects half-normal)
   set_prior("normal(0, 1)",
             class = "sd", # applies to all variance parameters
             resp = c("predspeed",
-                     "preyspeed",
-                     "success")),
+                     "preyavgspeed",
+                     "huntingsuccess")),
   # priors on phi
   set_prior("normal(2, 1)",
             class = "phi",
-            resp = "success"),
+            resp = "huntingsuccess"),
   set_prior("lkj(2)", 
             class = "cor",
             group = "predator_id")
