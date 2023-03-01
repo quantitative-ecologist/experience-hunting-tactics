@@ -46,9 +46,9 @@ data <- fread(file.path(folder, "FraserFrancoetal2023-data-random.csv"),
                          "environment_id",
                          "hunting_success",
                          "cumul_xp_pred",
+                         "total_xp_pred",
                          "game_duration",
                          "pred_speed",
-                         "total_chase_duration",
                          "prey_avg_speed",
                          "prey_avg_rank"))
 
@@ -68,68 +68,18 @@ data[, environment_id := as.factor(environment_id)]
 # 2. Prepare the data for the model
 # =======================================================================
 
-# Here we prepare the data so the model can estimate trait combinations
-# at different levels of experience
-
-# Experience will thus be a random factor with 3 levels.
-# The random factor is assigned based on the results of the gamm model.
-# See figure X for reference ***
-
-# Here :
-  # Novice = 0 to 99
-  # Intermediate = >=100 to 299
-  # advanced = 300 to 500
-
-# All traits will then need to be computed as variables 
-# at these levels of experience
-
-
-# Create dummy variable ------------------------------------------------
-
-# This is done so the model partition the covariances by experience
-
-data[cumul_xp_pred < 100,
-     xp_level := "novice"]
-
-data[cumul_xp_pred %between% c(100, 299),
-     xp_level := "intermediate"]
-
-data[cumul_xp_pred >= 300,
-     xp_level := "advanced"]
-
-# Encode the variable as a factor
-data[, xp_level := as.factor(xp_level)]
-
-
-# This is done so the model can subsample the rows
-data[, sub1 := ifelse(xp_level == "novice", 1, 0)]
-data[, sub2 := ifelse(xp_level == "intermediate", 1, 0)]
-data[, sub3 := ifelse(xp_level == "advanced", 1, 0)]
+# Here we prepare the data so the model can estimate trait correlations
 
 
 
 # Transform the variables (sqrt) ----------------------------------------
 
 # Apply the function and create new columns
-# The function standardizes the variables by group :
-# in this case, by level of experience
+# The function standardizes the variables :
 
 data[, c("sqrt_game_duration", "sqrt_prey_avg_rank") :=
        lapply(.SD, function (x) {sqrt(x)}), 
-       .SDcols = c("game_duration", "prey_avg_rank"),
-       by = xp_level]
-
-# Compute the new columns for each level of experience
-data[, ":=" (speed_novice        = ifelse(xp_level == "novice", pred_speed, NA),
-             prey_speed_novice   = ifelse(xp_level == "novice", prey_avg_speed, NA),
-             success_novice      = ifelse(xp_level == "novice", hunting_success, NA),
-             speed_interm        = ifelse(xp_level == "intermediate", pred_speed, NA),
-             prey_speed_interm   = ifelse(xp_level == "intermediate", prey_avg_speed, NA),
-             success_interm      = ifelse(xp_level == "intermediate", hunting_success, NA),
-             speed_advanced      = ifelse(xp_level == "advanced", pred_speed, NA),
-             prey_speed_advanced = ifelse(xp_level == "advanced", prey_avg_speed, NA),
-             success_advanced    = ifelse(xp_level == "advanced", hunting_success, NA))
-]
+       .SDcols = c("game_duration", "prey_avg_rank")]
 
 # =======================================================================
 # =======================================================================
@@ -142,7 +92,7 @@ data[, ":=" (speed_novice        = ifelse(xp_level == "novice", pred_speed, NA),
 # 3. Build the multivariate model 
 # =======================================================================
 
-# We first compute submodels for each level of experience
+# We first compute submodels
 # These submodels will be added in a joint model that
 # will estimate all the covariances
 
@@ -150,36 +100,20 @@ data[, ":=" (speed_novice        = ifelse(xp_level == "novice", pred_speed, NA),
 
 # Speed at three levels of experience -----------------------------------
 
-speed_novice <- bf(
-  speed_novice | subset(sub1) ~
+pred_speed <- bf(
+  pred_speed ~
       1 + sqrt_prey_avg_rank +
+      cumul_xp_pred +
+      total_xp_pred +
+      cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~  
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
-) + gaussian()
-
-speed_intermediate <- bf(
-  speed_interm | subset(sub2) ~
-      1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
-      (1 | environment_id) +
-      (1 | avatar_id),
-  sigma ~  
-      1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
-) + gaussian()
-
-speed_advanced <- bf(
-  speed_advanced | subset(sub3) ~
-      1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
-      (1 | environment_id) +
-      (1 | avatar_id),
-  sigma ~  
-      1 + sqrt_prey_avg_rank +
+      cumul_xp_pred +
+      total_xp_pred +
+      cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id)
 ) + gaussian()
 
@@ -187,36 +121,20 @@ speed_advanced <- bf(
 
 # Prey speed at three levels of experience ------------------------------
 
-prey_speed_novice <- bf(
-  prey_speed_novice | subset(sub1) ~
+prey_speed <- bf(
+  prey_avg_speed ~
       1 + sqrt_prey_avg_rank +
+      cumul_xp_pred +
+      total_xp_pred +
+      cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~  
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
-) + gaussian()
-
-prey_speed_intermediate <- bf(
-  prey_speed_interm | subset(sub2) ~
-      1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
-      (1 | environment_id) +
-      (1 | avatar_id),
-  sigma ~ 
-      1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
-) + gaussian()
-
-prey_speed_advanced <- bf(
-  prey_speed_advanced | subset(sub3) ~
-      1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
-      (1 | environment_id) +
-      (1 | avatar_id),
-  sigma ~  
-      1 + sqrt_prey_avg_rank +
+      cumul_xp_pred +
+      total_xp_pred +
+      cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id)
 ) + gaussian()
 
@@ -246,21 +164,12 @@ stan_funs <- "
 stanvars <- stanvar(scode = stan_funs, block = "functions")
 
 # Sub models
-success_novice <- bf(
-  success_novice | vint(4) + subset(sub1) ~ 
+success <- bf(
+  success | vint(4) ~ 
       1 + sqrt_game_duration +
-      (1 |a| predator_id)
-) + beta_binomial2
-
-success_interm <- bf(
-  success_interm | vint(4) + subset(sub2) ~
-      1 + sqrt_game_duration +
-      (1 |a| predator_id)
-) + beta_binomial2
-
-success_advanced <- bf(
-  success_advanced | vint(4) + subset(sub3) ~
-      1 + sqrt_game_duration +
+      cumul_xp_pred +
+      total_xp_pred +
+      cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id)
 ) + beta_binomial2
 
@@ -273,37 +182,23 @@ priors <- c(
   set_prior("normal(1, 0.5)", 
             class = "b",
             coef = "sqrt_game_duration",
-            resp = c("successnovice",
-                     "successinterm",
-                     "successadvanced")),
+            resp = "success"),
   # Prior on prey rank
   set_prior("normal(2.5, 1)", 
             class = "b",
             coef = "sqrt_prey_avg_rank",
-            resp = c("speednovice",
-                     "speedinterm",
-                     "speedadvanced",
-                     "preyspeednovice",
-                     "preyspeedinterm",
-                     "preyspeedadvanced")),
+            resp = c("predspeed",
+                     "preyspeed")),
   # priors on var. parameters (brms automatically detects half-normal)
   set_prior("normal(0, 1)",
             class = "sd", # applies to all variance parameters
-            resp = c("speednovice",
-                     "speedinterm",
-                     "speedadvanced",
-                     "preyspeednovice",
-                     "preyspeedinterm",
-                     "preyspeedadvanced",
-                     "successnovice",
-                     "successinterm",
-                     "successadvanced")),
+            resp = c("predspeed",
+                     "preyspeed",
+                     "success")),
   # priors on phi
   set_prior("normal(2, 1)",
             class = "phi",
-            resp = c("successnovice",
-                     "successinterm",
-                     "successadvanced")),
+            resp = "success"),
   set_prior("lkj(2)", 
             class = "cor",
             group = "predator_id")
@@ -321,15 +216,9 @@ priors <- c(
 # =======================================================================
 
 # ( nitt - burnin ) / thin = 1000
-mv_model <- brm(speed_novice +
-                speed_intermediate +
-                speed_advanced +
-                prey_speed_novice +
-                prey_speed_intermediate +
-                prey_speed_advanced +
-                success_novice +
-                success_interm +
-                success_advanced +
+mv_model <- brm(pred_speed +
+                prey_speed +
+                success +
                 set_rescor(FALSE),
                 warmup = 500, 
                 iter = 2500,
