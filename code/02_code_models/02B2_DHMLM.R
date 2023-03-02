@@ -105,15 +105,14 @@ pred_speed <- bf(
       1 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
-      cumul_xp_pred : total_xp_pred +
+ #     cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id) +
-      (1 | environment_id) +
       (1 | avatar_id),
   sigma ~  
       1 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
-      cumul_xp_pred : total_xp_pred +
+#      cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id)
 ) + gaussian()
 
@@ -126,15 +125,14 @@ prey_speed <- bf(
       1 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
-      cumul_xp_pred : total_xp_pred +
+#      cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id) +
-      (1 | environment_id) +
       (1 | avatar_id),
   sigma ~  
       1 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
-      cumul_xp_pred : total_xp_pred +
+#      cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id)
 ) + gaussian()
 
@@ -169,7 +167,7 @@ success <- bf(
       1 + sqrt_game_duration +
       cumul_xp_pred +
       total_xp_pred +
-      cumul_xp_pred : total_xp_pred +
+#      cumul_xp_pred : total_xp_pred +
       (1 |a| predator_id)
 ) + beta_binomial2
 
@@ -189,6 +187,20 @@ priors <- c(
             coef = "sqrt_prey_avg_rank",
             resp = c("predspeed",
                      "preyavgspeed")),
+  # Prior on total XP
+  set_prior("normal(0, 1)", 
+            class = "b",
+            coef = "total_xp_pred",
+            resp = c("predspeed",
+                     "preyavgspeed",
+                     "hunting_success")),
+  # Prior on cumul xp
+  set_prior("normal(0, 1)", 
+            class = "b",
+            coef = "cumul_xp_pred",
+            resp = c("predspeed",
+                     "preyavgspeed",
+                     "hunting_success")),
   # priors on var. parameters (brms automatically detects half-normal)
   set_prior("normal(0, 1)",
             class = "sd", # applies to all variance parameters
@@ -220,10 +232,10 @@ mv_model <- brm(pred_speed +
                 prey_speed +
                 success +
                 set_rescor(FALSE),
-                warmup = 500, 
-                iter = 2500,
-                thin = 8,
-                chains = 4, 
+                warmup = 1000, 
+                iter = 13000,
+                thin = 48,
+                chains = 4,
                 inits = "0",
                 threads = threading(12),
                 backend = "cmdstanr",
