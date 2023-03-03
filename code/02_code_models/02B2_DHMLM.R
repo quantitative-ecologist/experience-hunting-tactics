@@ -193,14 +193,14 @@ priors <- c(
             coef = "total_xp_pred",
             resp = c("predspeed",
                      "preyavgspeed",
-                     "hunting_success")),
+                     "huntingsuccess")),
   # Prior on cumul xp
   set_prior("normal(0, 1)", 
             class = "b",
             coef = "cumul_xp_pred",
             resp = c("predspeed",
                      "preyavgspeed",
-                     "hunting_success")),
+                     "huntingsuccess")),
   # priors on var. parameters (brms automatically detects half-normal)
   set_prior("normal(0, 1)",
             class = "sd", # applies to all variance parameters
