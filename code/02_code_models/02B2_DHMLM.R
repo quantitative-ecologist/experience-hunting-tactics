@@ -43,7 +43,6 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
 data <- fread(file.path(folder, "FraserFrancoetal2023-data-random.csv"),
               select = c("predator_id",
                          "avatar_id",
-                         "environment_id",
                          "hunting_success",
                          "cumul_xp_pred",
                          "total_xp_pred",
@@ -55,7 +54,15 @@ data <- fread(file.path(folder, "FraserFrancoetal2023-data-random.csv"),
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
 data[, predator_avatar_id := as.factor(avatar_id)]
-data[, environment_id := as.factor(environment_id)]
+
+# Group players by experience
+data[, player_type := "empty"]
+data[total_xp_pred < 50, player_type := "<50"]
+data[total_xp_pred %between% c(50, 99), player_type := ">=50<100"]
+data[total_xp_pred %between% c(100, 299), player_type := ">=100<300"]
+data[total_xp_pred >= 300, player_type := ">=300"]
+
+data[, player_type := as.factor(player_type)]
 
 # =======================================================================
 # =======================================================================
@@ -106,14 +113,14 @@ pred_speed <- bf(
       cumul_xp_pred +
       total_xp_pred +
  #     cumul_xp_pred : total_xp_pred +
-      (1 |a| predator_id) +
+      (1 | predator_id) +
       (1 | avatar_id),
   sigma ~  
       1 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
 #      cumul_xp_pred : total_xp_pred +
-      (1 |a| predator_id)
+      (1 | predator_id)
 ) + gaussian()
 
 
@@ -126,14 +133,14 @@ prey_speed <- bf(
       cumul_xp_pred +
       total_xp_pred +
 #      cumul_xp_pred : total_xp_pred +
-      (1 |a| predator_id) +
+      (1 | predator_id) +
       (1 | avatar_id),
   sigma ~  
       1 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
 #      cumul_xp_pred : total_xp_pred +
-      (1 |a| predator_id)
+      (1 | predator_id)
 ) + gaussian()
 
 
@@ -168,7 +175,7 @@ success <- bf(
       cumul_xp_pred +
       total_xp_pred +
 #      cumul_xp_pred : total_xp_pred +
-      (1 |a| predator_id)
+      (1 | predator_id)
 ) + beta_binomial2
 
 
@@ -210,10 +217,7 @@ priors <- c(
   # priors on phi
   set_prior("normal(2, 1)",
             class = "phi",
-            resp = "huntingsuccess"),
-  set_prior("lkj(2)", 
-            class = "cor",
-            group = "predator_id")
+            resp = "huntingsuccess")
 )
 
 # =======================================================================
@@ -233,8 +237,8 @@ mv_model <- brm(pred_speed +
                 success +
                 set_rescor(FALSE),
                 warmup = 1000, 
-                iter = 13000,
-                thin = 48,
+                iter = 23000,
+                thin = 88,
                 chains = 4,
                 inits = "0",
                 threads = threading(12),
