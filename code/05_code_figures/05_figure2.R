@@ -15,37 +15,30 @@
 
 # Load libraries and model ----------------------------------------------
 
- # Libraries
- library(brms)
- library(data.table)
- library(ggplot2)
- library(ggpubr)
- library(ggridges)
- 
- # import model
- path <- file.path(getwd(), "outputs", "02_outputs_models")
- fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
- 
+# Libraries
+library(brms)
+library(data.table)
+library(ggplot2)
+library(ggpubr)
+library(ggridges)
+
+# import model
+path <- file.path(getwd(), "outputs", "02_outputs_models")
+fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
+
 
 
 # Load data ------------------------------------------------------------
- 
- # Data
- data <- fread("./data/FraserFrancoetalXXXX-data.csv",
-               select = c("predator_id",
-                          "cumul_xp_pred",
-                          "pred_speed"))
- 
- # Extract standard deviation of speed
- sd_speed1 <- sd(data[cumul_xp_pred < 100]$pred_speed)
- sd_speed2 <- sd(data[cumul_xp_pred >= 300]$pred_speed)
 
- # Filter only for advanced players
- data <- data[cumul_xp_pred >= 300]
- 
- # Predator id as factor
- data[, predator_id := as.factor(predator_id)]
- 
+# Data
+data <- fread("./data/FraserFrancoetal2023-data.csv",
+              select = c("predator_id",
+                         "cumul_xp_pred",
+                         "pred_speed"))
+
+# Predator id as factor
+data[, predator_id := as.factor(predator_id)]
+
 # =======================================================================
 # =======================================================================
 
@@ -57,70 +50,23 @@
 # 2. Extract posterior draws for predator speed
 # =======================================================================
 
+# Extract values --------------------------------------------------------
 
-# Extract sigma values --------------------------------------------------
+# individual means
+draws <- data.table(
+  as_draws_df(
+    fit,
+    variable = c(
+      "r_predator_id__sigma_speed",
+      "r_predator_id__speed"
+    ),
+    regex = TRUE)
+)
 
- draws <- data.table(
-     as_draws_df(
-         fit,
-         variable = c("r_predator_id__sigma_speed"),
-         regex = TRUE)
- )
-
- draws[, c(1:33, 287:539) := NULL]
- draws[, c(507:509) := NULL]
-
-# =======================================================================
-# =======================================================================
-
-
-
-
-
-# =======================================================================
-# 3. Reshape the draws table
-# =======================================================================
-
-# Reshape sigma speed ---------------------------------------------------
-
- # Long format
- draws <- melt(draws,
-               measure = patterns("^r_predator_id"),
-               variable.name = "predator_id")
- 
- # Add experience level
- draws[, xp_level := ifelse(predator_id %like% "novice",
-                            "novice",
-                            "advanced")]
- 
- # Add predator ID
- draws[, predator_id := as.character(predator_id)]
- draws[, predator_id := gsub("[]_,a-zA-Z,[]", "", predator_id)]
- draws[, predator_id := gsub(" ", "", paste("pred", predator_id))]
- draws[, predator_id := as.factor(predator_id)]
- 
- # Rename value to speed
- setnames(draws, "value", "speed_sigma")
-
-
-
-# Transform  ------------------------------------------------------------
-
-# Add population intercept
-int1 <- fixef(fit, pars = "sigma_speednovice_Intercept")[1]
-int2 <- fixef(fit, pars = "sigma_speedadvanced_Intercept")[1]
-
-draws[xp_level == "novice", speed_sigma := speed_sigma + int1]
-draws[xp_level == "advanced", speed_sigma := speed_sigma + int2]
-
-# Back transform to original scale (sigma is on log scale)
-draws[, exp_speed_sigma := exp(speed_sigma)]
-
-
-# Calculate mean predicted value for each individual
-draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
-                 by = c("predator_id",
-                        "xp_level")]
+# Remove columns that are not needed
+draws <- draws[, .SD, .SDcols = ! names(draws) %like% "cor"]
+draws <- draws[, .SD, .SDcols = ! names(draws) %like% "interm"]
+draws <- draws[, .SD, .SDcols = ! names(draws) %like% "prey"]
 
 # =======================================================================
 # =======================================================================
@@ -130,149 +76,278 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
 
 
 # =======================================================================
-# 4. Compute the two plots
+# 3. Prepare the draws table
 # =======================================================================
+
+
+# Reshape ---------------------------------------------------------------
+
+# Long format
+draws <- melt(draws,
+              measure = patterns("^r_predator_id"),
+              variable.name = "predator_id")
+
+
+
+# Add columns -----------------------------------------------------------
+
+# Add experience level
+draws[, xp_level := ifelse(predator_id %like% "novice",
+                           "novice",
+                           "advanced")]
+
+# Add parameter
+draws[, parameter := ifelse(predator_id %like% "sigma", "sigma", "mean")]
+
+# Add predator ID
+draws[, predator_id := as.character(predator_id)]
+draws[, predator_id := gsub("[]_,a-zA-Z,[]", "", predator_id)]
+draws[, predator_id := gsub(" ", "", paste("pred", predator_id))]
+draws[, predator_id := as.factor(predator_id)]
+
+# Delete the mcmc columns
+draws[, c(1:3) := NULL]
+
+
+
+# Add intercept values to predator means --------------------------------
+
+# Extract intercepts
+int1 <- fixef(fit, pars = "speednovice_Intercept")[1]
+int2 <- fixef(fit, pars = "speedadvanced_Intercept")[1]
+int3 <- fixef(fit, pars = "sigma_speednovice_Intercept")[1]
+int4 <- fixef(fit, pars = "sigma_speedadvanced_Intercept")[1]
+
+# Add the intercept values
+draws[
+  xp_level == "novice" & parameter == "mean",
+  value_and_intercept := value + int1
+]
+
+draws[
+  xp_level == "novice" & parameter == "sigma",
+  value_and_intercept := value + int3
+]
+
+draws[
+  xp_level == "advanced" & parameter == "mean",
+  value_and_intercept := value + int2
+]
+
+draws[
+  xp_level == "advanced" & parameter == "sigma",
+  value_and_intercept := value + int4
+]
+
+
+
+# Calculate the averages ------------------------------------------------
+
+# Back transform sigma
+draws[parameter == "sigma", value_and_intercept := exp(value_and_intercept)]
+
+# Compute the mean
+table <- draws[
+  , .(mean_value = mean(value_and_intercept)),
+  by = .(predator_id, xp_level, parameter)
+]
+
+
+
+# Calculate the difference between novice and advanced ------------------
+
+# Wide format to calculate the difference
+table <- dcast(
+  table,
+  predator_id + parameter ~ xp_level,
+  value.var = "mean_value"
+)
+
+# Reorder
+setcolorder(table, c(1,2,4,3))
+
+# Calculate difference in sigma values between novice and advanced
+table[, difference := novice - advanced, by = .(predator_id, parameter)]
+
+# Reorder the table to long format for further changes
+table <- melt(
+  table,
+  measure = c("novice", "advanced"),
+  variable.name = "xp_level"
+  )
+
+# =======================================================================
+# =======================================================================
+
+
+
+
+
+# =======================================================================
+# 4. Generate a distribution for every player based on model estimates
+# =======================================================================
+
+
+# Prepare the data for sampling -----------------------------------------
+
+# Add sample size to sample normal distribution
+table[, sample_size := 500]
+
+# Reshape the table
+table <- dcast(
+  table,
+   xp_level + predator_id + sample_size ~ parameter,
+  value.var = c("value", "difference")
+  )
+
+# Compute normal distributions for each predator  
+#normalize <- apply(
+#  table[,c(3:5)],
+#  1, 
+#  function(x) rnorm(x[1], mean = x[2], sd = x[3])
+#)
+
+# Compute truncated normal distributions for each predator  
+table[, trunc := 0]
+
+normalize <- apply(
+  table[,c(3:5,8)],
+  1, 
+  function(x) truncnorm::rtruncnorm(x[1], mean = x[2], sd = x[3], a = x[4])
+)
+
+
+
+# Extract the data for every xp level -----------------------------------
+
+# As data table
+normalize <- data.table(normalize)
+
+# Novice players
+novice <- normalize[,c(1:253)]
+novice <- melt(novice)
+novice[, xp_level := "novice"]
+colnames(novice) <- paste(colnames(novice), "nov", sep = "_")
+
+# Advanced players
+adv <- normalize[,c(254:506)]
+adv <- melt(adv)
+adv[, xp_level := "advanced"]
+colnames(adv) <- paste(colnames(adv), "adv", sep = "_")
+
+# Combine as one table
+dat <- cbind(novice, adv)
+
+# Add predator ID
+dat[, predator_id := rep(levels(table$predator_id), each = 500)]
+dat[, predator_id := as.factor(predator_id)]
+
+# Merge the tables
+dat <- merge(
+  dat,
+  table[,.(predator_id, difference_sigma)],
+  allow.cartesian = TRUE
+)
+
+# =======================================================================
+# =======================================================================
+
+
+
+
+
+# =======================================================================
+# 5. Compute the plots
+# =======================================================================
+
 
 # Set custom theme ------------------------------------------------------
 
- custom_theme <- theme(# axis values size
-                        axis.text.x = element_text(face = "plain", 
-                                                   size = 14,
-                                                   color = "black"),
-                        axis.text.y = element_text(face = "plain", 
-                                                   size = 5,
-                                                   color = "black"),
-                        # axis ticks lenght
-                        axis.ticks.length = unit(.15, "cm"),
-                        # axis ticks width
-                        axis.ticks = element_line(size = 0.90, 
-                                                  color = "black"),
-                        # axis titles size
-                        axis.title = element_text(size = 16, 
-                                                  face = "plain",
-                                                  color = "black"),
-                        axis.line = element_line(size = 0.95,
-                                                 color = "black"),
-                        panel.grid = element_blank(),
-                        panel.background = element_blank())
- 
- # 1 digits to axis
- scaleFUN <- function(x) sprintf("%.1f", x)
+custom_theme <- theme(# axis values size
+  axis.text.x = element_text(face = "plain", 
+                             size = 12,
+                             color = "black"),
+  axis.text.y = element_text(face = "plain", 
+                             size = 12,
+                             color = "black"),
+  # axis ticks lenght
+  axis.ticks.length = unit(.15, "cm"),
+  # axis ticks width
+  axis.ticks = element_line(size = 0.90, 
+                            color = "black"),
+  # axis titles size
+  axis.title = element_text(size = 13, 
+                            face = "plain",
+                            color = "black"),
+  axis.line = element_line(size = 0.95,
+                           color = "black"),
+  panel.grid = element_blank(),
+  panel.background = element_blank()
+)
 
 
 
-# Plot novices ----------------------------------------------------------
+# Check quantiles to subsample predators --------------------------------
 
- #scaled_breaks1 <- c(0.2 / sd_speed1,
- #                    0.6 / sd_speed1,
- #                    1.0 / sd_speed1,
- #                    1.4 / sd_speed1)
- 
- # Extract 95% CI of intercepts
- int1min <- exp(fixef(fit, pars = "sigma_speednovice_Intercept")[3])
- int1max <- exp(fixef(fit, pars = "sigma_speednovice_Intercept")[4])
+# Check quantiles
+lower_q <- as.vector(quantile(dat$difference_sigma)[2])
+upper_q <- as.vector(quantile(dat$difference_sigma)[4])
 
- # Plot the distributions of novice players
- plot1 <- ggplot() +
-     
-     annotate("rect",
-              fill = "firebrick2",
-              xmin = int1min,
-              xmax = int1max,
-              ymin = -Inf,
-              ymax = Inf, 
-              alpha = .5) +
- 
-     geom_density_ridges(data = draws[xp_level == "novice"],
-                         rel_min_height = 0.005,
-                         fill = "#999999",
-                         aes(x = exp_speed_sigma,
-                             y = predator_id,
-                             height = ..density..,
-                             scale = 3)) +
-     
-     geom_point(data = unique(draws[xp_level == "novice", c(1, 5)]),
-                aes(x = average_speed_sigma, 
-                    y = predator_id),
-                size = 1,
-                color = "black") +
-     scale_x_continuous(breaks = seq(0, 2, 0.5),
-                        limits = c(0, 2.5)) +
-     #scale_x_continuous(breaks = scaled_breaks1,
-     #                   labels = scaleFUN,
-     #                   limits = c(0, 4)) +
-     
-     ylab("Predator ID\n") +
-     xlab("\nIntra individual SD (m/s)") +
-     labs(title = "Novice \nIntercept = 0.292 (0.271, 0.316)") +
-     
-     custom_theme +
-     theme(axis.text.y = element_blank(),
-           axis.ticks.y = element_blank(),
-           plot.title = element_text(size = 15,
-                                     face = "bold"))
+# Extract players with the greatest differences in sigma
+# lower values = increase in flexibility
+# higher values = decrease in flexibility (i.e. specialization)
+ids <- factor(
+  unique(
+    dat[difference_sigma <= lower_q | difference_sigma >= upper_q, predator_id]
+  )
+)
+#set.seed(123)
+#id_sample <- factor(sample(ids, 50))
+dat <- dat[predator_id %in% ids]
 
 
 
-# Plot experts ----------------------------------------------------------
+# Compute the plots -----------------------------------------------------
 
- #scaled_breaks2 <- c(0.2 / sd_speed2,
- #                    0.6 / sd_speed2,
- #                    1.0 / sd_speed2,
- #                    1.4 / sd_speed2)
+# Highest increase in specialization
+plot1 <- ggplot() +
+  geom_density(data = dat[difference_sigma > 0.2],
+               fill = "#999999",
+               color = "#999999",
+               alpha = 0.5,
+               aes(x = value_nov)) +
+  geom_density(data = dat[difference_sigma > 0.2],
+               fill = "#00AFBB",
+               alpha = 0.5,
+               aes(x = value_adv)) +
+  ylab("Frequency\n") +
+  xlab("\nPredator speed (m/s)") +
+  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 8)) +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid = element_blank()) +
+  facet_wrap(~predator_id)
 
-
- int2min <- exp(fixef(fit, pars = "sigma_speedadvanced_Intercept")[3])
- int2max <- exp(fixef(fit, pars = "sigma_speedadvanced_Intercept")[4])
-
- # Plot the distributions of advanced players
- plot2 <- ggplot() +
- 
-     annotate("rect",
-              fill = "firebrick2",
-              xmin = int1min,
-              xmax = int1max,
-              ymin = -Inf,
-              ymax = Inf, 
-              alpha = .5) +
-     
-     geom_density_ridges(data = draws[xp_level == "advanced"],
-                         rel_min_height = 0.005,
-                         fill = "#00AFBB",
-                         aes(x = exp_speed_sigma,
-                             y = predator_id,
-                             height = ..density..,
-                             scale = 3)) +
-     
-     geom_point(data = unique(draws[xp_level == "advanced", c(1, 5)]),
-                aes(x = average_speed_sigma, 
-                    y = predator_id),
-                size = 1,
-                color = "black") +
-     
-     scale_x_continuous(breaks = seq(0, 2, 0.5),
-                        limits = c(0, 2.5)) +
-     #scale_x_continuous(breaks = scaled_breaks2,
-     #                   labels = c(0.5, 1.5, 2.5, 3.5),
-     #                   limits = c(0, 4)) +
- 
-     #scale_x_continuous(#breaks = c(-1, 0, 1),
-     #                   limits = c(0.1, 3.5),
-     #                   #expand = c(0, 0),
-     #                   sec.axis = sec_axis(trans = ~.,
-     #                                       breaks = scaled_breaks2,
-     #                                       labels = c(0.2, 0.4, 0.6, 0.8, 1),
-     #                                       name = "Within individual variance (m/s)\n")) +
- 
-     ylab("Predator ID\n") +
-     xlab("\nIntra individual SD (m/s)") +
-     labs(title = "Advanced \nIntercept = 0.289 (0.268, 0.311)") +
- 
-     custom_theme +
-     theme(axis.text.y = element_blank(),
-           axis.ticks.y = element_blank(),
-           plot.title = element_text(size = 15,
-                                     face = "bold"))
+# Highest increase in flexibility
+plot2 <- ggplot() +
+  geom_density(data = dat[difference_sigma < -0.28],
+               fill = "#999999",
+               color = "#999999",
+               alpha = 0.5,
+               aes(x = value_nov)) +
+  geom_density(data = dat[difference_sigma < -0.28],
+               fill = "#00AFBB",
+               alpha = 0.5,
+               aes(x = value_adv)) +
+  ylab("Frequency\n") +
+  xlab("\nPredator speed (m/s)") +
+  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 8)) +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid = element_blank()) +
+  facet_wrap(~predator_id)
 
 # =======================================================================
 # =======================================================================
@@ -282,25 +357,27 @@ draws <- draws[, average_speed_sigma := mean(exp_speed_sigma),
 
 
 # =======================================================================
-# 5. Combine plots into 1 figure
+# 6. Combine the plots as one figure
 # =======================================================================
 
 # Combine as one figure -------------------------------------------------
 
- # Combine plots
- figure <- ggarrange(plot1, plot2,
-                     labels = c("(A)", "(B)"),
-                     ncol = 2, nrow = 1)
+# Combine plots
+figure <- ggarrange(plot1, plot2,
+                    labels = c("(A)", "(B)"),
+                    ncol = 2, nrow = 1)
 
- # Folder path
- path <- file.path(getwd(), "outputs", "05_outputs_figures")
+# Folder path
+path <- file.path(getwd(), "outputs", "05_outputs_figures")
 
- # Save figure
- ggexport(figure,
-          filename = file.path(path, "05_figure2.png"),
-          width = 2500,
-          height = 1600,
-          res = 300)
+# Save figure
+ggexport(
+  figure,
+  filename = file.path(path, "05_figure2.png"),
+  width = 2500,
+  height = 1200,
+  res = 300
+)
 
 # =======================================================================
 # =======================================================================
