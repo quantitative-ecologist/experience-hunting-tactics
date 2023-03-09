@@ -63,6 +63,7 @@ data[total_xp_pred %between% c(100, 299), player_type := ">=100<300"]
 data[total_xp_pred >= 300, player_type := ">=300"]
 
 data[, player_type := as.factor(player_type)]
+data[, total_xp_pred := player_type]
 
 # =======================================================================
 # =======================================================================
