@@ -51,7 +51,7 @@ Corresponding author : fraser_franco.maxime@courrier.uqam.ca
 
 Open research statement : The data and code used to produce the results in this manuscript are freely available on GitHub https://github.com/quantitative-ecologist/experience-hunting-tactics
 
-Keywords: foraging behaviour, individual specialization, learning, behavioural plasticity, prey predictability, online videogames
+Keywords: foraging behaviour, individual specialization, behavioural plasticity, learning, prey predictability, virtual ecology
 
 
 
@@ -233,78 +233,6 @@ knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure2.
 
 ## Relationship between behavioural specialization and prey variability
 
-```{r, eval=FALSE}
-
-# =======================================================================
-
-# Extract the correlations to report values in the text
-
-# =======================================================================
-
-
-
-# =======================================================================
-# Prepare the draws
-# =======================================================================
-
- # Model
- path <- here::here("outputs", "02_outputs_models")
- fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
- 
- # Extract the draws
- draws <- data.table(
-     as_draws_df(
-         fit,
-         variable = c("cor"),
-         regex = TRUE)
- )
- 
- draws[, c(106:109) := NULL]
- 
- # =======================================================================
- # =======================================================================
- 
- 
- 
- 
- 
- # =======================================================================
-# 2. Transform the draws table
-# =======================================================================
-
-
-# Reshape the table -----------------------------------------------------
-
- # Long format
- table <- melt(draws,
-               measure = patterns("^cor_predator_id"),
-               variable.name = "correlation")
-
-
- 
- # Summarize the values (means + 95% CI) ---------------------------------
-
- # Intervals
- lower_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[1]}
- upper_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[2]}
-
-
- table[, ":=" (mean = mean(value),
-               lower_ci = lower_interval(value),
-               upper_ci = upper_interval(value)),
-       by = .(correlation)]
-
- cor_tab <- unique(table[, c(1, 3:5)])
-
- # Round values to 3 digits
- cor_tab[, c(2:4) := lapply(.SD, function (x) {round(x, digits = 3)}),
-         .SDcols = c(2:4)]
- 
-# =======================================================================
-# =======================================================================
- 
-```
-
 At all experience levels, predators that were on average faster (mean) had also a lower intra-individual variability (IIV) across their matches (Figure 3 and Table S1). Thus, faster predators specialized at travelling fast, while slower predators were more flexible in their movement through time. In general, predators that encountered prey that were on average faster (mean) tended to be faster (mean) (Figure 3 and Table S1). At the three experience levels, there were only weak correlations between predator IIV and mean prey speed (Figure 3 and Table S1). However, predators that experienced more predictable encounters with their prey (IIV) specialized in a faster hunting tactic (IIV) (Figure 3 and Table S1). For all the results described above, the correlations became stronger as predators gained experience (Figure 3 and Table S1).
 
 The foraging strategies of predators, that is, the correlations between the mean and IIV of speed, remained structurally stable among the levels of experience (Figure 3 inside the black circles and Table S1). For instance, novice predators that tended to be faster also kept this strategy as they gained experience (Figure 3 inside the black squares and Table S1). Overall, we detected the same patterns than those from the within-experience state correlations described above. The correlations between trait values were also stronger among novice-intermediate and intermediate-advanced states than between novice-advanced states, indicating that the behavioural tactics of predators were more similar among experience levels closer in time (Figure 3 inside the black circles and Table S1).
@@ -329,7 +257,7 @@ Hunting experience is predicted to imbue an increase in predator foraging specia
 
 ## The development of expertise with hunting experience
 
-Empirical studies in humans and animals show that proficiency in a given task often increases nonlinearly with experience, and stabilizes when an expert level is reached [reviewed in @Dukas2019]. However, these patterns are derived from models that assume the same increase in expertise for each individual, and their data do not include repeated measures of individual success through time. In contrast with these studies, our analyses revealed that there was no population increase in expertise; instead, individual predators in *DBD* displayed distinct patterns of expertise acquisition. For instance, many predators increased their success (Figure S1A), but others displayed a decrease in success (Figure S1B) or no change in success at all with experience. We predicted that this would occur because predators should differ in the type of prey that they encounter, as some may be easier to capture than others. This is often the case in nature as prey can use variety of defenses such as physical armaments, toxins, camouflage, or antipredator behaviours to escape predation [@BrodieIII.BrodieJr.1999;@Bowen.etal2002;@brodieCoEvolutionPredatorsPrey2010;@Nomura.etal2011;@Carey.Wahl2011]. However, our results show that the speed of the prey did not shape individual differences in skill aquisition by predators, even if they differed in the prey that they encountered. This was unexpected, because prey speed is an important predictor of predator success in this system [@FraserFranco.etal2022] as well as in others [@Walker.etal2005;@Kelley.Magurran2011]. Despite that other antipredator tactics may mediate these individual responses by predators, it is likely that individual differences in motivation and perseverance, attention span, or memory retention were also major causes [@Warburton2003;@morand-ferronStudyingEvolutionaryEcology2016;@Dukas2019]. For instance, a persevering predator may increase its success much more steadily than an unmotivated predator that quickly abandons a chase. Another factor that may explain differences in the development of expertise is the time delay between hunting events, such that a predator that played 300 matches in the span of six months may not retain information (e.g. prey escape patterns or muscle memory) as well as one that played 300 matches in the span of 6 days. While this has not been tested yet in a predator-prey interaction, it is hypothesized that a greater delay between exposure events should attenuate or even negate the relationship between cumulative experience and success as a result of forgetting [@Endler1991;@Wright.etal2022].
+Empirical studies in humans and animals show that proficiency in a given task often increases nonlinearly with experience, and stabilizes when an expert level is reached [reviewed in @Dukas2019]. However, these patterns are derived from models that assume the same increase in expertise for each individual, and their data do not include repeated measures of individual success through time. In contrast with these studies, our analyses revealed that there was no population increase in expertise; instead, individual predators in *DBD* displayed distinct patterns of expertise acquisition. For instance, many predators increased their success (Figure S1A), but others displayed a decrease in success (Figure S1B) or no change in success at all with experience. We predicted that this would occur because predators should differ in the type of prey that they encounter, as some may be easier to capture than others. This is often the case in nature as prey can use variety of defenses such as physical armaments, toxins, camouflage, or antipredator behaviours to escape predation [@BrodieIII.BrodieJr.1999;@Bowen.etal2002;@brodieCoEvolutionPredatorsPrey2010;@Nomura.etal2011;@Carey.Wahl2011]. However, our results show that the speed of the prey did not shape individual differences in skill acquisition by predators, even if they differed in the prey that they encountered. This was unexpected, because prey speed is an important predictor of predator success in this system [@FraserFranco.etal2022] as well as in others [@Walker.etal2005;@Kelley.Magurran2011]. Despite that other antipredator tactics may mediate these individual responses by predators, it is likely that individual differences in motivation and perseverance, attention span, or memory retention were also major causes [@Warburton2003;@morand-ferronStudyingEvolutionaryEcology2016;@Dukas2019]. For instance, a persevering predator may increase its success much more steadily than an unmotivated predator that quickly abandons a chase. Another factor that may explain differences in the development of expertise is the time delay between hunting events, such that a predator that played 300 matches in the span of six months may not retain information (e.g. prey escape patterns or muscle memory) as well as one that played 300 matches in the span of 6 days. While this has not been formally tested, it is hypothesized that a greater delay between exposure events should attenuate or even negate the relationship between cumulative experience and success as a result of forgetting [@Endler1991;@Wright.etal2022].
 
 ## Changes in individual hunting specialization with experience and consequences for predator-prey interactions
 
@@ -338,6 +266,7 @@ We detected a similar pattern for foraging specialization, such that individual 
 Predators that experienced predictable encounters with their prey specialized in hunting at high speeds, while those that experienced more unpredictable encounters adopted a slower and flexible strategy. This is similar to other studies finding that fast-paced hunting is a highly specialized tactic suited for prey that use rapid escapes [@Endler1991;@Bro-Jorgensen2013;@Wilson.etal2018;@Szopa-Comley.Ioannou2022]. On the contrary, instead of focusing solely on one tactic, predators that experienced unpredictable encounters probably adjusted their behaviour to minimize the consequences of uncertainty. Interestingly, both specialist and flexible hunters fine-tuned their tactic to their prey as they gained experience, suggesting that they learned how to hunt their prey. In that regard, our results provide direct evidence that the mechanism underlying the resource-predictability hypothesis may indeed involve predators learning to adjust their degree of specialization based on their prey [@Weimerskirch.etal2005;@Weimerskirch2007;@Woo.etal2008;@Phillips.etal2017]. This is further supported by the fact that specialist and flexible hunters both achieved similar success throughout the study period. Therefore, our results have important implications for future predator-prey models, which should incorporate individual variation in learning and prey encounters to better predict under which ecological contexts specialization should be favoured over flexibility.
 
 
+```{r eval = FALSE}
 *je peux commencer à plug le arms race dans ce paragraphe.*
 *il faut aussi que je parle du fait que la variation dans le succès de capture a diminué avec l'XP*
 *- Experience strengthens predator-prey interactions*
@@ -358,6 +287,10 @@ check Mougi etal. 2011 for arms-races based on phenotypic plasticity!
 
 
 *Our results also have implications also for predator-prey models of trait-matching, because such models are usually studied at the evolutionary scale.*
+
+```
+
+
 
 
 
