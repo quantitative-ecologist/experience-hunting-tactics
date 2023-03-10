@@ -249,6 +249,9 @@ dat <- merge(
   allow.cartesian = TRUE
 )
 
+# The merging produces duplicates so I remove them
+dat <- unique(dat)
+
 # =======================================================================
 # =======================================================================
 
@@ -320,14 +323,14 @@ plot1 <- ggplot() +
                fill = "#00AFBB",
                alpha = 0.5,
                aes(x = value_adv)) +
-  ylab("Frequency\n") +
+  ylab("Density\n") +
   xlab("\nPredator speed (m/s)") +
   scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 8)) +
   theme_bw() +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         panel.grid = element_blank()) +
-  facet_wrap(~predator_id)
+  facet_wrap(~ reorder(as.factor(predator_id), difference_sigma))
 
 # Highest increase in flexibility
 plot2 <- ggplot() +
@@ -340,14 +343,14 @@ plot2 <- ggplot() +
                fill = "#00AFBB",
                alpha = 0.5,
                aes(x = value_adv)) +
-  ylab("Frequency\n") +
+  ylab("Density\n") +
   xlab("\nPredator speed (m/s)") +
   scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 8)) +
   theme_bw() +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         panel.grid = element_blank()) +
-  facet_wrap(~predator_id)
+  facet_wrap(~ reorder(as.factor(predator_id), -difference_sigma))
 
 # =======================================================================
 # =======================================================================
