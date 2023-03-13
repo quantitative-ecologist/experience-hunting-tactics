@@ -57,10 +57,10 @@ data[, predator_avatar_id := as.factor(avatar_id)]
 
 # Group players by experience
 data[, player_type := "empty"]
-data[total_xp_pred < 50, player_type := "<50"]
-data[total_xp_pred %between% c(50, 99), player_type := ">=50<100"]
-data[total_xp_pred %between% c(100, 299), player_type := ">=100<300"]
-data[total_xp_pred >= 300, player_type := ">=300"]
+data[total_xp_pred < 50, player_type := "early_quitters"]
+data[total_xp_pred %between% c(50, 99), player_type := "mid_quitters"]
+data[total_xp_pred %between% c(100, 299), player_type := "slightly_engaged"]
+data[total_xp_pred >= 300, player_type := "engaged"]
 
 data[, player_type := as.factor(player_type)]
 data[, total_xp_pred := player_type]
@@ -110,7 +110,7 @@ data[, c("sqrt_game_duration", "sqrt_prey_avg_rank") :=
 
 pred_speed <- bf(
   pred_speed ~
-      1 + sqrt_prey_avg_rank +
+      0 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
  #     cumul_xp_pred : total_xp_pred +
@@ -130,7 +130,7 @@ pred_speed <- bf(
 
 prey_speed <- bf(
   prey_avg_speed ~
-      1 + sqrt_prey_avg_rank +
+      0 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
 #      cumul_xp_pred : total_xp_pred +
@@ -172,7 +172,7 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 # Sub models
 success <- bf(
   hunting_success | vint(4) ~ 
-      1 + sqrt_game_duration +
+      0 + sqrt_game_duration +
       cumul_xp_pred +
       total_xp_pred +
 #      cumul_xp_pred : total_xp_pred +
@@ -196,12 +196,21 @@ priors <- c(
             resp = c("predspeed",
                      "preyavgspeed")),
   # Prior on total XP
-  set_prior("normal(0, 1)", 
+  set_prior("normal(3, 1)", 
             class = "b",
-            coef = "total_xp_pred",
+            coef = c("total_xp_predearly_quitters",
+                     "total_xp_predengaged",
+                     "total_xp_predmid_quitters",
+                     "total_xp_predslightly_engaged"),
             resp = c("predspeed",
-                     "preyavgspeed",
-                     "huntingsuccess")),
+                     "preyavgspeed")),
+  set_prior("normal(-0.05, 1)",
+            class = "b",
+            coef = c("total_xp_predearly_quitters",
+                     "total_xp_predengaged",
+                     "total_xp_predmid_quitters",
+                     "total_xp_predslightly_engaged"),
+            resp = "huntingsuccess"),
   # Prior on cumul xp
   set_prior("normal(0, 1)", 
             class = "b",
