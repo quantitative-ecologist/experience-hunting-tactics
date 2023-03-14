@@ -306,16 +306,20 @@ important de faire ressortir que c'est seulement 10% des gens qui ont vraiment c
 
 
 
-
-# Aknowledgements
+# AKNOWLEDGEMENTS
 
 ...
 
-# Conflict of Interest Statement
+
+
+
+# CONFLICT OF INTEREST STATEMENT
 
 The authors declare no conflict of interest
 
-\newpage
+
+
+
 # REFERENCES {.unnumbered}
 
 <div id="refs"></div>
