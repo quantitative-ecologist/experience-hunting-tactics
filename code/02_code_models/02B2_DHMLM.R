@@ -117,7 +117,7 @@ pred_speed <- bf(
       (1 | predator_id) +
       (1 | avatar_id),
   sigma ~  
-      1 + sqrt_prey_avg_rank +
+      0 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
 #      cumul_xp_pred : total_xp_pred +
@@ -137,7 +137,7 @@ prey_speed <- bf(
       (1 | predator_id) +
       (1 | avatar_id),
   sigma ~  
-      1 + sqrt_prey_avg_rank +
+      0 + sqrt_prey_avg_rank +
       cumul_xp_pred +
       total_xp_pred +
 #      cumul_xp_pred : total_xp_pred +
