@@ -293,6 +293,16 @@ voir Edgell : prey-induced plasticity leads to covariance between predator-prey 
 **garder en tête l'étude de Lima AmNat sur purposeful unpredictability**
 **Iannou also found strong among individual differences in slopes of trial number**
 
+
+# Some caveats
+
+"différences entre individus dans les proies rencontées : la direction peut être des 2 côtés, soit c'est parce que le prédateur drive le fait que les proies sont plus variables en général. Ou c'est parce qu'il rencontre des proies variables et donc il adopte cette stratégie."
+
+"parler de matchmaking pourrait influencer courbes (moins de variance intermediare car proche de la moyenne de skill)"
+
+"faire la distinction que certains optimisent, certains sont moins bon, donc ça varie dans la population."
+
+
 Phrases de conclusion :
 
 Our results also have implications also for predator-prey models of trait-matching, because such models are usually studied at the evolutionary scale.
