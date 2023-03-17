@@ -303,7 +303,14 @@ voir Edgell : prey-induced plasticity leads to covariance between predator-prey 
 "faire la distinction que certains optimisent, certains sont moins bon, donc ça varie dans la population."
 
 
+À faire :
+
+- parler du sampling et du modèle pour tester les biais dans les méthodes
+- dans mon dernier paragraphe, parler du fait que les proies aussi s'ajustent
+
 Phrases de conclusion :
+
+Début de la conclusion, revenir brièvement sur notre système et les jeux. Les petits avantages
 
 Our results also have implications also for predator-prey models of trait-matching, because such models are usually studied at the evolutionary scale.
 
