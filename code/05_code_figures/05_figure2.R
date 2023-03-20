@@ -290,6 +290,51 @@ custom_theme <- theme(# axis values size
 
 
 
+# Calculate percentages of players learning -----------------------------
+
+# Inspect quantiles
+quantile(dat[, difference_sigma])
+
+
+# Subset greatest increases + players that did not change
+flex <- unique(
+  dat[
+    difference_sigma <= -0.2,
+    .(predator_id, difference_sigma)
+  ]
+)
+
+specialists <- unique(
+  dat[
+    difference_sigma >= 0.2,
+    .(predator_id, difference_sigma)
+  ]
+)
+
+constant <- unique(
+  dat[
+    difference_sigma %between% c(-0.05, 0.05),
+    .(predator_id, difference_sigma)
+  ]
+)
+
+# Inspect range
+range(specialists$difference_sigma)
+range(flex$difference_sigma)
+range(constant$difference_sigma)
+
+# Check percentages
+length(unique(flex$predator_id)) / length(unique(dat$predator_id))
+# 8%
+
+length(unique(specialists$predator_id)) / length(unique(dat$predator_id))
+# 25%
+
+length(unique(constant$predator_id)) / length(unique(dat$predator_id))
+# 42%
+
+
+
 # Check quantiles to subsample predators --------------------------------
 
 # Check quantiles
@@ -306,7 +351,18 @@ ids <- factor(
 )
 #set.seed(123)
 #id_sample <- factor(sample(ids, 50))
-dat <- dat[predator_id %in% ids]
+dat_sample <- dat[predator_id %in% ids]
+
+# Inspect the distribution of sigma differences
+hist(
+  unique(dat_sample[, .(predator_id, difference_sigma)])$difference_sigma,
+  breaks = 20
+)
+
+# Check sample range
+unique(dat_sample[,.(predator_id, difference_sigma)][, range(difference_sigma)])
+length(unique(dat_sample[, predator_id])) / length(unique(dat[, predator_id]))
+# 50% se situent entre -1.62 et 0.66 avec les limites -0.05 et 0.07
 
 
 
@@ -314,12 +370,12 @@ dat <- dat[predator_id %in% ids]
 
 # Highest increase in specialization
 plot1 <- ggplot() +
-  geom_density(data = dat[difference_sigma > 0.2],
+  geom_density(data = dat_sample[difference_sigma > 0.2],
                fill = "#999999",
                color = "#999999",
                alpha = 0.5,
                aes(x = value_nov)) +
-  geom_density(data = dat[difference_sigma > 0.2],
+  geom_density(data = dat_sample[difference_sigma > 0.2],
                fill = "#00AFBB",
                alpha = 0.5,
                aes(x = value_adv)) +
@@ -334,12 +390,12 @@ plot1 <- ggplot() +
 
 # Highest increase in flexibility
 plot2 <- ggplot() +
-  geom_density(data = dat[difference_sigma < -0.28],
+  geom_density(data = dat_sample[difference_sigma < -0.28],
                fill = "#999999",
                color = "#999999",
                alpha = 0.5,
                aes(x = value_nov)) +
-  geom_density(data = dat[difference_sigma < -0.28],
+  geom_density(data = dat_sample[difference_sigma < -0.28],
                fill = "#00AFBB",
                alpha = 0.5,
                aes(x = value_adv)) +
