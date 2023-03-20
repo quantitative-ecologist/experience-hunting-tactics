@@ -17,11 +17,11 @@
  library(data.table)
  
  # import model
- path<- file.path(getwd(), "outputs", "02_outputs_models")
- fit <- readRDS("./outputs/02_outputs_models/02B_DHMLM.rds")
+ path <- file.path(getwd(), "outputs", "02_outputs_models")
+ fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
  
  # Load data
- data <- fread("./data/FraserFrancoetalXXXX-data.csv",
+ data <- fread("./data/FraserFrancoetal2023-data.csv",
                select = c("predator_id",
                           "game_duration",
                           "pred_speed",
@@ -109,15 +109,46 @@
  # Delete older column
  draws[, ID_raw := NULL]
 
+# =======================================================================
+# =======================================================================
+
+
+
+
+
+# =======================================================================
+# 4. Produce the final table - 1 value per player
+# =======================================================================
+
+
+# Compute means and CIs -------------------------------------------------
+
+ # Intervals
+ lower_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[1]}
+ upper_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[2]}
+
+ # Compute mean values by ID
+ draws[, ":="(mean_estimated = mean(value),
+              lower_ci_estimated = lower_interval(value),
+              upper_ci_estimated = upper_interval(value)),
+         by = .(predator_id, xp_level, sigma, variable)]
+
+ ## Create table with unique values
+ #id_tab <- unique(draws[, c(2:8)])
+#
+ ## Round values to 3 digits
+ #id_tab[, c(5:7) := 
+ #            lapply(.SD, function (x) {round(x,  digits = 3)}),
+ #          .SDcols = c(5:7)]
+
 
 
 # Save the table --------------------------------------------------------
 
  # Path
- path1 <- file.path("outputs", "04_outputs_model-processing")
+ path1 <- file.path(getwd(), "outputs", "04_outputs_model-processing")
 
- # Save
- saveRDS(draws, file = file.path(path1, "04_id-draws.rds"))
+ saveRDS(draws, file = file.path(path1, "04_id-table.rds"))
 
 # =======================================================================
 # =======================================================================
