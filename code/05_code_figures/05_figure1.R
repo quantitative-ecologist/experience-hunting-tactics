@@ -29,17 +29,14 @@
  
 # Load the data ------------------------------------------------------------
 
- data <- fread("./data/FraserFrancoetalXXXX-data.csv",
+ data <- fread("./data/FraserFrancoetal2023-data.csv",
                select = c("predator_id",
                           "game_duration",
                           "pred_speed",
                           "prey_avg_speed",
                           "cumul_xp_pred",
                           "total_xp_pred",
-                          "hunting_success",
-                          "latency_1st_capture",
-                          "chase_count",
-                          "chase_count_success"))
+                          "hunting_success"))
  
  data[, predator_id := as.factor(predator_id)]
 
@@ -184,6 +181,61 @@
     xlab("\nCumulative experience") +
     custom_theme
 
+
+
+# Plot with transparent background ----------------------------------------
+ 
+ # With transparent background and white lines
+ custom_theme <- theme(
+    # axis values size
+    axis.text = element_text(face = "plain", 
+                             size = 14,
+                             color = "white"),
+    # axis ticks lenght
+    axis.ticks.length = unit(.15, "cm"),
+    # axis ticks width
+    axis.ticks = element_line(size = 0.90, 
+                              color = "white"),
+    # axis titles size
+    axis.title = element_text(size = 16, 
+                              face = "plain",
+                              color = "white"),
+    axis.line = element_line(size = 0.95,
+                             color = "white"),
+    legend.position = "none",
+    panel.grid = element_blank(),
+    panel.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill='transparent', color = NA)
+ )
+ 
+ gamm_plot1 <- ggplot(tab1,
+                      aes(x = Zcumul_xp,
+                          y = plogis(estimate__),
+                          color = predator_id)) +
+    geom_line(size = 1) +
+    scale_color_viridis(discrete = TRUE, option = "D") + #B
+    ylab("Hunting success\n") +
+    scale_y_continuous(breaks = seq(0, 1, 0.25),
+                       limits = c(0, 1)) +
+    scale_x_continuous(breaks = scaled_breaks,
+                       labels = seq(0, 500, 100)) +
+    xlab("\nCumulative experience") +
+    custom_theme
+ 
+ gamm_plot2 <- ggplot(tab2,
+                      aes(x = Zcumul_xp,
+                          y = plogis(estimate__),
+                          color = predator_id)) +
+    geom_line(size = 1) +
+    scale_color_viridis(discrete = TRUE, option = "D") + #B
+    ylab("Hunting success\n") +
+    scale_y_continuous(breaks = seq(0, 1, 0.25),
+                       limits = c(0, 1)) +
+    scale_x_continuous(breaks = scaled_breaks,
+                       labels = seq(0, 500, 100)) +
+    xlab("\nCumulative experience") +
+    custom_theme
+
 # ==========================================================================
 # ==========================================================================
 
@@ -205,6 +257,7 @@
     NULL, gamm_plot1, NULL, gamm_plot2,
     ncol = 4, nrow = 1,
     labels = c("(A)", "", "(B)", ""),
+    font.label = list(color = "white"),
     widths = c(0.15, 1.5, 0.15, 1.5)
  )
  
@@ -217,6 +270,18 @@
           width = 3000,
           height = 1200,
           res = 300)
+
+
+ # Transparent figure
+ path <- file.path(getwd(), "tests")
+
+ ggsave(figure,
+        filename = file.path(path, "05_figure1-transparent.png"),
+        width = 3000,
+        height = 1200,
+        dpi = 300,
+        units = "px",
+        bg = "transparent")
 
 # ==========================================================================
 # ==========================================================================
