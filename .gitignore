@@ -9,5 +9,6 @@ data
 tests
 plan
 dump
+plots_presentations
 outputs/02_outputs_models
 .Rproj.user
