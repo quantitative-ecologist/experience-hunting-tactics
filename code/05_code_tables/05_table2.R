@@ -89,19 +89,20 @@
  # Create trait column
  eff_tab[
    , trait := rep(c(
-     "mean predator speed", "sigma predator speed", 
-     "mean prey speed", "sigma prey speed", "mean success"), 
+     "predator speed", "predator speed", 
+     "prey speed", "prey speed", "hunting success"), 
      6
    )
  ]
- 
+
  # Rename parameter
  eff_tab[
     , parameter := rep(
        c(
-          rep("intercept", 5),
-          rep("mean prey rank", 4),
-          "match duration"
+          rep(c("intercept (mean)", "intercept (sigma)"), 2),
+          "intercept (mean)",
+          rep(c("prey rank (mean)", "prey rank (sigma)"), 2),
+          "match duration (mean)"
        ),
        3
     )
@@ -127,140 +128,11 @@
  eff_tab <- eff_tab[, c(1,2,5,4,3)]
  
  # Reorder rows
- eff_tab <- eff_tab[c(1,2,7,8,3,4,9,10,5,6)]
+ table <- eff_tab[c(3,5,4,6, 7,9,8,10, 1,2)]
  
-# ===========================================================================
-# ===========================================================================
+ # Because I can't align hunting success properly
+ table[10,1] <- " "
 
-
-
-
-
-# ===========================================================================
-# 3. Random effects table
-# ===========================================================================
-
-
-# Prepare data --------------------------------------------------------------
- 
- # Extract the random effect variances
- sd_draws <- data.table(
-    as_draws_df(
-       fit, variable = "^sd_", regex = TRUE
-    )
- )
- 
- sd_draws[, c(28:30) := NULL]
-
-
-
-# Calculate parameters -------------------------------------------------------
- 
- # Take the exponent of sigma parameters
- sd_draws[
-    , c("sd_predator_id__sigma_speednovice_Intercept",
-        "sd_predator_id__sigma_speedinterm_Intercept",
-        "sd_predator_id__sigma_speedadvanced_Intercept",
-        "sd_predator_id__sigma_preyspeednovice_Intercept",
-        "sd_predator_id__sigma_preyspeedinterm_Intercept",
-        "sd_predator_id__sigma_preyspeedadvanced_Intercept"
-    ) 
-    := lapply(.SD, function (x) {exp(x)}),
-    .SDcols = c(
-       "sd_predator_id__sigma_speednovice_Intercept",
-       "sd_predator_id__sigma_speedinterm_Intercept",
-       "sd_predator_id__sigma_speedadvanced_Intercept",
-       "sd_predator_id__sigma_preyspeednovice_Intercept",
-       "sd_predator_id__sigma_preyspeedinterm_Intercept",
-       "sd_predator_id__sigma_preyspeedadvanced_Intercept"
-    )
- ]
-
-
-
-# Reshape the table -----------------------------------------------------------
- 
-  ranef_tab <- melt(
-     sd_draws,
-     variable.name = "parameter"
-  )
-
-
-
-# Summarize the values (means + 95% CI) --------------------------------------
- 
- # Intervals
- lower_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[1]}
- upper_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[2]}
- 
- 
- # Summarize values
- ranef_tab[, ":=" (mean = mean(value),
-                   lower_ci = lower_interval(value),
-                   upper_ci = upper_interval(value)),
-           by = .(parameter)]
- 
- ranef_tab <- unique(ranef_tab[, .(parameter, mean, lower_ci, upper_ci)])
- ranef_tab[, c(2:4) := round(ranef_tab[,c(2:4)], 3)]
-
-
-
-# Rearrange the table -------------------------------------------------------- 
- 
- # Add a column that specifies the experience level
- ranef_tab[parameter %like% "novice", xp_level := "novice"]
- ranef_tab[parameter %like% "interm", xp_level := "intermediate"]
- ranef_tab[parameter %like% "advanced", xp_level := "advanced"]
- 
- 
- # Paste upper and lower ci with estimate
- ranef_tab[ , estimate := paste(format(mean, digits = 3), "(")]
- ranef_tab[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
- ranef_tab[, estimate := paste(estimate, ",", sep = "")]
- ranef_tab[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
- ranef_tab[, estimate := paste(estimate, ")", sep = "")]
- ranef_tab[, c("mean", "lower_ci", "upper_ci") := NULL]
- 
- # Parameter column
- ranef_tab[parameter %like% "id", parameter1 := "SD predator ID"]
- ranef_tab[parameter %like% "avatar", parameter1 := "SD avatar ID"]
- ranef_tab[parameter %like% "env", parameter1 := "SD environment ID"]
- ranef_tab[parameter %like% "success", parameter1 := "SD predator ID"]
- 
- # Trait column
- ranef_tab[parameter %like% "speed", 
-           trait := ifelse(
-              parameter %like% "sigma_speed" ,
-              "sigma predator speed",
-              "mean predator speed"
-           )
- ]
- ranef_tab[parameter %like% "preyspeed",
-           trait := ifelse(
-              parameter %like% "sigma_preyspeed" ,
-              "sigma prey speed",
-              "mean prey speed"
-           )
- ]
- ranef_tab[parameter %like% "success", trait := "mean success"]
- 
- # Remove old parameter column and replace by new
- ranef_tab[, parameter := NULL]
- setnames(ranef_tab, "parameter1", "parameter")
- 
- # Reshape
- ranef_tab <- dcast(
-    ranef_tab,
-    trait + parameter ~ xp_level,
-    value.var = "estimate"
- )
- 
- # Reorder columns
- ranef_tab <- ranef_tab[, c(1,2,5,4,3)]
- 
- # Reorder rows
- ranef_tab <- ranef_tab[c(1:3,8,4:6,9,7)]
- 
 # ===========================================================================
 # ===========================================================================
 
@@ -272,26 +144,6 @@
 # 5. Create the table using flextable
 # ===========================================================================
  
- # Combine the two tables together
- table <- rbind(
-   data.frame(
-     trait = "Fixed effects",
-     parameter = NA,
-     novice = NA,
-     intermediate = NA,
-     advanced = NA),
-   eff_tab,
-   data.frame(
-     trait = "Random effects",
-     parameter = NA,
-     novice = NA,
-     intermediate = NA,
-     advanced = NA),
-   ranef_tab
- )
- 
- 
-
 # Prepare the table parameters ----------------------------------------------
  
  # Custom header
@@ -322,19 +174,26 @@
  
 
 # Create the table ----------------------------------------------------------
- 
+
  mdhglm_table <- 
+   
+   # table structure
    table %>%
    select(trait, parameter,
           novice, intermediate, advanced) %>%
    flextable(col_keys = my_header$col_keys) %>%
    set_header_df(mapping = my_header, key = "col_keys") %>%
    my_theme() %>%
-   merge_v(part = "header") %>%
-   merge_h(part = "header") %>%
+
+   # Align repeated rows on column 1
+   merge_v(j = 1) %>%
+   valign(j = 1, valign = "top", part = "body") %>%
+
+   # font
    fontsize(size = 10, part = "all") %>%
    font(fontname = "Times New Roman", part = "all") %>%
-   italic(i = c(1, 12), j = 1, part = "body") %>%
+   
+   # Align text
    align(align = "left", part = "all", j = 1) %>%
    align(align = "left", part = "all", j = 2) %>%
    align(align = "center", part = "all", j = 3) %>%
