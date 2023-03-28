@@ -208,7 +208,7 @@
     plot.background = element_rect(fill='transparent', color = NA)
  )
  
- gamm_plot1 <- ggplot(tab1,
+ gamm_plot1T <- ggplot(tab1,
                       aes(x = Zcumul_xp,
                           y = plogis(estimate__),
                           color = predator_id)) +
@@ -222,7 +222,7 @@
     xlab("\nCumulative experience") +
     custom_theme
  
- gamm_plot2 <- ggplot(tab2,
+ gamm_plot2T <- ggplot(tab2,
                       aes(x = Zcumul_xp,
                           y = plogis(estimate__),
                           color = predator_id)) +
@@ -257,7 +257,6 @@
     NULL, gamm_plot1, NULL, gamm_plot2,
     ncol = 4, nrow = 1,
     labels = c("(A)", "", "(B)", ""),
-    font.label = list(color = "white"),
     widths = c(0.15, 1.5, 0.15, 1.5)
  )
  
@@ -274,8 +273,17 @@
 
  # Transparent figure
  path <- file.path(getwd(), "tests")
+ 
+ # Arrange paneled figure
+ figureT <- ggarrange(
+   NULL, gamm_plot1T, NULL, gamm_plot2T,
+   ncol = 4, nrow = 1,
+   labels = c("(A)", "", "(B)", ""),
+   font.label = list(color = "white"),
+   widths = c(0.15, 1.5, 0.15, 1.5)
+ )
 
- ggsave(figure,
+ ggsave(figureT,
         filename = file.path(path, "05_figure1-transparent.png"),
         width = 3000,
         height = 1200,
