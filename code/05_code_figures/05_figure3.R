@@ -32,11 +32,11 @@
  
  
 # =======================================================================
-# 2. Prepare a matrix to plot
+# 2. Prepare 3 matrices to plot
 # =======================================================================
  
  
-# Prepare the correlation matrix ----------------------------------------
+# Prepare the full correlation matrix -----------------------------------
  
  # Extract the full object
  ar <- VarCorr(fit)
@@ -49,40 +49,41 @@
  
  # Transform to correlation matrix
  cormat <- cov2cor(vcovmat)
-
-
-
-# Arrange the correlation matrix ----------------------------------------
  
- # Change rownames
- rownames(cormat) <- c("mean speed", "IIV speed",
-                       "mean speed", "IIV speed",
-                       "mean speed", "IIV speed",
-                       "mean prey speed", "IIV prey speed",
-                       "mean prey speed", "IIV prey speed",
-                       "mean prey speed", "IIV prey speed",
-                       "mean success",
-                       "mean success",
-                       "mean success")
- 
- # Change colnames
- colnames(cormat) <- c("mean speed", "IIV speed",
-                       "mean speed", "IIV speed",
-                       "mean speed", "IIV speed",
-                       "mean prey speed", "IIV prey speed",
-                       "mean prey speed", "IIV prey speed",
-                       "mean prey speed", "IIV prey speed",
-                       "mean success",
-                       "mean success",
-                       "mean success")
-
  # Reorder by XP level in order
  cormat_ord <- cormat[c(1, 2, 7, 8, 13,
                         3, 4, 9, 10, 14,
                         5, 6, 11, 12, 15),
                       c(1, 2, 7, 8, 13,
                         3, 4, 9, 10, 14,
-                        5, 6, 11, 12, 15)] 
+                        5, 6, 11, 12, 15)]
+
+ # Separate each matrix
+ cormat_novice <- cormat_ord[c(1:5), c(1:5)]
+ cormat_interm <- cormat_ord[c(6:10), c(6:10)]
+ cormat_adv <- cormat_ord[c(11:15), c(11:15)]
+
+
+
+# Arrange the correlation matrices --------------------------------------
+ 
+ # Names
+ names <- c(
+    "mean speed", "IIV speed",
+    "mean prey speed", "IIV prey speed",
+    "mean success"
+ )
+
+ # Change rownames
+ rownames(cormat_novice) <- names
+ rownames(cormat_interm) <- names
+ rownames(cormat_adv) <- names
+
+
+ # Change colnames
+ colnames(cormat_novice) <- names
+ colnames(cormat_interm) <- names
+ colnames(cormat_adv) <- names
 
 # =======================================================================
 # =======================================================================
@@ -96,39 +97,72 @@
 # =======================================================================
 
 
-# Make the plot ---------------------------------------------------------
+# Make the plot and export ----------------------------------------------
 
  # Define the color gradient
  COL2(diverging = c("RdBu", "BrBG", "PiYG",
                     "PRGn", "PuOr", "RdYlBu"),
       n = 200)
-
- # Define the colors for the XP levels
- cols <- c("#999999", "#E69F00", "#00AFBB")
- 
- # Produce the plot
- cm <- corrplot(cormat_ord, method = "circle",
-                tl.col = c(rep(cols[1], 5),
-                           rep(cols[2], 5),
-                           rep(cols[3], 5)),
-                tl.cex = 0.8,
-                tl.srt = 45,
-                diag = T,
-                type = "lower",
-                col = COL2("RdBu", 10))
-
-
-
-# Save the figure -----------------------------------------------------
  
  # File path
  path <- file.path(getwd(), "outputs", "05_outputs_figures")
- 
- # Export to powerpoint
- graph2ppt(file = file.path(path, "05_figure3raw.pptx"), 
-          width = 10, height = 6)
 
- # After exporting the plot to ppt, I modify it there and save
+ # Produce the plots
+ cm1 <- corrplot(
+    cormat_novice, method = "circle",
+    tl.col = "black",
+    tl.cex = 1.2,
+    tl.srt = 45,
+    cl.cex = 1,
+    diag = F,
+    type = "lower",
+    addCoef.col = "black",
+    col = COL2("RdBu", 10)
+ )
+ 
+  # Export to powerpoint
+ graph2ppt(
+    file = file.path(path, "05_figure3raw-test.pptx"), 
+    width = 10, height = 6
+ )
+
+ cm2 <- corrplot(
+    cormat_interm, method = "circle",
+    tl.col = "black",
+    tl.cex = 1.2,
+    tl.srt = 45,
+    cl.cex = 1,
+    diag = F,
+    type = "lower",
+    addCoef.col = "black",
+    col = COL2("RdBu", 10)
+ )
+ 
+ # add 2nd slide
+ graph2ppt(
+    file = file.path(path, "05_figure3raw-test.pptx"), 
+    width = 10, height = 6, append = TRUE
+ )
+ 
+ cm3 <- corrplot(
+    cormat_adv, method = "circle",
+    tl.col = "black",
+    tl.cex = 1.2,
+    tl.srt = 45,
+    cl.cex = 1,
+    diag = F,
+    type = "lower",
+    addCoef.col = "black",
+    col = COL2("RdBu", 10)
+ )
+ 
+ # add 3rd slide
+ graph2ppt(
+    file = file.path(path, "05_figure3raw-test.pptx"), 
+    width = 10, height = 6, append = TRUE
+ )
+
+ # After exporting the plots to ppt, I modify them there and save
  # the image as a .png file in the same directory
  
 # =======================================================================
