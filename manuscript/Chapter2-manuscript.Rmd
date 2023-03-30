@@ -323,67 +323,6 @@ The interactions of predator and prey traits are probably the most important pro
 
 
 
-
-```{r eval = FALSE}
-
-Older text from the character-state :
-"The foraging strategies of predators, that is, the correlations between the mean and IIV of speed, remained structurally stable among the levels of experience (Figure 3 inside the black squares and Appendix S2: Table S1). For example, novice predators that tended to be faster maintained this strategy as they gained experience (Figure 3 inside the black squares and Appendix S2: Table S1). Overall, we detected the same patterns as those from the within-experience state correlations described above. The correlations between trait values were also stronger among novice-intermediate and intermediate-advanced states than between novice-advanced states, indicating that the hunting strategies of predators were more similar among experience levels closer in time (Figure 3 inside the black squares and Appendix S2: Table S1)."
-
-Discussion :
-
-- peut-être ajouter le fait que malgré que la vitesse soit mieux pour les proies, elles pourraient buffer ça en étant + imprévisibles.
-
-- peut être ajouter que l'escalade est aussi dû au fait que la proie pourrait être plus susceptible à la prédation en étant rapide car elle s'expose plus. 
-
-*duckworth en tete*
-
-Contrary to Hanifin et al. 2008, we find a directional symmetry (i.e. trait matching).
-
-In abrams 2000, we read : "The interaction of predator and prey traits in determining capture rate seems to be the most important factor determining the stability of the entire system. Most studies in which cycles are a commonly observed outcome assume that the predator maximizes its rate of capture of the prey by matching the prey's phenotype"
-We can also read : "If there is sufficiently strong stabilizing selection based on the costs of extreme trait values in both species, then stable equilibria are likely"
-
-In Reimche et al. 2020 : in the discussion we can read that we still dont understand the factors driving phenotypic (mis)matching. In my case, it appears that learning may play a role.
-Revoir mes résultats dans le cadre des résultats de Glaudas et al. 2019. Les 2 concordent bien.
-
-Voir Miszei comme exemple parmi dautres pour trait matching.
-
-check Mougi etal. 2011 for arms-races based on phenotypic plasticity (modèle théorique)
-
-voir Edgell : prey-induced plasticity leads to covariance between predator-prey trait
-
-**garder en tête l'étude de Lima AmNat sur purposeful unpredictability**
-**Iannou also found strong among individual differences in slopes of trial number**
-
-
-# Some caveats
-
-"différences entre individus dans les proies rencontées : la direction peut être des 2 côtés, soit c'est parce que le prédateur drive le fait que les proies sont plus variables en général. Ou c'est parce qu'il rencontre des proies variables et donc il adopte cette stratégie."
-
-"parler de matchmaking pourrait influencer courbes (moins de variance intermediare car proche de la moyenne de skill)"
-
-"faire la distinction que certains optimisent, certains sont moins bon, donc ça varie dans la population."
-
-"covariance est drivé par un individu pour la moyenne"
-
-
-À faire :
-
-- parler du sampling et du modèle pour tester les biais dans les méthodes [done]
-- dans mon dernier paragraphe, parler du fait que les proies aussi s'ajustent
-
-Phrases de conclusion :
-
-Début de la conclusion, revenir brièvement sur notre système et les jeux. Les petits avantages
-
-Our results also have implications also for predator-prey models of trait-matching, because such models are usually studied at the evolutionary scale.
-
-Therefore, our results have important implications for future predator-prey models, which should incorporate individual variation in learning and prey encounters to better predict under which ecological contexts specialization should be favoured over flexibility. ---> pour la conclusion
-
-```
-
-
-
-
 # ACKNOWLEDGEMENTS
 
 ...
