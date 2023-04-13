@@ -307,6 +307,16 @@ length(unique(specialists$predator_id)) / length(unique(dat$predator_id))
 length(unique(constant$predator_id)) / length(unique(dat$predator_id))
 # 43%
 
+dat[difference_sigma <= -0.2, change := "large"]
+dat[difference_sigma >= 0.2, change := "large"]
+dat[difference_sigma %between% c(-0.05, 0.05), change := "stable"]
+dat[difference_sigma %between% c(-0.1999, -0.0503), change := "moderate"]
+dat[difference_sigma %between% c(0.051, 0.1999), change := "moderate"]
+
+length(unique(dat[change == "large", predator_id])) / length(unique(dat$predator_id))
+length(unique(dat[change == "stable", predator_id])) / length(unique(dat$predator_id))
+length(unique(dat[change == "moderate", predator_id])) / length(unique(dat$predator_id))
+
 
 
 # Check quantiles to subsample predators --------------------------------
