@@ -10,5 +10,6 @@ tests
 plan
 dump
 plots_presentations
+notes
 outputs/02_outputs_models
 .Rproj.user
