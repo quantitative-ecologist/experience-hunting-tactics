@@ -1106,6 +1106,13 @@
       "Repository": "CRAN",
       "Hash": "759d047596ac173433985deddf313450"
     },
+    "truncnorm": {
+      "Package": "truncnorm",
+      "Version": "1.0-9",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "ef5b32c5194351ff409dfb37ca9468f1"
+    },
     "utf8": {
       "Package": "utf8",
       "Version": "1.2.2",
