@@ -4,7 +4,7 @@ output:
   word_document:
     reference_docx: Chapter2-styles.docx
     fig_caption: yes
-    pandoc_args: ["-Fpandoc-crossref"] # to have eq. numbers
+    #pandoc_args: ["-Fpandoc-crossref"] # to have eq. numbers
 bibliography: references2.bib
 csl: ecology.csl
 ---
@@ -124,35 +124,70 @@ For each level of experience (i.e. novice, intermediate, advanced), the model es
 
 We estimated the correlation between the individual random effect on the mean and on the dispersion within each trait (e.g. $cor(\sigma_{id_{m}\ pred}\ \sigma_{id_{d}\ pred})$) and among each trait (e.g. $cor(\sigma_{id_{m}\ pred}\ \sigma_{id_{d}\ prey})$) within a level of experience. In the first case, this allows us to assess, for example, whether predators that are on average slower/faster are more specialized or flexible. In the second case, the correlations enables us to estimate, for example, whether predators that encountered prey that were faster/slower adopted a slower/faster (or more specialized/flexible) tactic, or if slower/faster predators had lower/greater hunting success. As a complement, the model also estimated correlations among the different levels of experience (e.g. $cor(\sigma_{id_{m}\ pred\ novice}\ \sigma_{id_{d}\ pred\ intermediate})$). The latter "character-state" approach [@Via.Lande1985;@viaAdaptivePhenotypicPlasticity1995], enables us to investigate whether predators express similar behaviours across each of three developmental stages. We present the character-state analyses as additional material in the Appendix S2 as they were not part of our initial objectives.
 
-The full model has the following form, with each equation repeated three times (i.e. one for each level of experience) :
+The full model has the following form, with each equation repeated three times (i.e. one for each level of experience):
 
-$$
-\begin{align}
-speed_{pred} &= \text{ } X_{m}\ b_m + M\ env_{m} + N\ av_{m} + Z\ id_{m} + e \\
-log(\sigma_{e,\ pred}) &= X_{d}\ b_{d} + Z\ id_{d}
-\end{align}
-$${#eq:eqn1}
+```{r model_equations, ft.align = "left"}
 
-$$
-\begin{align}
-speed_{prey} &= \text{ } X_{m}\ b_m + M\ env_{m} + N\ av_{m} + Z\ id_{m} + e \\
-log(\sigma_{e,\ prey}) &= X_{d}\ b_{d} + Z\ id_{d}
-\end{align}
-$${#eq:eqn2}
+# Prepare equations
+eqs <- c(
+  "speed_{pred} = X_{m}\\ b_{m} + M\\ env_{m} + N\\ av_{m} + Z\\ id_{m} + e",
+  "log(\\sigma_{e,pred}) = X_{d}\\ b_{d} + Z\\ id_{d}",
+  "speed_{prey} = X_{m}\\ b_{m} + M\\ env_{m} + N\\ av_{m} + Z\\ id_{m} + e",
+  "log(\\sigma_{e,prey}) = X_{d}\\ b_{d} + Z\\ id_{d}",
+  "success_{pred} = X_{m}\\ b_{m} + Z\\ id_{m} + e"
+)
+eqs_num <- c(
+    "(eqn. 1.1)",
+    "(eqn. 1.2)",
+    "(eqn. 2.1)",
+    "(eqn. 2.2)",
+    "(eqn. 3)"
+)
 
-$$
-\begin{align}
-success_{pred} &= \text{ } X_{m}\ b_m + Z\ id_{m} + e
-\end{align}
-$${#eq:eqn3}
+# Combine into a dataframe
+df <- data.frame(
+    formula = eqs,
+    number = eqs_num
+)
+
+# Create a table to display on Word
+ft <- flextable(df)
+
+ft <- compose(
+  x = ft, j = 1,
+  value = as_paragraph(
+    as_equation(formula, height = .5)
+  )
+)
+
+# Customize table
+my_theme <- function(x, ...) {
+  x <- colformat_double(x, big.mark = " ",
+                        decimal.mark = ".",
+                        digits = 2)
+  x <- border_remove(x)
+  x <- delete_part(x, part = "header")
+  x <- align(x, j = 1, align = "left", part = "body")
+  x <- align(x, j = 2, align = "right", part = "body")
+  x <- font(x, fontname = "Times New Roman", part = "body")
+  x <- fontsize(x, size = 12, part = "body")
+  x <- width(x, j = 1, width = 10, unit = "cm")
+  x <- width(x, j = 2, width = 6.51, unit = "cm")
+}
+
+ft <- my_theme(x = ft)
+ft
+
+```
 
 where $env$, $av$, and $id$ are the vectors of random environment, random avatar, and random individual identity effects associated with their incidence matrices $M$, $N$, and $Z$. $b$ is the vector of fixed effects with its incidence matrix $X$. The $m$ and $d$ subscripts indicate that an estimate is from the mean or dispersion part of the model, respectively. On the mean part of the model, we assumed that the game environment and avatar random effects followed a Gaussian distribution with estimated standard deviation ($env \sim N(0,\ I\ \sigma_{env})$ and $av \sim N(0,\ I\ \sigma_{av})$). $I$ is the identity matrix, with $I\sigma$ indicating that the random effects are independently and identically distributed. The residuals are assumed to follow a Gaussian distribution ($e \sim N(0,\ \sigma_{e})$). On the dispersion part of the model, the residuals vary among individuals, allowing us to estimate among individual differences in specialization. The individual identity random effects on both the mean and dispersion parts follow a multivariate Gaussian distribution $[\begin{array}{cc} id_m \\ id_d \end{array}] \sim MVN(0,\ \Sigma_{id})$ where $\Sigma_{id}$ is a 15x15 variance-covariance matrix. The parameters $\sigma_{env}$, $\sigma_{av}$, and $\sigma_{id}$, correspond to the among environment, among avatar, and among individual standard deviations, respectively.
 
-We parameterized equations (1) and (2) with a Gaussian distribution family (predator and prey speed) and used a beta-binomial distribution family for equation (3) (predator hunting success). We used Gaussian priors for the prey rank ($N(2.5,\ 1)$) and game duration ($N(10,\ 2)$) on the mean part of the model, and the default priors in "brms" for the dispersion part. We used the default Student t priors in "brms" for the intercepts on the mean and dispersion part of the equation. For hunting success, we applied a Gaussian prior on the precision parameter ($N(2,\ 1)$). For every predicted variable, we applied a half-Gaussian on the random effects for the mean part of the model ($N(0,\ 1)$), and the default "brms" Student t prior for the dispersion part of the model.
+We parameterized equations 1.1 to 2.2 with a Gaussian distribution family (predator and prey speed) and used a beta-binomial distribution family for equation 3 (predator hunting success). We used Gaussian priors for the prey rank ($N(2.5,\ 1)$) and game duration ($N(10,\ 2)$) on the mean part of the model (equations 1.1, 2.1, and 3), and the default priors in "brms" for the dispersion part (equations 1.2 and 2.2). We used the default Student t priors in "brms" for the intercepts on the mean and dispersion part of the model. For hunting success, we applied a Gaussian prior on the precision parameter ($N(2,\ 1)$). For every predicted variable, we applied a half-Gaussian prior ($N(0,\ 1)$) on the random effects for the mean part of the model (equations 1.1, 2.1, and 3), and the default "brms" Student t prior for the dispersion part of the model (equations 1.2 and 2.2).
 
 ### Markov Chain Monte Carlo settings
 
 We parametrized every model described above to run four MCMC chains with 1000 posterior samples for each parameter. We ran 2500 iterations with a thinning set to eight for the additive model with a global smoother only (see Table I), and 1500 iterations with a thinning set to four for the additive model with a global smoother and group-level smoothers as well as for the additive model with group-level smoothers only (Table I). Burn-in was set to 500 iterations in each model. We parametrized the MDHGLM to run 2500 iterations with a thinning set to 8, with the first 500 iterations used as warmups. We assessed the convergence of the MCMC chains using trace plots, R-hat diagnostics with a threshold of <1.05, and effective sample sizes (ESS) with a threshold of >100 for the bulk-ESS and tail-ESS [@Vehtari.etal2021a]. We also performed posterior predictive checks which showed an adequate fit of the models (for details, see https://github.com/quantitative-ecologist/experience-hunting-tactics).
+
 
 
 
@@ -169,7 +204,7 @@ tab1 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table1.rds"))
 
 tab1 <- autofit(tab1)
 
-tab1 <- tab1 %>% 
+tab1 <- tab1 %>%
   footnote(
     i = 1, j = 1,
     part = "header",
@@ -185,7 +220,6 @@ set_caption(
   caption = "Leave-one-out cross-validation table of the three hierarchical GAMMs relating hunting success to player experience",
   style = "Table Caption"
 )
-
 ```
 
 We predicted that the relationship between hunting success and experience would vary among predators because they should differ in the type of prey that they encounter. However, after controlling for the mean speed of the prey group within a match, we did not find evidence confirming this prediction, because differences among predators remained stable (Figure 1B).
@@ -220,7 +254,7 @@ tab2 <- tab2 %>%
     ref_symbols = " "
   ) %>%
   font(fontname = "Times New Roman", part = "all") %>%
-  width(j = c(2,3,4,5), width = 3.7, unit = "cm") %>%
+  width(j = c(2, 3, 4, 5), width = 3.7, unit = "cm") %>%
   width(j = 1, width = 3.2, unit = "cm")
 
 set_caption(
@@ -254,7 +288,7 @@ tab3 <- tab3 %>%
     ref_symbols = " "
   ) %>%
   font(fontname = "Times New Roman", part = "all") %>%
-  width(j = c(2,3,4,5), width = 3.7, unit = "cm") %>%
+  width(j = c(2, 3, 4, 5), width = 3.7, unit = "cm") %>%
   width(j = 1, width = 3.2, unit = "cm")
 
 set_caption(
