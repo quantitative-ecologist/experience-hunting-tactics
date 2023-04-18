@@ -4,7 +4,6 @@ output:
   word_document:
     reference_docx: Chapter2-styles.docx
     fig_caption: yes
-    #pandoc_args: ["-Fpandoc-crossref"] # to have eq. numbers
 bibliography: references2.bib
 csl: ecology.csl
 ---
@@ -17,7 +16,7 @@ library(data.table)
 library(brms)
 library(flextable)
 library(officer)
-library(tidyr)
+library(dplyr)
 
 ```
 
@@ -32,7 +31,7 @@ dat <- fread(
              "game_duration", "total_xp_pred", "cumul_xp_pred",
              "hunting_success", "pred_speed", "prey_avg_speed"))
 
-dat[, c(2:6) := lapply(.SD, function (x) as.factor(x)), .SDcols = c(2:6)]
+dat[, c(2:6) := lapply(.SD, function(x) as.factor(x)), .SDcols = c(2:6)]
 
 # To have a date column
 dat[, date := as.POSIXct(sub(" .*", "", timestamp))]
@@ -153,6 +152,7 @@ df <- data.frame(
 # Create a table to display on Word
 ft <- flextable(df)
 
+# Transform values as a mathematical formula
 ft <- compose(
   x = ft, j = 1,
   value = as_paragraph(
@@ -175,6 +175,7 @@ my_theme <- function(x, ...) {
   x <- width(x, j = 2, width = 6.51, unit = "cm")
 }
 
+# Apply theme and print
 ft <- my_theme(x = ft)
 ft
 
@@ -186,7 +187,7 @@ We parameterized equations 1.1 to 2.2 with a Gaussian distribution family (preda
 
 ### Markov Chain Monte Carlo settings
 
-We parametrized every model described above to run four MCMC chains with 1000 posterior samples for each parameter. We ran 2500 iterations with a thinning set to eight for the additive model with a global smoother only (see Table I), and 1500 iterations with a thinning set to four for the additive model with a global smoother and group-level smoothers as well as for the additive model with group-level smoothers only (Table I). Burn-in was set to 500 iterations in each model. We parametrized the MDHGLM to run 2500 iterations with a thinning set to 8, with the first 500 iterations used as warmups. We assessed the convergence of the MCMC chains using trace plots, R-hat diagnostics with a threshold of <1.05, and effective sample sizes (ESS) with a threshold of >100 for the bulk-ESS and tail-ESS [@Vehtari.etal2021a]. We also performed posterior predictive checks which showed an adequate fit of the models (for details, see https://github.com/quantitative-ecologist/experience-hunting-tactics).
+We parametrized every model described above to run four MCMC chains with 1000 posterior samples for each parameter. We ran 2500 iterations with a thinning set to eight for the additive model with a global smoother only (see Table I), and 1500 iterations with a thinning set to four for the additive model with global and group-level smoothers and for the additive model with group-level smoothers only (Table I). We set the first 500 iterations in each model as warmups. We parametrized the MDHGLM to run 2500 iterations with a thinning set to 8, with the first 500 iterations used as warmups. We assessed the convergence of the MCMC chains using trace plots, R-hat diagnostics with a threshold of <1.01, and effective sample sizes (ESS) with a threshold of >100 for the bulk-ESS and tail-ESS [@Vehtari.etal2021a]. We also performed posterior predictive checks which showed an adequate fit of the models (for details, see https://github.com/quantitative-ecologist/experience-hunting-tactics).
 
 
 
@@ -200,33 +201,127 @@ Our results confirm that individual predators display substantial differences in
 
 ```{r table1, ft.align = "left"}
 
-tab1 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table1.rds"))
+# ===========================================================================
+# 1. Import the model fit
+# ===========================================================================
 
+# Open the loo table
+path <- file.path(here::here("outputs", "03_outputs_model-validation"))
+loo_tab <- data.table(readRDS(file.path(path, "03A_lootable.rds")))
+
+# Add model column
+loo_tab[, model := c("Group-level smoothers only",
+                     "Global smoother + group-level smoothers",
+                     "Global smoother only")]
+
+# Reorder columns
+loo_tab <- loo_tab[, c(9, 1:8)]
+
+# ===========================================================================
+# ===========================================================================
+
+
+
+
+
+# ===========================================================================
+# 2. Compute the table using flextable
+# ===========================================================================
+
+# Prepare the table parameters ----------------------------------------------
+
+# Custom header
+my_header <- data.frame(
+   col_keys = c("model",
+                "elpd_diff",
+                "se_diff",
+                "elpd_loo",
+                "se_elpd_loo"),
+   line1 = c("model",
+             "elpd \ndifference",
+             "sd \ndifference",
+             "elpd loo \nvalue",
+             "elpd loo \nstandard error"),
+   stringsAsFactors = FALSE
+)
+
+# Custom theme
+my_theme <- function(x, ...) {
+   x <- colformat_double(x, big.mark = " ",
+                         decimal.mark = ".",
+                         digits = 2)
+   x <- set_table_properties(x, layout = "fixed")
+   x <- border_remove(x)
+   std_border <- fp_border(width = 1, color = "black")
+   x <- hline_top(x, part = "all", border = std_border)
+   x <- hline_bottom(x, part = "all", border = std_border)
+   autofit(x)
+}
+
+
+
+# Create the table ----------------------------------------------------------
+
+tab1 <- loo_tab %>%
+   select(model, elpd_diff, se_diff, elpd_loo, se_elpd_loo) %>%
+   flextable(col_keys = my_header$col_keys) %>%
+   set_header_df(mapping = my_header, key = "col_keys") %>%
+   my_theme() %>%
+   merge_v(part = "header") %>%
+   merge_h(part = "header") %>%
+   fontsize(size = 10, part = "all") %>%
+   font(fontname = "Times New Roman", part = "all") %>%
+   align(align = "left", part = "all", j = 1) %>%
+   align(align = "center", part = "all", j = 2) %>%
+   align(align = "center", part = "all", j = 3) %>%
+   align(align = "center", part = "all", j = 4) %>%
+   align(align = "center", part = "all", j = 5)
+
+# ===========================================================================
+# ===========================================================================
+
+
+
+
+
+# ===========================================================================
+# 3. Customize and print the table
+# ===========================================================================
+
+# Autofit to window
 tab1 <- autofit(tab1)
 
+# Add a footnote
 tab1 <- tab1 %>%
   footnote(
     i = 1, j = 1,
     part = "header",
     value = as_paragraph(
-      "* 'elpd' refers to the 'expected log pointwise density' and is the value chosen to select the best model."),
+      "* 'elpd' refers to the expected log pointwise density and is the value chosen to select the best model."),
     ref_symbols = " "
   ) %>%
   font(fontname = "Times New Roman", part = "all") %>%
   fontsize(size = 11, part = "all")
 
+# Table caption
 set_caption(
   tab1,
   caption = "Leave-one-out cross-validation table of the three hierarchical GAMMs relating hunting success to player experience",
   style = "Table Caption"
 )
+
+# ===========================================================================
+# ===========================================================================
+
 ```
 
 We predicted that the relationship between hunting success and experience would vary among predators because they should differ in the type of prey that they encounter. However, after controlling for the mean speed of the prey group within a match, we did not find evidence confirming this prediction, because differences among predators remained stable (Figure 1B).
 
 ```{r fig1, out.width = "100%", fig.cap = "**Figure 1.** Among individual differences in the development of hunting expertise. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. (A) A generalized additive mixed model where we do not control for prey speed (B) A generalized additive mixed model where we control for prey speed."}
 
-knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure1.png"))
+knitr::include_graphics(
+  here::here("outputs", "05_outputs_figures", "05_figure1.png")
+)
 
 ```
 
@@ -237,11 +332,205 @@ At the population level, predators did not change their mean speed with experien
 
 ```{r table2, ft.align = "left"}
 
-tab2 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table2.rds"))
+# ===========================================================================
+# 1. Import the model fit
+# ===========================================================================
 
+
+# path
+path <- file.path(here::here("outputs"))
+
+# Import the model
+fit <- readRDS(
+  file.path(path, "02_outputs_models", "02B_DHMLM.rds")
+)
+
+# ===========================================================================
+# ===========================================================================
+
+
+
+
+
+# ===========================================================================
+# 2. Fixed effects table
+# ===========================================================================
+
+
+# Prepare the table ---------------------------------------------------------
+
+# Extract the fixed effects from the model
+eff_tab <- data.table(fixef(fit), keep.rownames = TRUE)
+eff_tab <- eff_tab[, c(1, 2, 4:5)]
+
+# Rename variables
+setnames(
+  eff_tab,
+  c("rn", "Q2.5", "Q97.5"),
+  c("parameter", "lower_ci", "upper_ci")
+)
+
+# Add a column that specifies the experience level
+eff_tab[parameter %like% "novice", xp_level := "novice"]
+eff_tab[parameter %like% "interm", xp_level := "intermediate"]
+eff_tab[parameter %like% "advanced", xp_level := "advanced"]
+
+# Back transform success
+eff_tab[
+  parameter %like% "success",
+  c(2:4) := lapply(.SD, function(x) {plogis(x)}),
+  .SDcols = c(2:4)
+]
+
+# Back transform sigma
+eff_tab[
+  parameter %like% "sigma",
+  c(2:4) := lapply(.SD, function(x) {exp(x)}),
+  .SDcols = c(2:4)
+]
+
+# Round values to 3 digits
+eff_tab[, c(2:4) := round(eff_tab[, c(2:4)], digits = 3)]
+
+
+
+# Reorganize the table ------------------------------------------------------
+
+# reorder columns, and then rows based on xp level
+eff_tab <- eff_tab[, c(5, 1:4)]
+setorder(
+  eff_tab,
+  cols = -"xp_level"
+)
+
+# Create trait column
+eff_tab[
+  , trait := rep(c(
+    "predator speed", "predator speed",
+    "prey speed", "prey speed", "hunting success"),
+    6
+  )
+]
+
+# Rename parameter
+eff_tab[
+   , parameter := rep(
+      c(
+         rep(c("intercept (mean)", "intercept (sigma)"), 2),
+         "intercept (mean)",
+         rep(c("prey rank (mean)", "prey rank (sigma)"), 2),
+         "match duration (mean)"
+      ),
+      3
+   )
+]
+
+# Paste upper and lower ci with estimate
+eff_tab[, estimate := paste(format(Estimate, digits = 3), "(")]
+eff_tab[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
+eff_tab[, estimate := paste(estimate, ",", sep = "")]
+eff_tab[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
+eff_tab[, estimate := paste(estimate, ")", sep = "")]
+eff_tab[, c("Estimate", "lower_ci", "upper_ci") := NULL]
+
+
+# Reshape
+eff_tab <- dcast(
+  eff_tab,
+  trait + parameter ~ xp_level,
+  value.var = "estimate"
+)
+
+# Reorder columns
+eff_tab <- eff_tab[, c(1, 2, 5, 4, 3)]
+
+# Reorder rows
+table <- eff_tab[c(3, 5, 4, 6, 7, 9, 8, 10, 1, 2)]
+
+# Because I can't align hunting success properly
+table[10, 1] <- " "
+
+# ===========================================================================
+# ===========================================================================
+
+
+
+
+
+# ===========================================================================
+# 3. Create the table using flextable
+# ===========================================================================
+
+# Prepare the table parameters ----------------------------------------------
+
+# Custom header
+my_header <- data.frame(
+  col_keys = c("trait", "parameter",
+               "novice", "intermediate", "advanced"),
+  line1 = c("Trait",
+            "Parameter",
+            "Novice",
+            "Intermediate",
+            "Advanced"),
+  stringsAsFactors = FALSE
+)
+
+# Custom theme
+my_theme <- function(x, ...) {
+  x <- colformat_double(x, big.mark = " ",
+                        decimal.mark = ".",
+                        digits = 3)
+  x <- set_table_properties(x, layout = "fixed")
+  x <- border_remove(x)
+  std_border <- fp_border(width = 1, color = "black")
+  x <- hline_top(x, part = "all", border = std_border)
+  x <- hline_bottom(x, part = "all", border = std_border)
+  autofit(x)
+}
+
+
+
+# Create the table ----------------------------------------------------------
+
+tab2 <-
+
+  # table structure
+  table %>%
+  select(trait, parameter,
+         novice, intermediate, advanced) %>%
+  flextable(col_keys = my_header$col_keys) %>%
+  set_header_df(mapping = my_header, key = "col_keys") %>%
+  my_theme() %>%
+  # Align repeated rows on column 1
+  merge_v(j = 1) %>%
+  valign(j = 1, valign = "top", part = "body") %>%
+  # font
+  fontsize(size = 10, part = "all") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+
+  # Align text
+  align(align = "left", part = "all", j = 1) %>%
+  align(align = "left", part = "all", j = 2) %>%
+  align(align = "center", part = "all", j = 3) %>%
+  align(align = "center", part = "all", j = 4) %>%
+  align(align = "center", part = "all", j = 5)
+
+# ===========================================================================
+# ===========================================================================
+
+
+
+
+
+# ===========================================================================
+# 4. Customize and print the table
+# ===========================================================================
+
+# Autofit to window size
 tab2 <- autofit(tab2)
 
-tab2 <- tab2 %>% 
+# Table footnote
+tab2 <- tab2 %>%
   footnote(
     i = 1, j = 1,
     part = "header",
@@ -257,11 +546,15 @@ tab2 <- tab2 %>%
   width(j = c(2, 3, 4, 5), width = 3.7, unit = "cm") %>%
   width(j = 1, width = 3.2, unit = "cm")
 
+# Table caption
 set_caption(
   tab2,
   caption = "Posterior means and 95% credible intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
   style = "Table Caption"
 )
+
+# ===========================================================================
+# ===========================================================================
 
 ```
 
@@ -269,11 +562,233 @@ At the individual level, we detected differences in the mean movement speed amon
 
 ```{r table3, ft.align = "left"}
 
-tab3 <- readRDS(here::here("outputs", "05_outputs_tables", "05_table3.rds"))
+# ===========================================================================
+# 1. Import the model fit
+# ===========================================================================
 
+# path
+path <- file.path(here::here("outputs"))
+
+# Import the model
+fit <- readRDS(
+  file.path(path, "02_outputs_models", "02B_DHMLM.rds")
+)
+
+# ===========================================================================
+# ===========================================================================
+
+
+
+
+
+# ===========================================================================
+# 2. Random effects table
+# ===========================================================================
+
+
+# Prepare data --------------------------------------------------------------
+
+# Extract the random effect variances
+sd_draws <- data.table(
+   as_draws_df(
+      fit, variable = "^sd_", regex = TRUE
+   )
+)
+
+sd_draws[, c(28:30) := NULL]
+
+
+
+# Calculate parameters -------------------------------------------------------
+
+# Take the exponent of sigma parameters
+sd_draws[
+   , c("sd_predator_id__sigma_speednovice_Intercept",
+       "sd_predator_id__sigma_speedinterm_Intercept",
+       "sd_predator_id__sigma_speedadvanced_Intercept",
+       "sd_predator_id__sigma_preyspeednovice_Intercept",
+       "sd_predator_id__sigma_preyspeedinterm_Intercept",
+       "sd_predator_id__sigma_preyspeedadvanced_Intercept"
+   )
+   := lapply(.SD, function(x) {exp(x)}),
+   .SDcols = c(
+      "sd_predator_id__sigma_speednovice_Intercept",
+      "sd_predator_id__sigma_speedinterm_Intercept",
+      "sd_predator_id__sigma_speedadvanced_Intercept",
+      "sd_predator_id__sigma_preyspeednovice_Intercept",
+      "sd_predator_id__sigma_preyspeedinterm_Intercept",
+      "sd_predator_id__sigma_preyspeedadvanced_Intercept"
+   )
+]
+
+
+
+# Reshape the table -----------------------------------------------------------
+
+ranef_tab <- melt(
+   sd_draws,
+   variable.name = "parameter"
+)
+
+
+
+# Summarize the values (means + 95% CI) --------------------------------------
+
+# Intervals
+lower_interval <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.95)[1]
+}
+upper_interval <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.95)[2]
+}
+
+
+# Summarize values
+ranef_tab[, ":=" (mean = mean(value),
+                  lower_ci = lower_interval(value),
+                  upper_ci = upper_interval(value)),
+          by = .(parameter)]
+
+ranef_tab <- unique(ranef_tab[, .(parameter, mean, lower_ci, upper_ci)])
+ranef_tab[, c(2:4) := round(ranef_tab[, c(2:4)], 3)]
+
+
+
+# Rearrange the table --------------------------------------------------------
+
+# Add a column that specifies the experience level
+ranef_tab[parameter %like% "novice", xp_level := "novice"]
+ranef_tab[parameter %like% "interm", xp_level := "intermediate"]
+ranef_tab[parameter %like% "advanced", xp_level := "advanced"]
+
+
+# Paste upper and lower ci with estimate
+ranef_tab[, estimate := paste(format(mean, digits = 3), "(")]
+ranef_tab[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
+ranef_tab[, estimate := paste(estimate, ",", sep = "")]
+ranef_tab[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
+ranef_tab[, estimate := paste(estimate, ")", sep = "")]
+ranef_tab[, c("mean", "lower_ci", "upper_ci") := NULL]
+
+# Parameter column
+ranef_tab[
+   , parameter1 := ifelse(
+       parameter %like% "predator_id__sigma",
+       "predator ID (sigma)",
+       "predator ID (mean)"
+   )
+]
+ranef_tab[parameter %like% "avatar", parameter1 := "avatar (mean)"]
+ranef_tab[parameter %like% "env", parameter1 := "environment (mean)"]
+
+# Trait column
+ranef_tab[
+   , trait := ifelse(
+       parameter %like% "preyspeed",
+       "prey speed",
+       "predator speed"
+   )
+]
+ranef_tab[parameter %like% "success", trait := "hunting success"]
+
+# Remove old parameter column and replace by new
+ranef_tab[, parameter := NULL]
+setnames(ranef_tab, "parameter1", "parameter")
+
+# Reshape
+ranef_tab <- dcast(
+   ranef_tab,
+   trait + parameter ~ xp_level,
+   value.var = "estimate"
+)
+
+# Reorder columns
+ranef_tab <- ranef_tab[, c(1, 2, 5, 4, 3)]
+
+# Reorder rows
+table <- ranef_tab[c(1:5, 6:9)]
+
+# ===========================================================================
+# ===========================================================================
+
+
+
+
+
+# ===========================================================================
+# 3. Create the table using flextable
+# ===========================================================================
+
+# Prepare the table parameters ----------------------------------------------
+
+# Custom header
+my_header <- data.frame(
+  col_keys = c("trait", "parameter",
+               "novice", "intermediate", "advanced"),
+  line1 = c("Trait",
+            "Parameter",
+            "Novice",
+            "Intermediate",
+            "Advanced"),
+  stringsAsFactors = FALSE
+)
+
+# Custom theme
+my_theme <- function(x, ...) {
+  x <- colformat_double(x, big.mark = " ",
+                        decimal.mark = ".",
+                        digits = 3)
+  x <- set_table_properties(x, layout = "fixed")
+  x <- border_remove(x)
+  std_border <- fp_border(width = 1, color = "black")
+  x <- hline_top(x, part = "all", border = std_border)
+  x <- hline_bottom(x, part = "all", border = std_border)
+  autofit(x)
+}
+
+
+
+# Create the table ----------------------------------------------------------
+
+tab3 <-
+
+  # table structure
+  table %>%
+  select(trait, parameter,
+         novice, intermediate, advanced) %>%
+  flextable(col_keys = my_header$col_keys) %>%
+  set_header_df(mapping = my_header, key = "col_keys") %>%
+  my_theme() %>%
+
+  # Align repeated rows on column 1
+  merge_v(j = 1) %>%
+  valign(j = 1, valign = "top", part = "body") %>%
+  # font
+  fontsize(size = 10, part = "all") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+
+  # Align text
+  align(align = "left", part = "all", j = 1) %>%
+  align(align = "left", part = "all", j = 2) %>%
+  align(align = "center", part = "all", j = 3) %>%
+  align(align = "center", part = "all", j = 4) %>%
+  align(align = "center", part = "all", j = 5)
+
+# ===========================================================================
+# ===========================================================================
+
+
+
+
+# ===========================================================================
+# 4. Customize and print the table
+# ===========================================================================
+
+# Autofit to window
 tab3 <- autofit(tab3)
 
-tab3 <- tab3 %>% 
+# Add footnote
+tab3 <- tab3 %>%
   footnote(
     i = 1, j = 1,
     part = "header",
@@ -291,11 +806,15 @@ tab3 <- tab3 %>%
   width(j = c(2, 3, 4, 5), width = 3.7, unit = "cm") %>%
   width(j = 1, width = 3.2, unit = "cm")
 
+# Add table caption
 set_caption(
   tab3,
   caption = "Posterior means and 95% credible intervals of the random effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
   style = "Table Caption"
 )
+
+# ===========================================================================
+# ===========================================================================
 
 ```
 
@@ -303,7 +822,9 @@ As we predicted, predators differed in the mean speed of the prey that they enco
 
 ```{r fig2, out.width = "100%", fig.cap = "**Figure 2.** Individual behavioural distribution of the predators' speed drawn from the MDHGLM estimates for individuals that had (A) the greatest increase in specialization and (B) the greatest increase in flexibility. The background (gray) distributions are for when individuals were novice hunters, and the foreground (blue) distributions with solid contour lines are for when they were advanced hunters. Both figure panels are ordered by ascending degree of increase in either specialization or flexibility. We selected the individuals displayed in the figure by first substracting the estimated standard deviation of all individuals as novices with their standard deviation as advanced hunters, and then selecting those with the greatest difference using the 25% and 75% quantiles. Individuals on panel A have an increase in specialization equal or greater than 0.2 standard deviations, while those on panel B have an increase in flexibility equal or greater than 0.28 standard deviations."}
 
-knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure2.png"))
+knitr::include_graphics(
+  here::here("outputs", "05_outputs_figures", "05_figure2.png")
+)
 
 ```
 
@@ -314,8 +835,9 @@ At all experience levels, predators that were on average faster (mean) also had 
 
 ```{r fig3, out.width = "100%", fig.cap = "**Figure 3.** Correlation matrices of the MDHGLM relating the mean and intra individual variability (IIV) in speed of the predators, the mean and IIV in speed of the prey they encountered, and mean hunting success. Larger dark blue circles indicate stronger positive correlations (positive values on the color legend), while larger dark red circles indicate stronger negative correlations (negative values on the color legend). A) Correlations when predators were novice hunters. B) Correlations when predators were at an intermediate level of experience. C) Correlations when predators were advanced hunters."}
 
-knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figure3.png"))
-
+knitr::include_graphics(
+  here::here("outputs", "05_outputs_figures", "05_figure3.png")
+)
 ```
 
 
