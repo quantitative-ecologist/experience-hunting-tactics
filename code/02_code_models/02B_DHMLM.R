@@ -153,34 +153,34 @@ data[, ":=" (speed_novice        = ifelse(xp_level == "novice", pred_speed, NA),
 speed_novice <- bf(
   speed_novice | subset(sub1) ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
+      (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
-  sigma ~  
+  sigma ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
+      (1 | a | predator_id)
 ) + gaussian()
 
 speed_intermediate <- bf(
   speed_interm | subset(sub2) ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
+      (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
-  sigma ~  
+  sigma ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
+      (1 | a | predator_id)
 ) + gaussian()
 
 speed_advanced <- bf(
   speed_advanced | subset(sub3) ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
+      (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
-  sigma ~  
+  sigma ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
+      (1 | a | predator_id)
 ) + gaussian()
 
 
@@ -190,34 +190,34 @@ speed_advanced <- bf(
 prey_speed_novice <- bf(
   prey_speed_novice | subset(sub1) ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
+      (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
-  sigma ~  
+  sigma ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
+      (1 | a | predator_id)
 ) + gaussian()
 
 prey_speed_intermediate <- bf(
   prey_speed_interm | subset(sub2) ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
+      (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
-  sigma ~ 
+  sigma ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
+      (1 | a | predator_id)
 ) + gaussian()
 
 prey_speed_advanced <- bf(
   prey_speed_advanced | subset(sub3) ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id) +
+      (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
-  sigma ~  
+  sigma ~
       1 + sqrt_prey_avg_rank +
-      (1 |a| predator_id)
+      (1 | a | predator_id)
 ) + gaussian()
 
 
@@ -249,19 +249,19 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 success_novice <- bf(
   success_novice | vint(4) + subset(sub1) ~ 
       1 + sqrt_game_duration +
-      (1 |a| predator_id)
+      (1 | a | predator_id)
 ) + beta_binomial2
 
 success_interm <- bf(
   success_interm | vint(4) + subset(sub2) ~
       1 + sqrt_game_duration +
-      (1 |a| predator_id)
+      (1 | a | predator_id)
 ) + beta_binomial2
 
 success_advanced <- bf(
   success_advanced | vint(4) + subset(sub3) ~
       1 + sqrt_game_duration +
-      (1 |a| predator_id)
+      (1 | a | predator_id)
 ) + beta_binomial2
 
 
