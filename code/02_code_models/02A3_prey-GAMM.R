@@ -55,14 +55,15 @@ data[, predator_id := as.factor(predator_id)]
 
 # Standardise the variables (Z-scores) -------------------------------------
 
-standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / 
-                              sd(x, na.rm = TRUE)}
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
 
 data[, c(
     "Zprey_speed",
     "Zgame_duration",
     "Zcumul_xp"
-    ) := lapply(.SD, standardize), 
+    ) := lapply(.SD, standardize),
        .SDcols = c(3:5)]
 
 # ==========================================================================
@@ -149,13 +150,13 @@ priors <- c(
 
 model_s <- brm(formula = model_formula,
                 family = beta_binomial2,
-                warmup = 500, 
+                warmup = 500,
                 iter = 1500,
                 thin = 4,
                 chains = 4,
                 threads = threading(12),
                 backend = "cmdstanr",
-                inits = "0", 
+                inits = "0",
                 seed = 123,
                 prior = priors,
                 sample_prior = TRUE,
