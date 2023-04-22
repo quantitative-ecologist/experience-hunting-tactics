@@ -33,11 +33,12 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
                     "maxime11", "phd_project", "data")
 
 # Load data
-data <- fread(file.path(folder, "FraserFrancoetal2023-data.csv"),
+data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
               select = c("predator_id",
                          "hunting_success",
                          "game_duration",
-                         "cumul_xp_pred"))
+                         "cumul_xp_pred",
+                         "prey_avg_speed"))
 
 # Project path for testing
 #data <- fread("./data/FraserFrancoetalXXXX-data.csv",
@@ -49,12 +50,16 @@ data <- fread(file.path(folder, "FraserFrancoetal2023-data.csv"),
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
 
+# Remove any NAs
+data <- data[complete.cases(data)]
+
 
 
 # Standardise the variables (Z-scores) -------------------------------------
 
-standardize <- function (x) {(x - mean(x, na.rm = TRUE)) / 
-                              sd(x, na.rm = TRUE)}
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
 
 data[, c("Zgame_duration",
          "Zcumul_xp") := lapply(.SD, standardize), 
@@ -107,7 +112,7 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 model_formula <- brmsformula(
     hunting_success | vint(4) ~
         s(Zcumul_xp) +
-        s(Zcumul_xp, predator_id, bs = "fs") + 
+        s(Zcumul_xp, predator_id, bs = "fs") +
         Zgame_duration
 )
 
