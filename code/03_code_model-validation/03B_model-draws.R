@@ -73,7 +73,7 @@ ggplot(posterior_fit) +
   geom_density(aes(b_speednovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 
@@ -86,7 +86,7 @@ ggplot(posterior_fit) +
   geom_density(aes(b_preyspeednovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 # Intercept success
@@ -98,7 +98,7 @@ ggplot(posterior_fit) +
   geom_density(aes(b_successnovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 
@@ -114,7 +114,7 @@ ggplot(posterior_fit) +
   geom_density(aes(b_sigma_speednovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 
@@ -127,7 +127,7 @@ ggplot(posterior_fit) +
   geom_density(aes(b_sigma_preyspeednovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 # ==================================================================================
@@ -153,7 +153,7 @@ ggplot(posterior_fit) +
   geom_density(aes(b_speednovice_sqrt_prey_avg_rank),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 # slope rank prey speed
@@ -165,7 +165,7 @@ ggplot(posterior_fit) +
   geom_density(aes(b_preyspeednovice_sqrt_prey_avg_rank),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 # game duration success (bit too high but no influence)
@@ -177,7 +177,7 @@ ggplot(posterior_fit) +
   geom_density(aes(b_successnovice_sqrt_game_duration),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 
@@ -209,7 +209,7 @@ ggplot(posterior_fit) +
   geom_density(aes(sd_predator_id__speednovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 # prey speed predator ID
@@ -221,7 +221,7 @@ ggplot(posterior_fit) +
   geom_density(aes(sd_predator_id__preyspeednovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 # success predator ID
@@ -233,7 +233,7 @@ ggplot(posterior_fit) +
   geom_density(aes(sd_predator_id__successnovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 
@@ -249,7 +249,7 @@ ggplot(posterior_fit) +
   geom_density(aes(sd_predator_id__sigma_speednovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 # prey speed predator ID
@@ -261,7 +261,7 @@ ggplot(posterior_fit) +
   geom_density(aes(sd_predator_id__sigma_preyspeednovice_Intercept),
                fill = "#FC4E07",
                color = "black",
-               alpha = 0.6) + 
+               alpha = 0.6) +
   theme_classic()
 
 # ==================================================================================
