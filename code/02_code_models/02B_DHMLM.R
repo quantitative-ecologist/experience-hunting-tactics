@@ -114,21 +114,28 @@ data[, sub3 := ifelse(xp_level == "advanced", 1, 0)]
 # The function standardizes the variables by group :
 # in this case, by level of experience
 
-data[, c("sqrt_game_duration", "sqrt_prey_avg_rank") :=
-       lapply(.SD, function (x) {sqrt(x)}), 
-       .SDcols = c("game_duration", "prey_avg_rank"),
-       by = xp_level]
+data[
+  , c("sqrt_game_duration", "sqrt_prey_avg_rank") := lapply(
+    .SD, function(x) {
+      sqrt(x)
+    }
+  ),
+  .SDcols = c("game_duration", "prey_avg_rank"),
+  by = xp_level
+]
 
 # Compute the new columns for each level of experience
-data[, ":=" (speed_novice        = ifelse(xp_level == "novice", pred_speed, NA),
-             prey_speed_novice   = ifelse(xp_level == "novice", prey_avg_speed, NA),
-             success_novice      = ifelse(xp_level == "novice", hunting_success, NA),
-             speed_interm        = ifelse(xp_level == "intermediate", pred_speed, NA),
-             prey_speed_interm   = ifelse(xp_level == "intermediate", prey_avg_speed, NA),
-             success_interm      = ifelse(xp_level == "intermediate", hunting_success, NA),
-             speed_advanced      = ifelse(xp_level == "advanced", pred_speed, NA),
-             prey_speed_advanced = ifelse(xp_level == "advanced", prey_avg_speed, NA),
-             success_advanced    = ifelse(xp_level == "advanced", hunting_success, NA))
+data[, ":=" (
+  speed_novice        = ifelse(xp_level == "novice", pred_speed, NA),
+  prey_speed_novice   = ifelse(xp_level == "novice", prey_avg_speed, NA),
+  success_novice      = ifelse(xp_level == "novice", hunting_success, NA),
+  speed_interm        = ifelse(xp_level == "intermediate", pred_speed, NA),
+  prey_speed_interm   = ifelse(xp_level == "intermediate", prey_avg_speed, NA),
+  success_interm      = ifelse(xp_level == "intermediate", hunting_success, NA),
+  speed_advanced      = ifelse(xp_level == "advanced", pred_speed, NA),
+  prey_speed_advanced = ifelse(xp_level == "advanced", prey_avg_speed, NA),
+  success_advanced    = ifelse(xp_level == "advanced", hunting_success, NA)
+  )
 ]
 
 # =======================================================================
@@ -247,7 +254,7 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 
 # Sub models
 success_novice <- bf(
-  success_novice | vint(4) + subset(sub1) ~ 
+  success_novice | vint(4) + subset(sub1) ~
       1 + sqrt_game_duration +
       (1 | a | predator_id)
 ) + beta_binomial2
@@ -270,14 +277,14 @@ success_advanced <- bf(
 
 priors <- c(
   # Prior on game duration
-  set_prior("normal(10, 2)", 
+  set_prior("normal(0.5, 0.5)",
             class = "b",
             coef = "sqrt_game_duration",
             resp = c("successnovice",
                      "successinterm",
                      "successadvanced")),
   # Prior on prey rank
-  set_prior("normal(2.5, 1)", 
+  set_prior("normal(0, 1)",
             class = "b",
             coef = "sqrt_prey_avg_rank",
             resp = c("speednovice",
@@ -304,7 +311,7 @@ priors <- c(
             resp = c("successnovice",
                      "successinterm",
                      "successadvanced")),
-  set_prior("lkj(2)", 
+  set_prior("lkj(2)",
             class = "cor",
             group = "predator_id")
 )
@@ -331,10 +338,10 @@ mv_model <- brm(speed_novice +
                 success_interm +
                 success_advanced +
                 set_rescor(FALSE),
-                warmup = 500, 
+                warmup = 500,
                 iter = 2500,
                 thin = 8,
-                chains = 4, 
+                chains = 4,
                 inits = "0",
                 threads = threading(12),
                 backend = "cmdstanr",
