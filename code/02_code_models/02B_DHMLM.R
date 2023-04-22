@@ -36,7 +36,7 @@ library(parallel)
 # Import the data -------------------------------------------------------
 
 # Folder path Compute Canada
-folder <- file.path("/home", "maxime11", "projects", "def-monti", 
+folder <- file.path("/home", "maxime11", "projects", "def-monti",
                     "maxime11", "phd_project", "data")
 
 # Load data on compute canada
@@ -80,7 +80,7 @@ data[, environment_id := as.factor(environment_id)]
   # Intermediate = >=100 to 299
   # advanced = 300 to 500
 
-# All traits will then need to be computed as variables 
+# All traits will then need to be computed as variables
 # at these levels of experience
 
 
@@ -146,7 +146,7 @@ data[, ":=" (
 
 
 # =======================================================================
-# 3. Build the multivariate model 
+# 3. Build the multivariate model
 # =======================================================================
 
 # We first compute submodels for each level of experience
@@ -324,7 +324,7 @@ priors <- c(
 
 
 # =======================================================================
-# 4. Run the multivariate model 
+# 4. Run the multivariate model
 # =======================================================================
 
 # ( nitt - burnin ) / thin = 1000
