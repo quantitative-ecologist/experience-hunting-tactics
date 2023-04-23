@@ -8,7 +8,7 @@ output:
     reference_docx: Chapter2-styles.docx
     fig_caption: yes
 bibliography: references.bib
-csl: e-letters.csl
+csl: ecology.csl
 ---
 
 ```{r setup, include = FALSE}
@@ -24,6 +24,214 @@ library(tidyr)
 ```
 
 
+
+\newpage
+
+```{r tableprep, include = FALSE}
+
+# ===========================================================================
+# 1. Extract the fixed effects from the MV model
+# ===========================================================================
+
+# Prepare the table ---------------------------------------------------------
+
+# Model fit
+fit <- readRDS(
+  here::here("outputs", "02_outputs_models", "02B2_DHMLM.rds")
+)
+
+# Fixed effects table
+results <- data.table(
+  round(summary(fit)$fixed, digits = 3)[, 1:4],
+  keep.rownames = TRUE
+)
+
+setnames(results, "rn", "parameter")
+
+results[parameter %like% "predspeed", trait := "predator speed"][
+  parameter %like% "preyavgspeed", trait := "prey speed"][
+    parameter %like% "success", trait := "hunting success"
+  ]
+
+# mu parameters table
+tabs1 <- results[
+    !(parameter %like% "sigma"),
+    c(6, 1, 2, 4, 5)
+]
+
+# sigma parameters table
+tabs2 <- results[
+    parameter %like% "sigma",
+    c(6, 1, 2, 4, 5)
+]
+
+
+
+# Rename parameter values ---------------------------------------------------
+
+# Rename
+tabs1[,
+  parameter := c(
+    rep(
+      c("prey rank",
+        "cumulative experience",
+        "group 1",
+        "group 4",
+        "group 2",
+        "group 3"),
+      2
+    ),
+      c("game duration",
+        "cumulative experience",
+        "group 1",
+        "group 4",
+        "group 2",
+        "group 3")
+  )
+]
+# Reorder rows
+tabs1 <- tabs1[
+  c(1:3, 5, 6, 4,
+    7:9, 11, 12, 10,
+    13:15, 17, 18, 16)
+]
+
+# Rename
+tabs2[,
+  parameter := rep(
+    c("prey rank",
+      "cumulative experience",
+      "group 1",
+      "group 4",
+      "group 2",
+      "group 3"),
+    2
+  )
+]
+
+# Reorder
+tabs2 <- tabs2[
+  c(1:3, 5, 6, 4,
+    7:9, 11, 12, 10)
+]
+
+# ===========================================================================
+# ===========================================================================
+
+
+
+
+
+# ===========================================================================
+# 2. Compute the table using flextable
+# ===========================================================================
+
+# Prepare the table parameters ----------------------------------------------
+
+# Custom header
+my_header <- data.frame(
+   col_keys = c("trait",
+                "parameter",
+                "Estimate",
+                "l-95% CI",
+                "u-95% CI"),
+   line1 = c("Trait",
+             "Parameter",
+             "Value",
+             "lower 95% CI",
+             "upper 95% CI"),
+   stringsAsFactors = FALSE
+)
+
+# Custom theme
+my_theme <- function(x, ...) {
+   x <- colformat_double(x, big.mark = " ",
+                         decimal.mark = ".",
+                         digits = 2)
+   x <- set_table_properties(x, layout = "fixed")
+   x <- border_remove(x)
+   std_border <- fp_border(width = 1, color = "black")
+   x <- hline_top(x, part = "all", border = std_border)
+   x <- hline_bottom(x, part = "all", border = std_border)
+   autofit(x)
+}
+
+```
+
+
+```{r tables1, ft.align = "left"}
+# Create the table ----------------------------------------------------------
+
+tabs1f <- tabs1 %>%
+  flextable(col_keys = my_header$col_keys) %>%
+  set_header_df(mapping = my_header, key = "col_keys") %>%
+  my_theme() %>%
+  merge_v(j = 1) %>%
+  valign(j = 1, valign = "top", part = "body") %>%
+  align(align = "left", part = "all", j = c(1, 2)) %>%
+  align(align = "center", part = "all", j = 3) %>%
+  align(align = "center", part = "all", j = 4) %>%
+  align(align = "center", part = "all", j = 5) %>%
+  footnote(
+    i = 1, j = 1,
+    part = "header",
+    value = as_paragraph(
+      as_sup("a "),
+      "Group 1: <50 matches, Group 2: between 50 and 99 matches, Group 3: between 100 and 299 matches, Group 4: > 299"
+    ),
+    ref_symbols = " "
+  ) %>%
+  set_caption(
+    tabs1,
+    caption = "Fixed effects table on the mean part of the model",
+    style = "Table Caption"
+  ) %>%
+  fontsize(size = 10, part = "all") %>%
+  fontsize(size = 12, part = "footer") %>%
+  font(fontname = "Times New Roman", part = "all")
+
+tabs1f
+
+# ===========================================================================
+# ===========================================================================
+
+```
+
+\newpage
+
+```{r tableS2, ft.align = "left"}
+
+tabs2f <- tabs2 %>%
+  flextable(col_keys = my_header$col_keys) %>%
+  set_header_df(mapping = my_header, key = "col_keys") %>%
+  my_theme() %>%
+  merge_v(j = 1) %>%
+  valign(j = 1, valign = "top", part = "body") %>%
+  align(align = "left", part = "all", j = c(1, 2)) %>%
+  align(align = "center", part = "all", j = 3) %>%
+  align(align = "center", part = "all", j = 4) %>%
+  align(align = "center", part = "all", j = 5) %>%
+  footnote(
+    i = 1, j = 1,
+    part = "header",
+    value = as_paragraph(
+      as_sup("a "),
+      "Group 1: <50 matches, Group 2: between 50 and 99 matches, Group 3: between 100 and 299 matches, Group 4: > 299"
+    ),
+    ref_symbols = " "
+  ) %>%
+  set_caption(
+    tabs2,
+    caption = "Fixed effects table on the dispersion part of the model",
+    style = "Table Caption"
+  ) %>%
+  fontsize(size = 10, part = "all") %>%
+  fontsize(size = 12, part = "footer") %>%
+  font(fontname = "Times New Roman", part = "all")
+
+tabs2f
+
+```
 
 \newpage
 
