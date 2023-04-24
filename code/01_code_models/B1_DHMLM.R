@@ -353,7 +353,7 @@ mv_model <- brm(speed_novice +
                 #save_pars = save_pars(all = TRUE),
                 data = data)
 
-saveRDS(mv_model, file = "02B_DHMLM-trunc.rds")
+saveRDS(mv_model, file = "021_DHMLM.rds")
 
 # =======================================================================
 # =======================================================================

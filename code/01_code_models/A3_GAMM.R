@@ -163,7 +163,7 @@ model_s <- brm(formula = model_formula,
                 data = data,
                 stanvars = stanvars)
 
-saveRDS(model_s, file = "02A3_GAMM.rds")
+saveRDS(model_s, file = "A3_GAMM.rds")
 
 # ==========================================================================
 # ==========================================================================

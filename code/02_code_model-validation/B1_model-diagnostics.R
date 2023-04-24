@@ -12,6 +12,11 @@
 # 1. Load libraries, datasets, and models
 # =======================================================================
 
+# Global options --------------------------------------------------------
+
+ # If you have multiple cores
+ options(mc.cores = parallel::detectCores())
+
 
 
 # Librairies ------------------------------------------------------------
@@ -25,10 +30,10 @@
 
 # Import the model ------------------------------------------------------
 
- path <- file.path(getwd(), "outputs", "02_outputs_models")
+ path <- file.path(getwd(), "outputs", "01_outputs_models")
 
  # Load models
- mod1 <- readRDS(file.path(path, "02B1_DHMLM.rds"))
+ mod1 <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
 
 # =======================================================================
 # =======================================================================
@@ -381,10 +386,10 @@
  )
 
 # Export the figures into a .pdf file
- path1 <- file.path(getwd(), "outputs", "03_outputs_model-validation")
+ path1 <- file.path(getwd(), "outputs", "02_outputs_model-validation")
  ggexport(
    plots,
-   filename = file.path(path1, "03B1_DHMLM-diagnostics.pdf")
+   filename = file.path(path1, "B1_DHMLM-diagnostics.pdf")
  )
 
 # =======================================================================

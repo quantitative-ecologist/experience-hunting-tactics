@@ -168,7 +168,7 @@ model_gs <- brm(formula = model_formula,
                 data = data,
                 stanvars = stanvars)
 
-saveRDS(model_gs, file = "02A2_prey-GAMM.rds")
+saveRDS(model_gs, file = "A2_GAMM-prey.rds")
 
 # ==========================================================================
 # ==========================================================================
