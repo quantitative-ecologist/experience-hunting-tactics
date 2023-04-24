@@ -23,8 +23,8 @@ library(ggpubr)
 library(ggridges)
 
 # import model
-path <- file.path(getwd(), "outputs", "02_outputs_models")
-fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
+path <- file.path(getwd(), "outputs", "01_outputs_models")
+fit <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
 
 
 
@@ -164,7 +164,7 @@ table <- dcast(
 )
 
 # Reorder
-setcolorder(table, c(1,2,4,3))
+setcolorder(table, c(1, 2, 4, 3))
 
 # Calculate difference in sigma values between novice and advanced
 table[, difference := novice - advanced, by = .(predator_id, parameter)]
@@ -200,19 +200,19 @@ table <- dcast(
   value.var = c("value", "difference")
   )
 
-# Compute normal distributions for each predator  
+# Compute normal distributions for each predator
 #normalize <- apply(
 #  table[,c(3:5)],
-#  1, 
+#  1,
 #  function(x) rnorm(x[1], mean = x[2], sd = x[3])
 #)
 
-# Compute truncated normal distributions for each predator  
+# Compute truncated normal distributions for each predator
 table[, trunc := 0]
 
 normalize <- apply(
-  table[,c(3:5,8)],
-  1, 
+  table[, c(3:5, 8)],
+  1,
   function(x) truncnorm::rtruncnorm(x[1], mean = x[2], sd = x[3], a = x[4])
 )
 
@@ -224,13 +224,13 @@ normalize <- apply(
 normalize <- data.table(normalize)
 
 # Novice players
-novice <- normalize[,c(1:253)]
+novice <- normalize[, c(1:252)]
 novice <- melt(novice)
 novice[, xp_level := "novice"]
 colnames(novice) <- paste(colnames(novice), "nov", sep = "_")
 
 # Advanced players
-adv <- normalize[,c(254:506)]
+adv <- normalize[, c(253:504)]
 adv <- melt(adv)
 adv[, xp_level := "advanced"]
 colnames(adv) <- paste(colnames(adv), "adv", sep = "_")
@@ -245,7 +245,7 @@ dat[, predator_id := as.factor(predator_id)]
 # Merge the tables
 dat <- merge(
   dat,
-  table[,.(predator_id, difference_sigma)],
+  table[, .(predator_id, difference_sigma)],
   allow.cartesian = TRUE
 )
 
@@ -344,7 +344,7 @@ hist(
 )
 
 # Check sample range
-unique(dat_sample[,.(predator_id, difference_sigma)][, range(difference_sigma)])
+unique(dat_sample[, .(predator_id, difference_sigma)][, range(difference_sigma)])
 length(unique(dat_sample[, predator_id])) / length(unique(dat[, predator_id]))
 # 50% se situent entre -1.62 et 0.66 avec les limites -0.05 et 0.07
 
@@ -365,7 +365,7 @@ plot1 <- ggplot() +
                aes(x = value_adv)) +
   ylab("Density\n") +
   xlab("\nPredator speed (m/s)") +
-  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 8)) +
+  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 9)) +
   theme_bw() +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
@@ -374,18 +374,18 @@ plot1 <- ggplot() +
 
 # Highest increase in flexibility
 plot2 <- ggplot() +
-  geom_density(data = dat_sample[difference_sigma < -0.28],
+  geom_density(data = dat_sample[difference_sigma < -0.27],
                fill = "#999999",
                color = "#999999",
                alpha = 0.5,
                aes(x = value_nov)) +
-  geom_density(data = dat_sample[difference_sigma < -0.28],
+  geom_density(data = dat_sample[difference_sigma < -0.27],
                fill = "#00AFBB",
                alpha = 0.5,
                aes(x = value_adv)) +
   ylab("Density\n") +
   xlab("\nPredator speed (m/s)") +
-  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 8)) +
+  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 9)) +
   theme_bw() +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
@@ -464,12 +464,12 @@ figure <- ggarrange(plot1, plot2,
                     ncol = 2, nrow = 1)
 
 # Folder path
-path <- file.path(getwd(), "outputs", "05_outputs_figures")
+path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
 # Save figure
 ggexport(
   figure,
-  filename = file.path(path, "05_figure2.png"),
+  filename = file.path(path, "figure2.png"),
   width = 2500,
   height = 1200,
   res = 300
