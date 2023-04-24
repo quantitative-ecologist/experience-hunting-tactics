@@ -23,33 +23,33 @@
  # Model
  path <- file.path(getwd(), "outputs", "02_outputs_models")
  fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
- 
+
 # =======================================================================
 # =======================================================================
- 
- 
- 
- 
- 
+
+
+
+
+
 # =======================================================================
 # 2. Prepare 3 matrices to plot
 # =======================================================================
- 
- 
+
+
 # Prepare the full correlation matrix -----------------------------------
- 
+
  # Extract the full object
  ar <- VarCorr(fit)
- 
+
  # Extract the covariances from the object
  cov <- ar$predator_id$cov
- 
+
  # Extract the covariance matrix
- vcovmat <- cov[,1,]
- 
+ vcovmat <- cov[, 1, ]
+
  # Transform to correlation matrix
  cormat <- cov2cor(vcovmat)
- 
+
  # Reorder by XP level in order
  cormat_ord <- cormat[c(1, 2, 7, 8, 13,
                         3, 4, 9, 10, 14,
@@ -66,7 +66,7 @@
 
 
 # Arrange the correlation matrices --------------------------------------
- 
+
  # Names
  names <- c(
     "mean speed", "IIV speed",
@@ -88,10 +88,10 @@
 # =======================================================================
 # =======================================================================
 
- 
 
 
- 
+
+
 # =======================================================================
 # 3. Plot the correlations
 # =======================================================================
@@ -100,10 +100,14 @@
 # Make the plot and export ----------------------------------------------
 
  # Define the color gradient
- COL2(diverging = c("RdBu", "BrBG", "PiYG",
-                    "PRGn", "PuOr", "RdYlBu"),
-      n = 200)
- 
+ COL2(
+   diverging = c(
+      "RdBu", "BrBG", "PiYG",
+      "PRGn", "PuOr", "RdYlBu"
+   ),
+   n = 200
+ )
+
  # File path
  path <- file.path(getwd(), "outputs", "05_outputs_figures")
 
@@ -114,15 +118,15 @@
     tl.cex = 1.2,
     tl.srt = 45,
     cl.cex = 1,
-    diag = F,
+    diag = FALSE,
     type = "lower",
     addCoef.col = "black",
     col = COL2("RdBu", 10)
  )
- 
+
   # Export to powerpoint
  graph2ppt(
-    file = file.path(path, "05_figure3raw-test.pptx"), 
+    file = file.path(path, "05_figure3raw-test.pptx"),
     width = 10, height = 6
  )
 
@@ -132,33 +136,33 @@
     tl.cex = 1.2,
     tl.srt = 45,
     cl.cex = 1,
-    diag = F,
+    diag = FALSE,
     type = "lower",
     addCoef.col = "black",
     col = COL2("RdBu", 10)
  )
- 
+
  # add 2nd slide
  graph2ppt(
-    file = file.path(path, "05_figure3raw-test.pptx"), 
+    file = file.path(path, "05_figure3raw-test.pptx"),
     width = 10, height = 6, append = TRUE
  )
- 
+
  cm3 <- corrplot(
     cormat_adv, method = "circle",
     tl.col = "black",
     tl.cex = 1.2,
     tl.srt = 45,
     cl.cex = 1,
-    diag = F,
+    diag = FALSE,
     type = "lower",
     addCoef.col = "black",
     col = COL2("RdBu", 10)
  )
- 
+
  # add 3rd slide
  graph2ppt(
-    file = file.path(path, "05_figure3raw-test.pptx"), 
+    file = file.path(path, "05_figure3raw-test.pptx"),
     width = 10, height = 6, append = TRUE
  )
 

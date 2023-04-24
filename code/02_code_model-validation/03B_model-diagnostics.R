@@ -28,10 +28,7 @@
  path <- file.path(getwd(), "outputs", "02_outputs_models")
 
  # Load models
- mod1 <- readRDS(file.path(path, "02B_DHMLM.rds"))
-
- # Read saved loo outputs
- #loo1 <- readRDS("./outputs/03_outputs_model-validation/03A1_loo.rds")
+ mod1 <- readRDS(file.path(path, "02B1_DHMLM.rds"))
 
 # =======================================================================
 # =======================================================================
@@ -219,69 +216,69 @@
   ) + ggtitle("success adv")
 
 
-# Residuals vs fitted
-fitted1a <- fitted(mod1, resp = "speednovice")[, 1]
-resid1a <- residuals(mod1, resp = "speednovice")[, 1]
-assum1a <- ggplot() +
-  geom_point(aes(x = fitted1a, y = resid1a), alpha = 0.2) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  ggtitle("speed nov")
+ # Residuals vs fitted
+ fitted1a <- fitted(mod1, resp = "speednovice")[, 1]
+ resid1a <- residuals(mod1, resp = "speednovice")[, 1]
+ assum1a <- ggplot() +
+   geom_point(aes(x = fitted1a, y = resid1a), alpha = 0.2) +
+   theme_bw() + theme(panel.grid = element_blank()) +
+   ggtitle("speed nov")
 
-fitted1b <- fitted(mod1, resp = "speedinterm")[, 1]
-resid1b <- residuals(mod1, resp = "speedinterm")[, 1]
-assum1b <- ggplot() +
-  geom_point(aes(x = fitted1b, y = resid1b), alpha = 0.2) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  ggtitle("speed interm")
+ fitted1b <- fitted(mod1, resp = "speedinterm")[, 1]
+ resid1b <- residuals(mod1, resp = "speedinterm")[, 1]
+ assum1b <- ggplot() +
+   geom_point(aes(x = fitted1b, y = resid1b), alpha = 0.2) +
+   theme_bw() + theme(panel.grid = element_blank()) +
+   ggtitle("speed interm")
 
-fitted1c <- fitted(mod1, resp = "speedadvanced")[, 1]
-resid1c <- residuals(mod1, resp = "speedadvanced")[, 1]
-assum1c <- ggplot() +
-  geom_point(aes(x = fitted1c, y = resid1c), alpha = 0.2) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  ggtitle("speed adv")
+ fitted1c <- fitted(mod1, resp = "speedadvanced")[, 1]
+ resid1c <- residuals(mod1, resp = "speedadvanced")[, 1]
+ assum1c <- ggplot() +
+   geom_point(aes(x = fitted1c, y = resid1c), alpha = 0.2) +
+   theme_bw() + theme(panel.grid = element_blank()) +
+   ggtitle("speed adv")
 
-fitted1d <- fitted(mod1, resp = "preyspeednovice")[, 1]
-resid1d <- residuals(mod1, resp = "preyspeednovice")[, 1]
-assum1d <- ggplot() +
-  geom_point(aes(x = fitted1d, y = resid1d), alpha = 0.2) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  ggtitle("prey speed nov")
+ fitted1d <- fitted(mod1, resp = "preyspeednovice")[, 1]
+ resid1d <- residuals(mod1, resp = "preyspeednovice")[, 1]
+ assum1d <- ggplot() +
+   geom_point(aes(x = fitted1d, y = resid1d), alpha = 0.2) +
+   theme_bw() + theme(panel.grid = element_blank()) +
+   ggtitle("prey speed nov")
 
-fitted1e <- fitted(mod1, resp = "preyspeedinterm")[, 1]
-resid1e <- residuals(mod1, resp = "preyspeedinterm")[, 1]
-assum1e <- ggplot() +
-  geom_point(aes(x = fitted1e, y = resid1e), alpha = 0.2) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  ggtitle("prey speed interm")
+ fitted1e <- fitted(mod1, resp = "preyspeedinterm")[, 1]
+ resid1e <- residuals(mod1, resp = "preyspeedinterm")[, 1]
+ assum1e <- ggplot() +
+   geom_point(aes(x = fitted1e, y = resid1e), alpha = 0.2) +
+   theme_bw() + theme(panel.grid = element_blank()) +
+   ggtitle("prey speed interm")
+ 
+ fitted1f <- fitted(mod1, resp = "preyspeedadvanced")[, 1]
+ resid1f <- residuals(mod1, resp = "preyspeedadvanced")[, 1]
+ assum1f <- ggplot() +
+   geom_point(aes(x = fitted1f, y = resid1f), alpha = 0.2) +
+   theme_bw() + theme(panel.grid = element_blank()) +
+   ggtitle("prey speed adv")
 
-fitted1f <- fitted(mod1, resp = "preyspeedadvanced")[, 1]
-resid1f <- residuals(mod1, resp = "preyspeedadvanced")[, 1]
-assum1f <- ggplot() +
-  geom_point(aes(x = fitted1f, y = resid1f), alpha = 0.2) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  ggtitle("prey speed adv")
+ fitted1g <- fitted(mod1, resp = "successnovice")[, 1]
+ resid1g <- residuals(mod1, resp = "successnovice")[, 1]
+ assum1g <- ggplot() +
+   geom_point(aes(x = fitted1g, y = resid1g), alpha = 0.2) +
+   theme_bw() + theme(panel.grid = element_blank()) +
+   ggtitle("success nov")
 
-fitted1g <- fitted(mod1, resp = "successnovice")[, 1]
-resid1g <- residuals(mod1, resp = "successnovice")[, 1]
-assum1g <- ggplot() +
-  geom_point(aes(x = fitted1g, y = resid1g), alpha = 0.2) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  ggtitle("success nov")
+ fitted1h <- fitted(mod1, resp = "successinterm")[, 1]
+ resid1h <- residuals(mod1, resp = "successinterm")[, 1]
+ assum1h <- ggplot() +
+   geom_point(aes(x = fitted1h, y = resid1h), alpha = 0.2) +
+   theme_bw() + theme(panel.grid = element_blank()) +
+   ggtitle("success interm")
 
-fitted1h <- fitted(mod1, resp = "successinterm")[, 1]
-resid1h <- residuals(mod1, resp = "successinterm")[, 1]
-assum1h <- ggplot() +
-  geom_point(aes(x = fitted1h, y = resid1h), alpha = 0.2) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  ggtitle("success interm")
-
-fitted1i <- fitted(mod1, resp = "successadvanced")[, 1]
-resid1i <- residuals(mod1, resp = "successadvanced")[, 1]
-assum1i <- ggplot() +
-  geom_point(aes(x = fitted1i, y = resid1i), alpha = 0.2) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  ggtitle("success adv")
+ fitted1i <- fitted(mod1, resp = "successadvanced")[, 1]
+ resid1i <- residuals(mod1, resp = "successadvanced")[, 1]
+ assum1i <- ggplot() +
+   geom_point(aes(x = fitted1i, y = resid1i), alpha = 0.2) +
+   theme_bw() + theme(panel.grid = element_blank()) +
+   ggtitle("success adv")
 
 
 
@@ -387,7 +384,7 @@ assum1i <- ggplot() +
  path1 <- file.path(getwd(), "outputs", "03_outputs_model-validation")
  ggexport(
    plots,
-   filename = file.path(path1, "03B_DHMLM-diagnostics.pdf")
+   filename = file.path(path1, "03B1_DHMLM-diagnostics.pdf")
  )
 
 # =======================================================================
