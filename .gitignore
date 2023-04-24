@@ -1,10 +1,5 @@
-code/data-exploration.Jmd
-code/data-exploration-figs
-code/*.log
-code/*.out
-code/*.tex
-code/*.aux
 manuscript/dump_ideas.txt
+manuscript/submission_files
 data
 tests
 plan
