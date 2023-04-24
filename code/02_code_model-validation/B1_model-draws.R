@@ -23,10 +23,10 @@ library(ggplot2)
 
 # Prepare model draws --------------------------------------------------------------
 
-path <- file.path(getwd(), "outputs", "02_outputs_models")
+path <- file.path(getwd(), "outputs", "01_outputs_models")
 
 # Import model in R session
-fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
+fit <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
 
 
 # Extract posterior draws
@@ -168,7 +168,7 @@ ggplot(posterior_fit) +
                alpha = 0.6) +
   theme_classic()
 
-# game duration success (bit too high but no influence)
+# game duration success
 ggplot(posterior_fit) +
   geom_density(aes(prior_b_successnovice_sqrt_game_duration),
                fill = "steelblue",
