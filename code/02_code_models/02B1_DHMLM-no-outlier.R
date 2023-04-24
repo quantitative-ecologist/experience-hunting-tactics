@@ -57,6 +57,9 @@ data[, predator_id := as.factor(predator_id)]
 data[, predator_avatar_id := as.factor(avatar_id)]
 data[, environment_id := as.factor(environment_id)]
 
+# Remove outlier from the dataset
+data <- data[predator_id != "pred379433"]
+
 # =======================================================================
 # =======================================================================
 
@@ -158,7 +161,7 @@ data[, ":=" (
 # Speed at three levels of experience -----------------------------------
 
 speed_novice <- bf(
-  speed_novice | subset(sub1) ~
+  speed_novice | subset(sub1) + trunc(lb = 0) ~
       1 + sqrt_prey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
@@ -169,7 +172,7 @@ speed_novice <- bf(
 ) + gaussian()
 
 speed_intermediate <- bf(
-  speed_interm | subset(sub2) ~
+  speed_interm | subset(sub2) + trunc(lb = 0) ~
       1 + sqrt_prey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
@@ -180,7 +183,7 @@ speed_intermediate <- bf(
 ) + gaussian()
 
 speed_advanced <- bf(
-  speed_advanced | subset(sub3) ~
+  speed_advanced | subset(sub3) + trunc(lb = 0) ~
       1 + sqrt_prey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
@@ -195,7 +198,7 @@ speed_advanced <- bf(
 # Prey speed at three levels of experience ------------------------------
 
 prey_speed_novice <- bf(
-  prey_speed_novice | subset(sub1) ~
+  prey_speed_novice | subset(sub1) + trunc(lb = 0) ~
       1 + sqrt_prey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
@@ -206,7 +209,7 @@ prey_speed_novice <- bf(
 ) + gaussian()
 
 prey_speed_intermediate <- bf(
-  prey_speed_interm | subset(sub2) ~
+  prey_speed_interm | subset(sub2) + trunc(lb = 0) ~
       1 + sqrt_prey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
@@ -217,7 +220,7 @@ prey_speed_intermediate <- bf(
 ) + gaussian()
 
 prey_speed_advanced <- bf(
-  prey_speed_advanced | subset(sub3) ~
+  prey_speed_advanced | subset(sub3) + trunc(lb = 0) ~
       1 + sqrt_prey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
@@ -353,7 +356,7 @@ mv_model <- brm(speed_novice +
                 #save_pars = save_pars(all = TRUE),
                 data = data)
 
-saveRDS(mv_model, file = "02B_DHMLM.rds")
+saveRDS(mv_model, file = "02B_DHMLM-trunc-outlier.rds")
 
 # =======================================================================
 # =======================================================================
