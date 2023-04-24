@@ -21,8 +21,8 @@
  library(export)
 
  # Model
- path <- file.path(getwd(), "outputs", "02_outputs_models")
- fit <- readRDS(file.path(path, "02B_DHMLM.rds"))
+ path <- file.path(getwd(), "outputs", "01_outputs_models")
+ fit <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
 
 # =======================================================================
 # =======================================================================
@@ -109,15 +109,16 @@
  )
 
  # File path
- path <- file.path(getwd(), "outputs", "05_outputs_figures")
+ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
  # Produce the plots
  cm1 <- corrplot(
     cormat_novice, method = "circle",
     tl.col = "black",
-    tl.cex = 1.2,
+    tl.cex = 1.5,
     tl.srt = 45,
-    cl.cex = 1,
+    cl.cex = 1.5,
+    number.cex = 1.5,
     diag = FALSE,
     type = "lower",
     addCoef.col = "black",
@@ -133,9 +134,10 @@
  cm2 <- corrplot(
     cormat_interm, method = "circle",
     tl.col = "black",
-    tl.cex = 1.2,
+    tl.cex = 1.5,
     tl.srt = 45,
-    cl.cex = 1,
+    cl.cex = 1.5,
+    number.cex = 1.5,
     diag = FALSE,
     type = "lower",
     addCoef.col = "black",
@@ -151,9 +153,10 @@
  cm3 <- corrplot(
     cormat_adv, method = "circle",
     tl.col = "black",
-    tl.cex = 1.2,
+    tl.cex = 1.5,
     tl.srt = 45,
-    cl.cex = 1,
+    cl.cex = 1.5,
+    number.cex = 1.5,
     diag = FALSE,
     type = "lower",
     addCoef.col = "black",
