@@ -1,275 +1,243 @@
-# ===========================================================================
+# =======================================================================
 
-#                        Code to produce Figure S3                          #
+#                       Code to produce Figure S3                       #
 
-# ===========================================================================
-
-
+# =======================================================================
 
 
 
-# ===========================================================================
-# 1. Load libraries and import the model fit
-# ===========================================================================
 
+
+# =======================================================================
+# 1. Load libraries and import model
+# =======================================================================
 
 # Load libraries
-library(data.table)
-library(flextable)
-library(officer)
-library(dplyr)
 library(brms)
+library(ggplot2)
+library(viridis)
 
-# path
-path <- file.path(getwd(), "outputs")
+path <- file.path(getwd(), "outputs", "01_outputs_models")
+fit <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
 
-# Import the model
-fit <- readRDS(
-  file.path(path, "02_outputs_models", "02B_DHMLM.rds")
-)
-
-# Import the CV table
-cv <- readRDS(
-  file.path(path, "04_outputs_model-processing", "04_CV-table.rds")
-)
-
-# ===========================================================================
-# ===========================================================================
+# =======================================================================
+# =======================================================================
 
 
 
 
 
-# ===========================================================================
-# 1. ICC table
-# ===========================================================================
+# =======================================================================
+# 2. Estimate differences between experience levels
+# =======================================================================
+
+# a -> Compare novices vs intermediate
+# b -> Compare intermediate with advanced
+# c-> Compare novices with advanced
 
 
-# Prepare data --------------------------------------------------------------
+# Do predators become increasingly flexible? ----------------------------
 
-# Extract the random effect variances
-var_draws <- data.table(
-  as_draws_df(
-    fit, variable = "^sd_", regex = TRUE
-  )
-)
-
-var_draws[, c(4,6,8,10,12,14,28:30) := NULL]
+hyp1a <- "exp(sigma_speednovice_Intercept) < exp(sigma_speedinterm_Intercept)"
+hyp1b <- "exp(sigma_speedinterm_Intercept) > exp(sigma_speedadvanced_Intercept)"
+hyp1c <- "exp(sigma_speednovice_Intercept) > exp(sigma_speedadvanced_Intercept)"
+hyp1 <- hypothesis(x = fit, hypothesis = c(hyp1a, hyp1b, hyp1c))
 
 
-# Extract the residual variance (intercepts)
-var_draws1 <- data.table(
-  as_draws_df(
-    fit, variable = c(
-      "b_sigma_speednovice_Intercept",
-      "b_sigma_speedinterm_Intercept",
-      "b_sigma_speedadvanced_Intercept",
-      "b_sigma_preyspeednovice_Intercept",
-      "b_sigma_preyspeedinterm_Intercept",
-      "b_sigma_preyspeedadvanced_Intercept"
+
+# Does individual variation in avg speed change with XP? ----------------
+
+hyp2a <- "exp(predator_id__speednovice_Intercept) > exp(predator_id__speedinterm_Intercept)"
+hyp2b <- "exp(predator_id__speedinterm_Intercept) < exp(predator_id__speedadvanced_Intercept)"
+hyp2c <- "exp(predator_id__speednovice_Intercept) < exp(predator_id__speedadvanced_Intercept)"
+hyp2 <- hypothesis(x = fit, hypothesis = c(hyp2a, hyp2b, hyp2c), class = "sd")
+
+
+
+# Does individual variation in speed var. change with XP? ---------------
+
+hyp3a <- "exp(predator_id__sigma_speednovice_Intercept) < exp(predator_id__sigma_speedinterm_Intercept)"
+hyp3b <- "exp(predator_id__sigma_speedinterm_Intercept) < exp(predator_id__sigma_speedadvanced_Intercept)"
+hyp3c <- "exp(predator_id__speednovice_Intercept) < exp(predator_id__speedadvanced_Intercept)"
+hyp3 <- hypothesis(x = fit, hypothesis = c(hyp3a, hyp3b, hyp3c), class = "sd")
+
+
+
+# Do predators differ in the avg speed of prey encountered? -------------
+
+hyp4a <- "exp(predator_id__preyspeednovice_Intercept) > exp(predator_id__preyspeedinterm_Intercept)"
+hyp4b <- "exp(predator_id__preyspeedinterm_Intercept) < exp(predator_id__preyspeedadvanced_Intercept)"
+hyp4c <- "exp(predator_id__preyspeednovice_Intercept) < exp(predator_id__preyspeedadvanced_Intercept)"
+hyp4 <- hypothesis(x = fit, hypothesis = c(hyp4a, hyp4b, hyp4c), class = "sd")
+
+
+
+# Do predators differ in the var. speed of prey encountered? ------------
+
+hyp5a <- "exp(predator_id__sigma_preyspeednovice_Intercept) < exp(predator_id__sigma_preyspeedinterm_Intercept)"
+hyp5b <- "exp(predator_id__sigma_preyspeedinterm_Intercept) < exp(predator_id__sigma_preyspeedadvanced_Intercept)"
+hyp5c <- "exp(predator_id__sigma_preyspeednovice_Intercept) < exp(predator_id__sigma_preyspeedadvanced_Intercept)"
+hyp5 <- hypothesis(x = fit, hypothesis = c(hyp5a, hyp5b, hyp5c), class = "sd")
+
+
+
+# Does individual variation in success change with XP? ------------------
+
+hyp6a <- "exp(predator_id__successnovice_Intercept) > exp(predator_id__successinterm_Intercept)"
+hyp6b <- "exp(predator_id__successinterm_Intercept) > exp(predator_id__successadvanced_Intercept)"
+hyp6c <- "exp(predator_id__successnovice_Intercept) > exp(predator_id__successadvanced_Intercept)"
+hyp6 <- hypothesis(x = fit, hypothesis = c(hyp6a, hyp6b, hyp6c), class = "sd")
+
+# =======================================================================
+# =======================================================================
+
+
+
+
+
+# =======================================================================
+# 3. Plot the hypotheses
+# =======================================================================
+
+
+# Combine estimates as 1 table ------------------------------------------
+
+tab <- rbind(
+    # Test 1
+    data.frame(
+    trait = rep("sigma predator speed", 3),
+    test = c("intercept < intercept",
+             "intercept > intercept",
+             "intercept > intercept"),
+    hyp1$hypothesis[, c(2, 4, 5)]
+    ),
+    # Test 2
+    data.frame(
+        trait = rep("mean predator speed", 3),
+        test = c("SD predator ID > SD predator ID",
+                 "SD predator ID < SD predator ID",
+                 "SD predator ID < SD predator ID"),
+        hyp2$hypothesis[,c (2, 4, 5)]
+    ),
+    # Test 3
+    data.frame(
+        trait = rep("sigma predator speed", 3),
+        test = c("SD predator ID < SD predator ID",
+                 "SD predator ID < SD predator ID",
+                 "SD predator ID < SD predator ID"),
+        hyp3$hypothesis[, c(2, 4, 5)]
+    ),
+    # Test 4
+    data.frame(
+        trait = rep("mean prey speed", 3),
+        test = c("SD predator ID > SD predator ID",
+                 "SD predator ID < SD predator ID",
+                 "SD predator ID < SD predator ID"),
+        hyp4$hypothesis[, c(2, 4, 5)]
+    ),
+    # Test 5
+    data.frame(
+        trait = rep("sigma prey speed", 3),
+        test = c("SD predator ID < SD predator ID",
+                 "SD predator ID < SD predator ID",
+                 "SD predator ID < SD predator ID"),
+        hyp5$hypothesis[, c(2, 4, 5)]
+    ),
+    # Test 6
+    data.frame(
+        trait = rep("mean success", 3),
+        test = c("SD predator ID > SD predator ID",
+                 "SD predator ID > SD predator ID",
+                 "SD predator ID > SD predator ID"),
+        hyp6$hypothesis[, c(2, 4, 5)]
     )
-  )
 )
 
-var_draws1[, c(7:9) := NULL]
-
-
-# Combine the tables
-var_draws <- cbind(var_draws, var_draws1)
-
-
-
-# Calculate parameters -------------------------------------------------------
-
-# Take the exponent of sigma parameters
-var_draws[
-  , c("b_sigma_speednovice_Intercept",
-      "b_sigma_speedinterm_Intercept",
-      "b_sigma_speedadvanced_Intercept",
-      "b_sigma_preyspeednovice_Intercept",
-      "b_sigma_preyspeedinterm_Intercept",
-      "b_sigma_preyspeedadvanced_Intercept"
-  ) 
-  := lapply(.SD, function (x) {exp(x)}),
-  .SDcols = c(
-    "b_sigma_speednovice_Intercept",
-    "b_sigma_speedinterm_Intercept",
-    "b_sigma_speedadvanced_Intercept",
-    "b_sigma_preyspeednovice_Intercept",
-    "b_sigma_preyspeedinterm_Intercept",
-    "b_sigma_preyspeedadvanced_Intercept"
-  )
-]
-
-
-# Square values to obtain the variance
-var_draws[
-  , c(1:27) := 
-    lapply(.SD, function (x) {(x)^2}),
-  .SDcols = c(1:27)]
-
-
-
-# Compute Intra class correlation coefficients --------------------------------
-
-# Calculate total variance for each trait
-var_draws[
-  , ":=" (
-    var_total_speednovice = rowSums(var_draws[,c(1,2,3,22)]),
-    var_total_preyspeednovice = rowSums(var_draws[,c(6,16,17,25)]),
-    var_total_speedinterm = rowSums(var_draws[,c(4,12,13,23)]),
-    var_total_preyspeedinterm = rowSums(var_draws[,c(7,18,19,26)]),
-    var_total_speedadvanced = rowSums(var_draws[,c(5,15,14,24)]),
-    var_total_preyspeedadvanced = rowSums(var_draws[,c(8,20,21,27)])
-  )
-]
-
-
-# Ratio of variance (ICC)
-var_draws[
-  , ":=" (
-    icc_env_speednovice = sd_environment_id__speednovice_Intercept / var_total_speednovice,
-    icc_avatar_speednovice = sd_avatar_id__speednovice_Intercept / var_total_speednovice,
-    icc_id_speednovice = sd_predator_id__speednovice_Intercept / var_total_speednovice,
-    icc_env_speedinterm = sd_environment_id__speedinterm_Intercept / var_total_speedinterm,
-    icc_avatar_speedinterm = sd_avatar_id__speedinterm_Intercept / var_total_speedinterm,
-    icc_id_speedinterm = sd_predator_id__speedinterm_Intercept / var_total_speedinterm,
-    icc_env_speedadvanced = sd_environment_id__speedadvanced_Intercept / var_total_speedadvanced,
-    icc_avatar_speedadvanced = sd_avatar_id__speedadvanced_Intercept / var_total_speedadvanced,
-    icc_id_speedadvanced = sd_predator_id__speedadvanced_Intercept / var_total_speedadvanced,
-    icc_env_preyspeednovice = sd_environment_id__preyspeednovice_Intercept / var_total_preyspeednovice,
-    icc_avatar_preyspeednovice = sd_avatar_id__preyspeednovice_Intercept / var_total_preyspeednovice,
-    icc_id_preyspeednovice = sd_predator_id__preyspeednovice_Intercept / var_total_preyspeednovice,
-    icc_env_preyspeedinterm = sd_environment_id__preyspeedinterm_Intercept / var_total_preyspeedinterm,
-    icc_avatar_preyspeedinterm = sd_avatar_id__preyspeedinterm_Intercept / var_total_preyspeedinterm,
-    icc_id_preyspeedinterm = sd_predator_id__preyspeedinterm_Intercept / var_total_preyspeedinterm,
-    icc_env_preyspeedadvanced = sd_environment_id__preyspeedadvanced_Intercept / var_total_preyspeedadvanced,
-    icc_avatar_preyspeedadvanced = sd_avatar_id__preyspeedadvanced_Intercept / var_total_preyspeedadvanced,
-    icc_id_preyspeedadvanced = sd_predator_id__preyspeedadvanced_Intercept / var_total_preyspeedadvanced
-  )
-]
-
-
-
-# Reshape the table -----------------------------------------------------------
-
-# Only keep ICC columns + success var
-var_draws <- var_draws[, c(9:11, 34:51)]
-
-ranef_tab <- melt(
-  var_draws,
-  variable.name = "parameter"
+# Add grouping column
+tab <- cbind(
+    group = rep(
+        c("novice vs intermediate",
+          "intermediate vs advanced",
+          "novice vs advanced"),
+        6
+    ),
+    tab
 )
 
-
-
-# Summarize the values (means + 95% CI) --------------------------------------
-
-# Intervals
-lower_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[1]}
-upper_interval <- function (x) {coda::HPDinterval(as.mcmc(x), 0.95)[2]}
-
-
-# Summarize values
-ranef_tab[, ":=" (mean = mean(value),
-                  lower_ci = lower_interval(value),
-                  upper_ci = upper_interval(value)),
-          by = .(parameter)]
-
-ranef_tab <- unique(ranef_tab[, .(parameter, mean, lower_ci, upper_ci)])
-ranef_tab[, c(2:4) := round(ranef_tab[,c(2:4)], 3)]
+# Now round the values to 3 digits
+tab[, c(4:6)] <- round(tab[, c(4:6)], digits = 3)
 
 
 
-# Rearrange the table -------------------------------------------------------- 
+# Group variables as factor ---------------------------------------------
 
-# Add a column that specifies the experience level
-ranef_tab[parameter %like% "novice", xp_level := "novice"]
-ranef_tab[parameter %like% "interm", xp_level := "intermediate"]
-ranef_tab[parameter %like% "advanced", xp_level := "advanced"]
+tab$group <- factor(
+    tab$group,
+    levels = c("novice vs intermediate",
+               "intermediate vs advanced",
+               "novice vs advanced")
+)
+tab$trait <- factor(
+    tab$trait,
+    levels = c("mean predator speed", "sigma predator speed",
+               "mean prey speed", "sigma prey speed", "mean success")
+)
+tab$test <- as.factor(tab$test)
 
 
-# Paste upper and lower ci with estimate
-ranef_tab[ , estimate := paste(format(mean, digits = 3), "(")]
-ranef_tab[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
-ranef_tab[, estimate := paste(estimate, ",", sep = "")]
-ranef_tab[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
-ranef_tab[, estimate := paste(estimate, ")", sep = "")]
-ranef_tab[, c("mean", "lower_ci", "upper_ci") := NULL]
 
-# Parameter and trait column
-ranef_tab[parameter %like% "id", parameter1 := "ICC predator ID"]
-ranef_tab[parameter %like% "avatar", parameter1 := "ICC avatar ID"]
-ranef_tab[parameter %like% "env", parameter1 := "ICC environment ID"]
-ranef_tab[parameter %like% "success", parameter1 := "Variance predator ID"]
+# Compute plots ---------------------------------------------------------
 
-ranef_tab[parameter %like% "speed", trait := "mu predator speed"]
-ranef_tab[parameter %like% "preyspeed", trait := "mu prey speed"]
-ranef_tab[parameter %like% "success", trait := "mu success"]
+fig <- ggplot(
+    tab,
+    aes(x = test, y = Estimate, fill = trait, shape = trait)
+) +
+    geom_hline(
+        yintercept = 0, linewidth = 1, colour = "red",
+        linetype = "dashed", alpha = 0.5
+    ) +
+    geom_pointrange(
+        aes(ymin = CI.Lower, ymax = CI.Upper),
+        size = 0.8, position = position_dodge(width = 0.8)
+    ) +
+    scale_shape_manual(
+        name = "Trait :",
+        values = c(22,23,24,25,21)
+    ) +
+    scale_fill_viridis(
+        name = "Trait :",
+        discrete = TRUE, option = "D"
+    ) +
+    ylab("\nEstimate") +
+    coord_flip() +
+    theme_bw() +
+    facet_wrap(~ group) +
+    theme(
+        axis.title.y = element_blank(),
+        axis.text = element_text(face = "plain", size = 11, color = "black"),
+        axis.title = element_text(size = 13, face = "plain", color = "black"),
+        strip.text = element_text(size = 11),
+        legend.position = "top",
+        legend.key = element_rect(fill = "transparent"),
+        legend.title = element_text(size = 13),
+        legend.text = element_text(size = 11)
+    )
 
-ranef_tab[, parameter := NULL]
-setnames(ranef_tab, "parameter1", "parameter")
 
-# Reshape
-ranef_tab <- dcast(
-  ranef_tab,
-  trait + parameter ~ xp_level,
-  value.var = "estimate"
+
+# Export figure ---------------------------------------------------------
+
+# Folder
+path <- file.path(getwd(), "outputs", "04_outputs_figures")
+
+# Export
+ggsave(
+    filename = file.path(path, "appendix1_figureS3.png"),
+    plot = fig,
+    width = 32, height = 14, # 32 14
+    units = "cm",
+    dpi = 300, scale = 0.9
 )
 
-# Reorder columns
-ranef_tab <- ranef_tab[, c(1,2,5,4,3)]
-
-# ===========================================================================
-# ===========================================================================
-
-
-
-
-
-# ===========================================================================
-# 4. Arrange the coefficient of variation table
-# ===========================================================================
-
-# Paste upper and lower ci with estimate
-cv[ , estimate := paste(format(mean, digits = 3), "(")]
-cv[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
-cv[, estimate := paste(estimate, ",", sep = "")]
-cv[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
-cv[, estimate := paste(estimate, ")", sep = "")]
-cv[, c("mean", "lower_ci", "upper_ci") := NULL]
-
-# Change character values
-cv[
-  , variable := c(
-    rep("mu predator speed", 3),
-    rep("mu prey speed", 3),
-    rep("sigma predator speed", 3),
-    rep("sigma prey speed", 3)
-  )
-]
-
-# Rename variable to parameter
-cv[, Parameter := NULL]
-setnames(cv, "variable", "trait")
-
-# Add parameter column
-cv[
-  , parameter := c(
-    rep("CVi predator ID", 6), rep("CPp predator ID", 6)
-  )
-]
-
-# Reshape the table into wide format
-cv <- dcast(
-  cv,
-  trait + parameter ~ xp_level,
-  value.var = "estimate"
-)
-
-# Reorder columns and rows
-cv <- cv[, c(1,2,5,4,3)]
-setnames(cv, "interm", "intermediate")
-
-# ===========================================================================
-# ===========================================================================
+# =======================================================================
+# =======================================================================
