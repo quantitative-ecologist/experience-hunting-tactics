@@ -1,7 +1,7 @@
 ---
 title: |
-     Online supporting information for \
-     Hunting experience shapes individual foraging specialisation and predator-prey interactions in an online videogame
+     Hunting experience shapes individual foraging specialisation and predator-prey interactions in an online videogame: \
+     Appendix 1
     
 output: 
   word_document:
@@ -37,7 +37,7 @@ library(tidyr)
 
 # Model fit
 fit <- readRDS(
-  here::here("outputs", "02_outputs_models", "02B2_DHMLM.rds")
+  here::here("outputs", "01_outputs_models", "B2_DHMLM.rds")
 )
 
 # Fixed effects table
@@ -237,20 +237,20 @@ tabs2f
 
 ```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Among individual differences in the development of hunting expertise. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. (A) Individuals with the greatest increase in hunting success with experience (B) Individuals with the greatest decrease in hunting success with experience."}
 
-knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figureS1.png"))
+knitr::include_graphics(here::here("outputs", "04_outputs_figures", "appendix1_figureS1.png"))
 
 ```
 
 
 ```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Distribution of the intra individual behavioural variation (i.e. specialization) of predators with the greatest increase in hunting success (A and B) and greatest decrease (C and D) in hunting success when they were novices (A and C) and then (B and D) advanced hunters."}
 
-knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figureS2.png"))
+knitr::include_graphics(here::here("outputs", "04_outputs_figures", "appendix1_figureS2.png"))
 
 ```
 
 
-```{r figS4, out.width = "100%", fig.cap = "**Figure S4.** Posterior median differences and 95% credible intervals between the parameter values of each predator experience level predicted by the MDHGLM. The test is displayed on the y axis (i.e. whether the group of interest has either a greater or smaller value), and the parameter value is displayed on the x axis. Each panel represent the experience level groups that are being compared."}
+```{r figS3, out.width = "100%", fig.cap = "**Figure S3.** Posterior median differences and 95% credible intervals between the parameter values of each predator experience level predicted by the MDHGLM. The test is displayed on the y axis (i.e. whether the group of interest has either a greater or smaller value), and the parameter value is displayed on the x axis. Each panel represent the experience level groups that are being compared."}
 
-knitr::include_graphics(here::here("outputs", "05_outputs_figures", "05_figureS4.png"))
+knitr::include_graphics(here::here("outputs", "04_outputs_figures", "appendix1_figureS3.png"))
 
 ```

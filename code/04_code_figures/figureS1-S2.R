@@ -21,10 +21,10 @@ library(ggplot2)
 library(ggridges)
 library(ggpubr)
 
-path <- file.path(getwd(), "outputs", "02_outputs_models")
+path <- file.path(getwd(), "outputs", "01_outputs_models")
 
-fit1 <- readRDS(file.path(path, "02A3_GAMM.rds"))
-fit2 <- readRDS(file.path(path, "02B_DHMLM.rds"))
+fit1 <- readRDS(file.path(path, "A3_GAMM.rds"))
+fit2 <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
 
 
 
@@ -81,16 +81,16 @@ posterior_epred_beta_binomial2 <- function(prep) {
 
 custom_theme <- theme(
   # axis values size
-  axis.text = element_text(face = "plain", 
+  axis.text = element_text(face = "plain",
                            size = 14,
                            color = "black"),
   # axis ticks lenght
   axis.ticks.length = unit(.15, "cm"),
   # axis ticks width
-  axis.ticks = element_line(size = 0.90, 
+  axis.ticks = element_line(size = 0.90,
                             color = "black"),
   # axis titles size
-  axis.title = element_text(size = 16, 
+  axis.title = element_text(size = 16,
                             face = "plain",
                             color = "black"),
   axis.line = element_line(size = 0.95,
@@ -197,8 +197,8 @@ tab1 <- data.table(tab1)
 
 # Calculate 1st and final value
 tab1[, ":=" (
-  first = min(Zcumul_xp), 
-  last = max(Zcumul_xp)), 
+  first = min(Zcumul_xp),
+  last = max(Zcumul_xp)),
   by = predator_id]
 
 tab1[, equal1 := ifelse(Zcumul_xp == first, 1, 0), by = predator_id]
@@ -219,8 +219,8 @@ tab2 <- dcast(
 tab2[, difference := max - min]
 
 table <- merge(
-  tab1[, .(predator_id, Zcumul_xp, estimate__)], 
-  tab2[, .(predator_id, difference)], 
+  tab1[, .(predator_id, Zcumul_xp, estimate__)],
+  tab2[, .(predator_id, difference)],
   by = "predator_id"
 )
 
@@ -232,7 +232,11 @@ table <- unique(
   ]
 )
 draws <- draws[, .(predator_id, xp_level, exp_speed_sigma, average_speed_sigma)]
-dat <- merge(draws, unique(table[, .(predator_id, difference)]), by = "predator_id")
+
+dat <- merge(
+  draws, unique(table[, .(predator_id, difference)]),
+  by = "predator_id"
+)
 dat[, difference := ifelse(difference > 0.1, 1, 0)]
 
 # ==========================================================================
@@ -255,10 +259,10 @@ scaled_breaks <- sequence / standev
 # Cut fitted values based on player XP ------------------------------------
 
 # Extract player IDs with their total XP from the original data
-xp <- unique(data[,.(predator_id, total_xp_pred)])
+xp <- unique(data[, .(predator_id, total_xp_pred)])
 
 # Compute non standardized cumulative XP
-table[, cumul_xp := (Zcumul_xp*standev)+mean(data$cumul_xp_pred)]
+table[, cumul_xp := (Zcumul_xp * standev) + mean(data$cumul_xp_pred)]
 
 # Now merge the two tables adding the total XP
 table <- merge(table, xp, by = "predator_id")
@@ -273,7 +277,7 @@ table <- table[cumul_xp <= total_xp_pred,]
 length(unique(table[difference > 0, predator_id]))
 # 56 players had an increase in hunting success
 
-gamm_plot1 <- ggplot(table[difference > 0.1,],
+gamm_plot1 <- ggplot(table[difference > 0.1, ],
                      aes(x = Zcumul_xp,
                          y = plogis(estimate__),
                          color = predator_id)) +
@@ -294,7 +298,7 @@ gamm_plot1 <- ggplot(table[difference > 0.1,],
 length(unique(table[difference < 0, predator_id]))
 # 27 players had an increase in hunting success
 
-gamm_plot2 <- ggplot(table[difference < -0.1,],
+gamm_plot2 <- ggplot(table[difference < -0.1, ],
                      aes(x = Zcumul_xp,
                          y = plogis(estimate__),
                          color = predator_id)) +
@@ -321,7 +325,7 @@ gamm_plot2 <- ggplot(table[difference < -0.1,],
 
 # Plot the distributions of novice players
 plot1 <- ggplot() +
-  
+
   geom_density_ridges(data = dat[xp_level == "novice" & difference == 1],
                       rel_min_height = 0.005,
                       fill = "#999999",
@@ -329,7 +333,7 @@ plot1 <- ggplot() +
                           y = predator_id,
                           height = ..density..,
                           scale = 3)) +
-  
+
   geom_point(data = unique(dat[xp_level == "novice" & difference == 1, c(1, 4)]),
              aes(x = average_speed_sigma, 
                  y = predator_id),
@@ -340,10 +344,10 @@ plot1 <- ggplot() +
   #scale_x_continuous(breaks = scaled_breaks1,
   #                   labels = scaleFUN,
   #                   limits = c(0, 4)) +
-  
+
   ylab("Predator ID\n") +
   xlab("\nIntra individual SD (m/s)") +
-  
+
   custom_theme +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
@@ -351,7 +355,7 @@ plot1 <- ggplot() +
                                   face = "bold"))
 
 plot2 <- ggplot() +
-  
+
   geom_density_ridges(data = dat[xp_level == "novice" & difference == 0],
                       rel_min_height = 0.005,
                       fill = "#999999",
@@ -359,7 +363,7 @@ plot2 <- ggplot() +
                           y = predator_id,
                           height = ..density..,
                           scale = 3)) +
-  
+
   geom_point(data = unique(dat[xp_level == "novice" & difference == 0, c(1, 4)]),
              aes(x = average_speed_sigma, 
                  y = predator_id),
@@ -370,19 +374,19 @@ plot2 <- ggplot() +
   #scale_x_continuous(breaks = scaled_breaks1,
   #                   labels = scaleFUN,
   #                   limits = c(0, 4)) +
-  
+
   ylab("Predator ID\n") +
   xlab("\nIntra individual SD (m/s)") +
-  
+
   custom_theme +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         plot.title = element_text(size = 15,
                                   face = "bold"))
-  
+
 
 plot3 <- ggplot() +
-  
+
   geom_density_ridges(data = dat[xp_level == "advanced" & difference == 1],
                       rel_min_height = 0.005,
                       fill = "#00AFBB",
@@ -390,7 +394,7 @@ plot3 <- ggplot() +
                           y = predator_id,
                           height = ..density..,
                           scale = 3)) +
-  
+
   geom_point(data = unique(dat[xp_level == "advanced" & difference == 1, c(1, 4)]),
              aes(x = average_speed_sigma, 
                  y = predator_id),
@@ -401,10 +405,10 @@ plot3 <- ggplot() +
   #scale_x_continuous(breaks = scaled_breaks1,
   #                   labels = scaleFUN,
   #                   limits = c(0, 4)) +
-  
+
   ylab("Predator ID\n") +
   xlab("\nIntra individual SD (m/s)") +
-  
+
   custom_theme +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
@@ -412,7 +416,7 @@ plot3 <- ggplot() +
                                   face = "bold"))
 
 plot4 <- ggplot() +
-  
+
   geom_density_ridges(data = dat[xp_level == "advanced" & difference == 0],
                       rel_min_height = 0.005,
                       fill = "#00AFBB",
@@ -420,7 +424,7 @@ plot4 <- ggplot() +
                           y = predator_id,
                           height = ..density..,
                           scale = 3)) +
-  
+
   geom_point(data = unique(dat[xp_level == "advanced" & difference == 0, c(1, 4)]),
              aes(x = average_speed_sigma, 
                  y = predator_id),
@@ -431,10 +435,10 @@ plot4 <- ggplot() +
   #scale_x_continuous(breaks = scaled_breaks1,
   #                   labels = scaleFUN,
   #                   limits = c(0, 4)) +
-  
+
   ylab("Predator ID\n") +
   xlab("\nIntra individual SD (m/s)") +
-  
+
   custom_theme +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
