@@ -23,7 +23,6 @@ library(tidyr)
 
 ```
 
-\newpage
 
 ```{r tableprep, include = FALSE}
 
@@ -264,6 +263,17 @@ knitr::include_graphics(
   here::here(
     "outputs", "04_outputs_figures",
     "appendix1_figureS3.png"
+  )
+)
+
+```
+
+```{r figS4, out.width = "100%", fig.cap = "**Figure S4.** Posterior median differences and 95% credible intervals in the correlations of players when they were advanced vs novice. The difference is displayed on the x axis and the parameter correlations are displayed on the y axis."}
+
+knitr::include_graphics(
+  here::here(
+    "outputs", "04_outputs_figures",
+    "appendix1_figureS4.png"
   )
 )
 
