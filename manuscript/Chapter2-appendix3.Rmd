@@ -1,12 +1,13 @@
 ---
 title: |
      Hunting experience shapes individual foraging specialisation and predator-prey interactions in an online videogame: \
-    Appendix 3
+     Appendix 3
+    
 output: 
   word_document:
     reference_docx: Chapter2-styles.docx
     fig_caption: yes
-bibliography: references.bib
+bibliography: references2.bib
 csl: ecology.csl
 ---
 
@@ -18,7 +19,7 @@ library(data.table)
 library(brms)
 library(flextable)
 library(officer)
-library(tidyr)
+library(dplyr)
 
 ```
 
@@ -84,7 +85,7 @@ eff_tab[
 ]
 
 # Round values to 3 digits
-eff_tab[, c(2:4) := round(eff_tab[, c(2:4)], digits = 3)]
+eff_tab[, c(2:4) := round(eff_tab[, c(2:4)], digits = 2)]
 
 
 
@@ -120,10 +121,10 @@ eff_tab[
 ]
 
 # Paste upper and lower ci with estimate
-eff_tab[, estimate := paste(format(Estimate, digits = 3), "(")]
-eff_tab[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
+eff_tab[, estimate := paste(format(Estimate, digits = 2), "(")]
+eff_tab[, estimate := paste(estimate, format(lower_ci, digits = 2), sep = "")]
 eff_tab[, estimate := paste(estimate, ",", sep = "")]
-eff_tab[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
+eff_tab[, estimate := paste(estimate, format(upper_ci, digits = 2), sep = " ")]
 eff_tab[, estimate := paste(estimate, ")", sep = "")]
 eff_tab[, c("Estimate", "lower_ci", "upper_ci") := NULL]
 
@@ -173,13 +174,14 @@ my_header <- data.frame(
 my_theme <- function(x, ...) {
   x <- colformat_double(x, big.mark = " ",
                         decimal.mark = ".",
-                        digits = 3)
-  x <- set_table_properties(x, layout = "fixed")
+                        digits = 2)
   x <- border_remove(x)
   std_border <- fp_border(width = 1, color = "black")
   x <- hline_top(x, part = "all", border = std_border)
   x <- hline_bottom(x, part = "all", border = std_border)
-  autofit(x)
+  x <- width(x, j = 1, width = 2.84, unit = "cm")
+  x <- width(x, j = 2, width = 3.78, unit = "cm")
+  x <- width(x, j = c(3:5), width = 3.3, unit = "cm")
 }
 
 
@@ -222,16 +224,14 @@ tab2 <-
 
   # Table caption
   set_caption(
-    caption = "Table S1. Posterior means and 95% credible intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    caption = "Table S1. Posterior means and 95% credible intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success. The coefficients are from the model that includes the outlier.",
     style = "Table Caption"
   ) %>%
 
   # Font options
   font(fontname = "Times New Roman", part = "all") %>%
   fontsize(size = 10, part = "all") %>%
-  fontsize(size = 12, part = "footer") %>%
-  width(j = c(2, 3, 4, 5), width = 3.7, unit = "cm") %>%
-  width(j = 1, width = 3.2, unit = "cm")
+  fontsize(size = 12, part = "footer")
 
 
 tab2
@@ -333,7 +333,7 @@ ranef_tab[, ":=" (mean = mean(value),
           by = .(parameter)]
 
 ranef_tab <- unique(ranef_tab[, .(parameter, mean, lower_ci, upper_ci)])
-ranef_tab[, c(2:4) := round(ranef_tab[, c(2:4)], 3)]
+ranef_tab[, c(2:4) := round(ranef_tab[, c(2:4)], digits = 2)]
 
 
 
@@ -346,10 +346,10 @@ ranef_tab[parameter %like% "advanced", xp_level := "advanced"]
 
 
 # Paste upper and lower ci with estimate
-ranef_tab[, estimate := paste(format(mean, digits = 3), "(")]
-ranef_tab[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
+ranef_tab[, estimate := paste(format(mean, digits = 2), "(")]
+ranef_tab[, estimate := paste(estimate, format(lower_ci, digits = 2), sep = "")]
 ranef_tab[, estimate := paste(estimate, ",", sep = "")]
-ranef_tab[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
+ranef_tab[, estimate := paste(estimate, format(upper_ci, digits = 2), sep = " ")]
 ranef_tab[, estimate := paste(estimate, ")", sep = "")]
 ranef_tab[, c("mean", "lower_ci", "upper_ci") := NULL]
 
@@ -389,7 +389,7 @@ ranef_tab <- dcast(
 ranef_tab <- ranef_tab[, c(1, 2, 5, 4, 3)]
 
 # Reorder rows
-table <- ranef_tab[c(1:5, 6:9)]
+table <- ranef_tab[c(2:9, 1)]
 
 # ===========================================================================
 # ===========================================================================
@@ -420,8 +420,8 @@ my_header <- data.frame(
 my_theme <- function(x, ...) {
   x <- colformat_double(x, big.mark = " ",
                         decimal.mark = ".",
-                        digits = 3)
-  x <- set_table_properties(x, layout = "fixed")
+                        digits = 2)
+  x <- set_table_properties(x, layout = "autofit")
   x <- border_remove(x)
   std_border <- fp_border(width = 1, color = "black")
   x <- hline_top(x, part = "all", border = std_border)
@@ -474,16 +474,16 @@ tab3 <-
 
   # Add table caption
   set_caption(
-    caption = "Table 3. Posterior means and 95% credible intervals of the random effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    caption = "Table S2. Posterior means and 95% credible intervals of the random effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success. The coefficients are from the model that includes the outlier.",
     style = "Table Caption"
   ) %>%
 
   # Font options
   font(fontname = "Times New Roman", part = "all") %>%
   fontsize(size = 10, part = "all") %>%
-  fontsize(size = 12, part = "footer") %>%
-  width(j = c(2, 3, 4, 5), width = 3.7, unit = "cm") %>%
-  width(j = 1, width = 3.2, unit = "cm")
+  fontsize(size = 12, part = "footer")
+
+tab3 <- autofit(tab3)
 
 tab3
 
@@ -492,9 +492,9 @@ tab3
 
 ```
 
+\newpage
 
-
-```{r figS3, out.width = "100%", fig.cap = "**Figure S4.** Posterior median differences and 95% credible intervals between the parameter values of each predator experience level predicted by the MDHGLM. The test is displayed on the y axis (i.e. whether the group of interest has either a greater or smaller value), and the parameter value is displayed on the x axis. Each panel represent the experience level groups that are being compared."}
+```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Posterior median differences and 95% credible intervals between the parameter values of each predator experience level predicted by the MDHGLM. The test is displayed on the y axis (i.e. whether the group of interest has either a greater or smaller value), and the parameter value is displayed on the x axis. Each panel represent the experience level groups that are being compared."}
 
 knitr::include_graphics(
     here::here(

@@ -7,7 +7,7 @@ output:
   word_document:
     reference_docx: Chapter2-styles.docx
     fig_caption: yes
-bibliography: references.bib
+bibliography: references2.bib
 csl: ecology.csl
 ---
 
@@ -23,6 +23,7 @@ library(tidyr)
 
 ```
 
+\newpage
 
 ```{r tableprep, include = FALSE}
 
@@ -39,7 +40,7 @@ fit <- readRDS(
 
 # Fixed effects table
 results <- data.table(
-  round(summary(fit)$fixed, digits = 3)[, 1:4],
+  round(summary(fit)$fixed, digits = 2)[, 1:4],
   keep.rownames = TRUE
 )
 
@@ -155,7 +156,7 @@ my_theme <- function(x, ...) {
 
 ```
 
-\newpage
+
 
 ```{r tables1, ft.align = "left"}
 # Create the table ----------------------------------------------------------
@@ -175,13 +176,13 @@ tabs1f <- tabs1 %>%
     part = "header",
     value = as_paragraph(
       as_sup("a "),
-      "Group 1: <50 matches, Group 2: between 50 and 99 matches, Group 3: between 100 and 299 matches, Group 4: > 299"
+      "Group 1: <50 matches, Group 2: between 50 and 99 matches, Group 3: between 100 and 299 matches, Group 4: > 299 (i.e. group in the main text)"
     ),
     ref_symbols = " "
   ) %>%
   set_caption(
     tabs1,
-    caption = "Fixed effects table on the mean part of the model",
+    caption = "Table S1. Fixed effects table on the mean part of the DHMLM comparing random groups of players with different matches played to the group presented in the main text.",
     style = "Table Caption"
   ) %>%
   fontsize(size = 10, part = "all") %>%
@@ -214,13 +215,13 @@ tabs2f <- tabs2 %>%
     part = "header",
     value = as_paragraph(
       as_sup("a "),
-      "Group 1: <50 matches, Group 2: between 50 and 99 matches, Group 3: between 100 and 299 matches, Group 4: > 299"
+      "Group 1: <50 matches, Group 2: between 50 and 99 matches, Group 3: between 100 and 299 matches, Group 4: > 299 (i.e. group in the main text)"
     ),
     ref_symbols = " "
   ) %>%
   set_caption(
     tabs2,
-    caption = "Fixed effects table on the dispersion part of the model",
+    caption = "Table S2. Fixed effects table on the dispersion part of the DHMLM comparing random groups of players with different matches played to the group presented in the main text.",
     style = "Table Caption"
   ) %>%
   fontsize(size = 10, part = "all") %>%

@@ -52,7 +52,7 @@ Authorship statement : With MFF as the leader, all authors participated in conce
 
 Open research statement : The data and code used to produce the results in this manuscript are freely available on GitHub https://github.com/quantitative-ecologist/experience-hunting-tactics
 
-Keywords: foraging behaviour, arms race, reciprocal behavioural plasticity, learning, antipredator behaviour, virtual ecology
+Keywords: foraging behaviour, reciprocal behavioural plasticity, learning, antipredator behaviour, virtual ecology
 
 
 
@@ -60,19 +60,21 @@ Keywords: foraging behaviour, arms race, reciprocal behavioural plasticity, lear
 \newpage
 # ABSTRACT {.unnumbered}
 
+Many predator-prey systems are driven by reciprocal interactions where one responds to changes in the behaviour of the other. However, the mechanisms driving these individual responses are only beginning to be explored, in part because of the challenges associated with monitoring direct predator-prey interactions. In this study, we used a virtual predator-prey system (the online game *Dead by Daylight*) to test how hunting experience shapes individual foraging specialization and success in predators across repeated interactions with their prey. With increasing experience, predators fine-tuned their tactics to the behaviour of their prey. Individuals that adopted a flexible tactic (i.e. generalists) encountered groups of prey with varying speeds, and those that adopted a cursorial and specialized tactic (i.e. specialists) encountered groups of prey with similar speeds throughout the study period. Our results suggest that experience enables predators to learn how to optimize their tactics to the type of prey that they encounter (i.e. fast or slow), which may act as a stabilizing mechanism promoting behavioural diversification in predator-prey systems.
+
 
 
 
 \newpage
 # INTRODUCTION {.unnumbered}
 
-Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [@Griffen.etal2012;@Michalko.Pekar2016;@Moran.etal2017;@Michalko.etal2021]. Indeed, predator populations often comprise assemblages of individuals specializing in different foraging tactics or on different resources irrespective of sexual, morphological, or age-related differences [@Estes.etal2003;@Tinker.etal2008;@Kernaleguen.etal2015;@Phillips.etal2017]. A growing body of evidence suggests that ecological interactions such as predator-prey interactions can drive this individual foraging specialization [@Araujo.etal2011;@toscanoPersonalityForagingBehavior2016]. When they hunt, predators often use techniques that are fine-tuned to the type of prey that they encounter [@Davoren.etal2003;@Estes.etal2003;@Woo.etal2008;@Courbin.etal2018], and their capacity to use them effectively is contingent on periods of extensive practice (i.e. experience). While hunting experience may be essential to maintain or improve foraging success, we have few empirical assessments of its role in predator foraging specialization [@Dukas2019] and its consequences on predator-prey interactions.
+Individual variation in predator foraging behaviour is increasingly recognized as a major driver of trophic interactions and community dynamics [@Griffen.etal2012;@Michalko.Pekar2016;@Moran.etal2017;@Michalko.etal2021]. Indeed, predator populations often comprise assemblages of individuals specializing in different foraging tactics or on different prey irrespective of sexual, morphological, or age-related differences [@Estes.etal2003;@Tinker.etal2008;@Kernaleguen.etal2015;@Phillips.etal2017]. A growing body of evidence suggests that reciprocal interactions between predators and prey could drive this individual foraging specialization [@Araujo.etal2011;@toscanoPersonalityForagingBehavior2016;@DeLisle.etal2022]. For instance, predators often hunt using techniques that are fine-tuned to the type of prey that they encounter [@Davoren.etal2003;@Estes.etal2003;@Woo.etal2008;@Courbin.etal2018], and their capacity to use them effectively is contingent on periods of extensive practice (i.e. experience). While hunting experience may be essential to maintain or improve foraging success, we have few empirical assessments of its role in predator foraging specialization [@Dukas2019] and its consequences on predator-prey interactions.
 
 The development of foraging tactics is crucial for young predators to reach adulthood and survive [@Phillips.etal2017;@Heithaus.etal2018]. Theory predicts that foraging specialization may emerge via learning, limitations in memorizing multiple complex hunting skills, and expertise [@Tinker.etal2009;@Dukas2019]. @Dukas2019 defines expertise as the characteristics, skills, and knowledge allowing individuals with extensive experience to outperform novices on complex tasks. It is described as the relationship between success and cumulative experience, where extensive practice optimizes success when individuals reach an advanced level of experience. Empirical studies on human and non-human hunters show that experience optimizes the efficiency (e.g. search and handling times, return rates) of their foraging tactics potentially via associative images or reliance on prey and environmental cues [@Edwards.Jackson1994;@Morse2000;@MacDonald2007;@Reid.etal2010;@Wilson-Rankin2015]. This body of work suggests that such optimization may thus promote individual foraging specialization (e.g. repeatedly using fast attacks) if the success of a hunting tactic is constant each time a prey is encountered. It may also be costly to attempt different hunting tactics by trial and error when prey are scarce or highly unpredictable [@Dukas1998;@Estes.etal2003;@Mery.Burns2010]. Alternatively, the costs/risks faced by hunters when switching foraging tactics may be offset through extensive practive, as individuals gain experience and information on their prey, leading to increased individual foraging flexibility [@Stephens1993;@Ishii.Shimada2010;@Mery.Burns2010;@Kelley.Magurran2011;@Snell-Rood2013]. To develop proper responses to fluctuating resources, individuals would need to sample their environment broadly during an extensive period of time, leading to greater performance at later stages of development [reviewed in @Snell-Rood2013]. However, predators can differ in the challenges that they face during their lifetime, which could result in both processes (i.e. specialization and flexibility) operating at the same time within a predator population. For instance, some individuals may constantly encounter faster prey, which are proven to be more difficult to hunt in simulation and empirical studies [@Walker.etal2005;@Kelley.Magurran2011;@Martin.etal2022]. Thus, whether predators specialize or increase their flexibility with experience, learning to adjust their tactic to their prey should be essential to optimize their success.
 
-There is currently a lack of consensus on the fitness advantages of specialized vs flexible foraging [@Phillips.etal2017]. This is reflected in the literature showing contrasting results in the links between specialization and fitness. For instance, some studies report increasing benefits of specialization [@Pintor.etal2014;@Patrick.Weimerskirch2014a;@vandenBosch.etal2019], some report that flexible foraging has greater benefits [@Paull.etal2012;@Manlick.etal2021], and others find equal benefits depending on timescales [@Woo.etal2008;@Potier.etal2015]. This may in part be due to the limited information we have on the ecological contexts favouring specialization over flexibility in nature. However, in predator-prey systems, many studies have outlined that fluctuations in the predictability of resources throughout a predator's lifetime may be a key factor shaping foraging specialization [@Weimerskirch2007;@Woo.etal2008;@Chang.etal2017;@Phillips.etal2017;@Courbin.etal2018]. The resource-predictability (or resource-heterogeneity) hypothesis argues that when resources are predictable (or stable), individual specialists should have higher capture rates by reducing the energy and time required to search for and handle prey. In contrast, individual generalists should benefit when resources fluctuate, as fine adjustments to resources are key for a predator's success and survival [@Karkarey.etal2017;@Holm.etal2019;@Santoro.etal2019]. When predator-prey interactions are directly observed, empirical evidence shows that predators often match, among other types of traits [see @Kishida.etal2006;@Hanifin.etal2008;@Brousseau.etal2018;@Reimche.etal2020], their locomotor and behavioural traits to those of their prey [@McGhee.etal2013a;@Bro-Jorgensen2013;@Chang.etal2017;@Szopa-Comley.Ioannou2022]. Yet, a recurring question that emerges from these studies is whether and how the behavioural adjustments of predators reflect individual differences in experience/learning [@Kelley.Magurran2011]. Thus, uncovering the role of learning in predator-prey systems where interactions are directly monitored would enable researchers to better predict the behavioural decisions and the success of predators when they are hunting.
+There is currently a lack of consensus on the fitness advantages of specialized vs flexible foraging [@Phillips.etal2017]. This is reflected in the literature showing contrasting results in the links between specialization and fitness. For instance, some studies report increasing benefits of specialization [@Pintor.etal2014;@Patrick.Weimerskirch2014a;@vandenBosch.etal2019], some report that flexible foraging has greater benefits [@Paull.etal2012;@Manlick.etal2021], and others find equal benefits depending on timescales [@Woo.etal2008;@Potier.etal2015]. This may in part be due to the limited information we have on the ecological contexts favouring specialization over flexibility in nature. However, in predator-prey systems, many studies have outlined that fluctuations in the predictability of resources throughout a predator's lifetime may be a key factor shaping foraging specialization [@Weimerskirch2007;@Woo.etal2008;@Chang.etal2017;@Phillips.etal2017;@Courbin.etal2018]. The resource-predictability (or resource-heterogeneity) hypothesis argues that when resources are predictable (or stable), individual specialists should have higher capture rates by reducing the energy and time required to search for and handle prey. In contrast, individual generalists should benefit when resources fluctuate, as fine adjustments to resources are key for a predator's success and survival [@Karkarey.etal2017;@Holm.etal2019;@Santoro.etal2019]. When predator-prey interactions are directly observed, empirical evidence shows that predators often match their locomotor and behavioural traits to those of their prey [@McGhee.etal2013a;@Bro-Jorgensen2013;@Chang.etal2017;@Szopa-Comley.Ioannou2022]. Yet, a recurring question emerging from these studies is whether the mechanism driving such behavioural adjustments by predators involves individual differences in experience/learning [@Kelley.Magurran2011]. Thus, uncovering the role of learning in predator-prey systems where interactions are directly monitored would enable researchers to better predict the behavioural decisions and the success of predators when they are hunting.
 
-The integration of individual behavioural variation in the study of predator-prey interactions has gained traction in recent years, with empirical studies revealing important consequences for habitat use, functional responses, prey choice, and foraging rate [@Kobler.etal2009;@toscanoTraitmediatedFunctionalResponses2014;@Patrick.Weimerskirch2014;@Matsumura.Miyatake2022a]. However, an important and recurring challenge impeding research on predator-prey behavioural interactions, at the individual level, is the need to collect data simultaneously on both the predator and prey. We recently demonstrated with behavioural data from an online predator-prey videogame, called *Dead by Daylight* (*DBD*), that virtual systems can overcome this challenge and help uncover the mechanisms that shape predator-prey interactions [@FraserFranco.etal2022]. For instance, we found that some individual predators hunt at high speeds, while others prefer to stalk and ambush their prey. Individuals also flexibly switch between these tactics, and their success is shaped by the speed of the prey, where faster prey are more difficult to capture. The prey need to forage for resources while paying attention to the predator to avoid being detected and chased. The prey can contribute to the group's success by healing or helping others escape the predator, or be selfish and attempt to escape by themselves [@Cere.etal2021]. Predators must learn how the prey behave and decide how best to capture them. Thus, *DBD* simulates a highly dynamic system where both predators and prey must adjust to each other, suggesting that virtual systems could be useful in identifying general ecological patterns, which might in turn help to advance the current gaps in predator-prey research. Other studies on virtual predator-prey systems show that predation regimes can drive individual variation in risk perception [@Beauchamp2020], that familiarity between prey has a positive indirect effect on survival [@Cere.etal2021], and that prey face contrasting natural and social selection regimes (Santostefano et al. in prep). Virtual predator-prey systems generate large volumes of data on interacting players throughout their lifetime in the game under realistic ecological scenarios. Hence, they offer the opportunity to tackle fundamental questions about the role of experience and prey behaviour on individual predator foraging specialization and performance.
+The integration of individual behavioural variation in the study of predator-prey interactions has gained traction in recent years, with empirical studies revealing important consequences for habitat use, functional responses, prey choice, and foraging rate [@Kobler.etal2009;@toscanoTraitmediatedFunctionalResponses2014;@Patrick.Weimerskirch2014;@Matsumura.Miyatake2022a]. However, an important and recurring challenge impeding research on predator-prey behavioural interactions, at the individual level, is the need to collect data simultaneously on both the predator and prey. We recently demonstrated, using an online predator-prey videogame called *Dead by Daylight* (*DBD*), that virtual systems can overcome this challenge and help uncover the mechanisms that shape predator-prey interactions [@FraserFranco.etal2022]. In this dynamic virtual system, four prey players need to forage for resources while avoiding a predator player. The prey can contribute to the group's success by healing or helping others escape the predator, or be selfish and attempt to escape by themselves [@Cere.etal2021]. The predators' hunting tactics and their success are largely driven by the movement of the prey, where faster prey are more difficult to capture [@FraserFranco.etal2022]. Predators should thus benefit from learning how the prey behave to be successful. Other studies using virtual predator-prey systems show that predation regimes drives individual variation in risk perception [@Beauchamp2020], that familiarity between prey has a positive indirect effect on survival [@Cere.etal2021], and that prey face contrasting natural and social selection regimes (Santostefano et al. in prep). These examples outline how virtual systems could be useful in identifying general ecological patterns, which might in turn help to advance the current gaps in predator-prey research. They also generate large volumes of data on interacting players throughout their lifetime in the game under realistic ecological scenarios. Hence, virtual systems offer the opportunity to tackle fundamental questions about the role of experience and prey behaviour on individual predator foraging specialization and performance. 
 
 In this study, we test how hunting experience shapes predator foraging specialization using individual behavioural data from players in the online videogame *Dead by Daylight*. *DBD* simulates a direct predator-prey interaction, where one predator player hunts four prey players in different virtual environments. The data grants a high degree of precision on the behavioural interaction, as the behaviour of both the predator and the four prey along with the predator's success are monitored simultaneously in each trial. First, we investigate how predators develop their individual hunting expertise. We hypothesize that predators should differ in the development of their expertise, partly because they encounter varying levels of difficulty with the prey that they pursue. For example, a predator may face greater difficulty than other individuals if it more often encountered groups of prey that were elusive. Second, we test the hypothesis that experience will shape foraging specialization. If experience reduces the costs of switching between hunting tactics, we predict that the predator population should become more flexible. Alternatively, if experience enables the refinement of the hunting tactics, then the predator population may instead specialize. Otherwise, if both processes operate at the same time, then we should see no change with experience at the population level, but differences in specialization among individuals should increase. Third, we evaluate how predator foraging specialization emerges from behavioural interactions with the prey. Whether predators specialize or not with experience should depend on the behaviour of their prey. We expect predators that experienced more predictable encounters with their prey to specialize, while predators that experienced unpredictable encounters with their prey should adopt a flexible hunting strategy. If we detect such prey-dependent fine-tuning, then specialist and flexible hunters should attain equal success because both should have learned to optimize their hunting style to their prey.
 
@@ -199,6 +201,81 @@ We parametrized every model described above to run four MCMC chains with 1000 po
 
 Our results confirm that individual predators display substantial differences in the development of their expertise, as the best model included group-level smoothers exclusively (Table I). For instance, some predators steadily increased (Figure 1A, Appendix S1: Figure S1A), while others decreased (Figure 1A, Appendix S1: Figure S1B), their hunting success with greater experience, and others whose success did not change with experience (Figure 1A). Another pattern that emerged was that some individuals optimized their success at an experience level that was below what we considered "advanced" (i.e. >300 matches played).
 
+We predicted that the relationship between hunting success and experience would vary among predators because they should differ in the type of prey that they encounter. However, after controlling for the mean speed of the prey group within a match, we did not find evidence confirming this prediction, because differences among predators remained stable (Figure 1B).
+
+
+## Effect of experience on the development of behavioural specialization
+
+At the population level, predators did not change their mean speed with experience (i.e. intercept of the mean predator speed; Table 2). Moreover, there was no directional increase in foraging flexibility or specialization with experience. Indeed, the observed pattern is more complex given that predators became more flexible with experience at intermediate levels of experience (i.e. intercept of sigma for predator speed is larger for intermediates than novices; Table 2 and Appendix S1: Figure S3), but then return to novice-levels of flexibility with advanced experience (i.e. intercept of sigma for predator speed is smaller for advanced players than intermediates; Table 2 and Appendix S1: Figure S3). Thus, our analyses suggest that population-level behavioural specialization changes nonlinearly (quadratic) with experience rather than linearly.
+
+At the individual level, we detected differences in the mean movement speed among predators (i.e. the intercept of the mean speed for the predator ID; Table 3). These differences remained stable from the novice to the intermediate stages, and then increased at the advanced stage to reach a level higher than when predators were novice (Table 3 and Appendix S1: Figure S3). Predators displayed considerable differences in their degree of hunting specialization, and these differences increased with experience (i.e. the intercept of sigma for the predator ID increases with experience; Table 3 and Appendix S1: Figure S3). Thus, as individual predators gain experience, the population becomes more heterogeneous, with an assemblage of both specialist and flexible hunters. Moreover, some individual predators switched from a flexible to a specialized hunting tactic, and vice-versa, as they gained experience (Figure 2). Importantly, 12.6% of the predator population displayed a large change in foraging specialization/flexibility with experience (i.e. $\ge$0.2 change in standard deviation), 44.7% displayed lower changes (i.e. >0.05 and <0.2 change in standard deviation), while 42.7% remained relatively stable (i.e. $\le$0.05 change in standard deviation).
+
+As we predicted, predators differed in the mean speed of the prey that they encountered across matches. Thus, some individuals encountered prey that were on average slower, while others encountered prey that where on average faster throughout the study period (i.e. the intercept of the mean prey speed for the predator ID; Table 3). These differences were greater when predators reached an advanced level of hunting experience (i.e. the intercept of the mean prey speed for the predator ID was higher at the advanced stage; Table 3 and Appendix S1: Figure S3). In addition, individuals differed in the heterogeneity of the groups of prey encountered across the study period. Hence, some predators encountered prey groups with similar average speeds, while others encountered prey groups with different average speeds throughout the study period (i.e. the intercept of sigma prey speed for the predator ID; Table 3).
+
+
+## Relationship between behavioural specialization and prey variability
+
+At all experience levels, predators that were on average faster (mean) also had a lower intra-individual variability (IIV; Figure 3 and Appendix S2: Table S1). Thus, faster predators specialized on fast movement, while slower predators were more flexible in their movement through time. Predators that were on average faster (mean) also encountered groups of prey that were on average faster (mean) (Figure 3 and Appendix S2: Table S1). At the three experience levels, there were only weak correlations between IIV in predator speed and mean prey speed (Figure 3 and Appendix S2: Table S1). However, predators that encountered groups of prey with similar speeds (IIV) specialized in their hunting tactic (IIV) (Figure 3 and Appendix S2: Table S1). Hence, predators that encountered groups of prey with similar average speeds were more specialized, while those that encountered groups of prey with different average speeds were more flexible. For all the results described above, the correlations strengthen as predators gain experience (Figure 3 and Appendix S2: Table S1).
+
+
+## Hunting success of behavioural specialists vs generalists
+
+We did not detect strong correlations between the predators' mean speed and their hunting success (Figure 3 and Appendix S2: Table S1), nor between the predators' IIV in speed and their hunting success (Figure 3 and Appendix S2: Table S1), suggesting that slower/flexible and faster/specialist predators were both equally successful. However, novice individuals that encountered groups of prey with faster speeds were less successful (Figure 3 and Appendix S2: Table S1). This relationship was decoupled at the later experience levels, such that encounters with faster prey at intermediate and advanced stages were not as strongly correlated with hunting success anymore (Figure 3 and Appendix S2: Table S1). Thus, the consequences of hunting faster prey were reduced at greater experience levels.
+
+
+
+
+# DISCUSSION
+
+Hunting experience is predicted to increase predator foraging specialization when resources are predictable [@Estes.etal2003;@Tinker.etal2008;@Tinker.etal2009]. However, when resources vary, others predict that learning with experience should increase behavioural flexibility [@Stephens1993;@Ishii.Shimada2010;@Mery.Burns2010;@Snell-Rood2013;@Wright.etal2022]. Our results show that there was no directional increase in either behavioural specialization or flexibility with experience at the population level. Instead, individual predators developed their own expertise and behavioural trajectory over successive encounters with prey; some specialized in fast-paced hunting, and others adopted a slower and more flexible tactic with experience. Specialized cursorial hunters encountered similar groups of prey while slower and flexible hunters encountered varying groups of prey, with both achieving similar success over the study period. With experience, predators increasingly matched their tactic to the speed of the prey that they encountered, which simultaneously relaxed the negative consequences of encountering faster prey. Together, our observations suggest that predators in *DBD* learn to adjust their hunting tactic to the behaviour of the prey that they encounter throughout their lifetime in the game.
+
+## The development of expertise with hunting experience
+
+Empirical research shows that task proficiency often increases nonlinearly with experience and stabilizes at an expert level [reviewed in @Dukas2019]. However, we cannot derive conclusions at the individual-level from these studies either because their models assume the same increase in expertise for each individual, or because it is unclear whether their data has repeated measures of individual success through time. Our analyses revealed that there was no population increase in expertise over time. As we mentioned before, the matchmaking pairs players using a rank-based system, and this result may thus be due to predators being paired with prey of similar skills. However, if this was solely due to the ranking system, we would have found a similar flat relationship for every predator. Instead, individual predators in *DBD* displayed distinct patterns of expertise acquisition (Figure 1, Appendix S1: Figure S1A-S1B). 
+
+We predicted that this would occur if, by chance, predators differed in the prey that they encountered, because some may be easier and others more difficult to capture. In nature, prey can use a variety of defenses such as physical armaments, toxins, camouflage, or antipredator behaviours to escape predation [@BrodieIII.BrodieJr.1999;@Bowen.etal2002;@brodieCoEvolutionPredatorsPrey2010;@Nomura.etal2011;@Carey.Wahl2011]. In *DBD* we previously showed that faster movement is an effective strategy used by the prey to avoid predation [@FraserFranco.etal2022], and other studies have found that as well [@Walker.etal2005;@Kelley.Magurran2011;Martin.etal2022]. Yet, prey speed did not shape individual differences in expertise acquisition, but other antipredator tactics may be involved. For example, it is well known in *DBD* that some prey groups use mobbing to confuse the predator or prevent it from capturing an injured individual. However, like natural predator-prey systems, direct predator-mobbing in *DBD* is dangerous and requires coordinated actions that are learned through experience [@Graw.Manser2007;@Dutour.etal2016;@Pitman.etal2017;@Dutour.etal2019;@Szymkowiak2021], and was thus probably not a pervasive antipredator strategy. Other antipredator tactics known to confuse human and non-human predators during the attack sequence are unpredictable escapes and turning angles [@Jones.etal2011;@Briffa2013;@Herbert-Read.etal2017;@Moore.etal2017;@Richardson.etal2018]. While predators can adjust to unpredictable prey escapes [@Szopa-Comley.Ioannou2022], it could still be more arduous for a predator to learn and optimize its hunting success if it more often encountered prey using these tactics.
+ 
+Alternatively, it is possible that individual variation in learning rates due to time delays between hunting events drove the observed differences in expertise acquisition, irrespective of the prey groups that predators encountered. For example, in *DBD*, a predator that played 300 matches in the span of six months might forget more critical information (e.g. prey escape patterns or muscle memory) than one that played 300 matches in the span of 6 days. While this has not been formally tested, a greater delay between exposure events is hypothesized to attenuate or even negate the relationship between success and experience [@Endler1991;@Wright.etal2022]. Moreover, the predators may have differed in their ability to detect prey. For example, it is widely demonstrated that predators learn visual cues such as coloration to recognize and avoid unpalatable prey [@Skelhorn.etal2016;@Ward-Fear.etal2020;@McLellan.etal2021], or habitat characteristics to locate food patches [@Ehlinger1989;@Hughes.etal1992;@Warburton2003]. @Szopa-Comley.etal2020 also found consistent among individual variation in the capacity to detect cryptic and conspicuous prey in three-spined sticklebacks (*Gasterosteus aculeatus*). Thus, individual predators should differ in their expertise if they do not learn equally how to exploit the visual cues that facilitate prey detection.
+
+## Changes in individual hunting specialization with experience and consequences for predator-prey interactions
+
+The predator population displayed an increase in foraging flexibility when reaching the intermediate level of experience. As it reached an advanced level of experience, it returned to a level of flexibility that was similar to novice levels. This is commonly observed in juvenile predators across the animal kingdom, because exploring and learning different tactics at this developmental stage is crucial to become a skillful hunter [@Vehanen2003;@Johnson.Wilbrecht2011;@Thiers.etal2014;@deGrissac.etal2016]. Thus, predators in *DBD* were probably exploring and refining different tactics at this stage of experience. Within the population, differences in individual foraging specialization among predators increased with experience, which was related to the degree of variability in prey encounters. Predators that encountered groups of prey with similar speeds across matches specialized in hunting at high speeds, while those that encountered varying groups of prey adopted a slower and flexible strategy. Fast-paced hunting is indeed a highly specialized tactic suited for prey that use rapid escapes [@Endler1991;@Bro-Jorgensen2013;@Wilson.etal2018], while a slower and flexible tactic can be useful to minimize the consequences of uncertainty when hunting prey that use unpredictable escapes [@Szopa-Comley.Ioannou2022]. This is further supported by the fact that specialist and flexible hunters both achieved similar success throughout the study period. Interestingly, the behavioural response (i.e. tactic use and specialization) to experience by individual predators differed. For instance, 42.7% of the population did not alter their degree of specialization with experience (i.e. remaining either faster and more specialized, or slower and more flexible), while 57.3% of the population displayed a switch from a specialized to a flexible tactic or vice-versa with experience. Thus, our results provide direct evidence that the mechanism underlying the resource-predictability hypothesis may indeed involve predators learning at varying degrees how to specialize on their prey [@Weimerskirch.etal2005;@Weimerskirch2007;@Woo.etal2008;@Phillips.etal2017].
+
+As predators gained experience, their tactic was increasingly matched to the speed of their prey. One interpretation could be that both predators and prey learned from each other in an arms-race-like reciprocal relationship [@Kishida.etal2006;@Kishida.etal2009;@Edgell.Rochette2009a;@Mougi.etal2011]. For instance, predators that encountered faster prey could have learned to increase their speed to better capture them, resulting in an increase in the speed of the prey to circumvent the predator's attacks. In this type of system, faster prey should be better at escaping both slower and faster predators [@Mougi.etal2011], which concords with what we previously observed in this sytem [@FraserFranco.etal2022]. @BrodieIII.BrodieJr.1999 argue that when prey express defensive phenotypes (e.g. physical armaments or venom), selection on predators should be strong because the consequences of being injured are greater than missing a meal. If predators improve their exploitative ability, then an arms-race should emerge, and the consequences of hunting dangerous prey should decrease [@BrodieIII.BrodieJr.1999]. Similarly, we found that has the predator gained experience, the negative consequences of encountering prey groups with higher speeds were relaxed, and the variation in success among predators decreased. However, in an arms-race, faster predators would have successfully preyed upon faster and slower prey and would have obtained higher success than slower predators [@Mougi.etal2011], which was not the case in the present study. A more likely scenario is that predators and prey in *DBD* were involved in a matching response relationship [@Mougi.etal2011], because faster-specialist and slower-flexible hunters preyed upon different prey, but they both achieved equal success. Thus predators in *DBD* appear to optimize their success by learning to match their tactic to their prey with experience, suggesting that learning through reciprocal interactions may attenuate selection exerted by prey on predators [@Anderson1995;@Ancel1999;@Borenstein.etal2006;@Paenke.etal2007].
+
+## Conclusions
+
+Trait-mediated predator-prey interactions are important processes involved in population cycles and should occur when predators match their phenotype to their prey [@abramsEvolutionPredatorPreyInteractions2000]. Yet, it has remained largely unknown whether this trait-matching results from predators learning how to capture their prey, in part because of the challenges of investigating direct interactions in the wild. By capitalizing on a virtual predator-prey system where interactions were directly monitored, we found that individual predators displayed large differences in the development of their expertise. With experience, half of the predator population changed their behaviour by developping either a specialized or flexible tactic that was matched to the speed of their prey. Overall, both type of hunters achieved equal hunting success. Our results have potential applications for predator-prey models of trait-matching. For instance, simulation studies could incorporate individual variation in experience or learning to better predict under which ecological/evolutionary contexts specialization should be favoured over flexibility. Lastly, virtual systems are increasingly recognized among ecologists as being useful to test hypotheses on consumer-resource interactions [@Barbe.etal2020;@Beauchamp2020;@Cere.etal2021;@FraserFranco.etal2022], but also in other fields such as citizen science and conservation [@Sandbrook.etal2015;@Redpath.etal2018;@Duthie.etal2021]. We therefore hope that our study will inspire more collaborations between scientists and the videogame industry to tackle fundamental questions in ecology.
+
+
+
+# ACKNOWLEDGEMENTS
+
+We warmly thank Behaviour Interactive Inc. for our collaboration which helps in advancing predator-prey science. We thank Julien Céré who managed the communication between us and the company, and Marine Dupuy who helped us prepare the data used in this study. We thank Alastair J. Wilson for insightful comments on the results. We also thank all members of Pierre-Olivier Montiglio's laboratory who provided useful feedback on earlier versions on this work. This work was supported by an NSERC postgraduate doctoral scholarship (569716-2022).
+
+
+
+
+# CONFLICT OF INTEREST STATEMENT
+
+The authors declare no conflict of interest
+
+\newpage
+
+
+
+
+# REFERENCES {.unnumbered}
+
+<div id="refs"></div>
+
+\newpage
+
+
+
+
+# TABLES
+
 ```{r table1, ft.align = "left"}
 
 # ===========================================================================
@@ -206,8 +283,8 @@ Our results confirm that individual predators display substantial differences in
 # ===========================================================================
 
 # Open the loo table
-path <- file.path(here::here("outputs", "03_outputs_model-validation"))
-loo_tab <- data.table(readRDS(file.path(path, "03A_lootable.rds")))
+path <- file.path(here::here("outputs", "02_outputs_model-validation"))
+loo_tab <- data.table(readRDS(file.path(path, "A1-3_lootable.rds")))
 
 # Add model column
 loo_tab[, model := c("Group-level smoothers only",
@@ -250,12 +327,11 @@ my_theme <- function(x, ...) {
    x <- colformat_double(x, big.mark = " ",
                          decimal.mark = ".",
                          digits = 2)
-   x <- set_table_properties(x, layout = "fixed")
+   x <- set_table_properties(x, layout = "autofit")
    x <- border_remove(x)
    std_border <- fp_border(width = 1, color = "black")
    x <- hline_top(x, part = "all", border = std_border)
    x <- hline_bottom(x, part = "all", border = std_border)
-   autofit(x)
 }
 
 
@@ -263,36 +339,15 @@ my_theme <- function(x, ...) {
 # Create the table ----------------------------------------------------------
 
 tab1 <- loo_tab %>%
-   select(model, elpd_diff, se_diff, elpd_loo, se_elpd_loo) %>%
-   flextable(col_keys = my_header$col_keys) %>%
-   set_header_df(mapping = my_header, key = "col_keys") %>%
-   my_theme() %>%
-   merge_v(part = "header") %>%
-   merge_h(part = "header") %>%
-   fontsize(size = 10, part = "all") %>%
-   font(fontname = "Times New Roman", part = "all") %>%
-   align(align = "left", part = "all", j = 1) %>%
-   align(align = "center", part = "all", j = 2) %>%
-   align(align = "center", part = "all", j = 3) %>%
-   align(align = "center", part = "all", j = 4) %>%
-   align(align = "center", part = "all", j = 5)
-
-# ===========================================================================
-# ===========================================================================
-
-
-
-
-
-# ===========================================================================
-# 3. Customize and print the table
-# ===========================================================================
-
-# Autofit to window
-tab1 <- autofit(tab1)
-
-# Add a footnote
-tab1 <- tab1 %>%
+  select(model, elpd_diff, se_diff, elpd_loo, se_elpd_loo) %>%
+  flextable(col_keys = my_header$col_keys) %>%
+  set_header_df(mapping = my_header, key = "col_keys") %>%
+  my_theme() %>%
+  align(align = "left", part = "all", j = 1) %>%
+  align(align = "center", part = "all", j = 2) %>%
+  align(align = "center", part = "all", j = 3) %>%
+  align(align = "center", part = "all", j = 4) %>%
+  align(align = "center", part = "all", j = 5) %>%
   footnote(
     i = 1, j = 1,
     part = "header",
@@ -300,35 +355,26 @@ tab1 <- tab1 %>%
       "* 'elpd' refers to the expected log pointwise density and is the value chosen to select the best model."),
     ref_symbols = " "
   ) %>%
+
+  # Table caption
+  set_caption(
+    caption = "Table 1. Leave-one-out cross-validation table of the three hierarchical GAMMs relating hunting success to player experience.",
+    style = "Table Caption"
+  ) %>%
+
+  # Font options
   font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all")
+  fontsize(size = 10, part = "all") %>%
+  fontsize(size = 12, part = "footer")
 
-# Table caption
-set_caption(
-  tab1,
-  caption = "Leave-one-out cross-validation table of the three hierarchical GAMMs relating hunting success to player experience",
-  style = "Table Caption"
-)
+tab1
 
 # ===========================================================================
 # ===========================================================================
 
 ```
 
-We predicted that the relationship between hunting success and experience would vary among predators because they should differ in the type of prey that they encounter. However, after controlling for the mean speed of the prey group within a match, we did not find evidence confirming this prediction, because differences among predators remained stable (Figure 1B).
-
-```{r fig1, out.width = "100%", fig.cap = "**Figure 1.** Among individual differences in the development of hunting expertise. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. (A) A generalized additive mixed model where we do not control for prey speed (B) A generalized additive mixed model where we control for prey speed."}
-
-knitr::include_graphics(
-  here::here("outputs", "05_outputs_figures", "05_figure1.png")
-)
-
-```
-
-
-## Effect of experience on the development of behavioural specialization
-
-At the population level, predators did not change their mean speed with experience (i.e. intercept of the mean predator speed; Table 2). Moreover, there was no directional increase in foraging flexibility or specialization with experience. Indeed, the observed pattern is more complex given that predators became more flexible with experience at intermediate levels of experience (i.e. intercept of sigma for predator speed is larger for intermediates than novices; Table 2 and Appendix S1: Figure S4), but then return to novice-levels of flexibility with advanced experience (i.e. intercept of sigma for predator speed is smaller for advanced players than intermediates; Table 2 and Appendix S1: Figure S4). Thus, our analyses suggest that population-level behavioural specialization changes nonlinearly (quadratic) with experience rather than linearly.
+\newpage
 
 ```{r table2, ft.align = "left"}
 
@@ -342,7 +388,7 @@ path <- file.path(here::here("outputs"))
 
 # Import the model
 fit <- readRDS(
-  file.path(path, "02_outputs_models", "02B_DHMLM.rds")
+  file.path(path, "01_outputs_models", "B1_DHMLM-no-outlier.rds")
 )
 
 # ===========================================================================
@@ -390,7 +436,7 @@ eff_tab[
 ]
 
 # Round values to 3 digits
-eff_tab[, c(2:4) := round(eff_tab[, c(2:4)], digits = 3)]
+eff_tab[, c(2:4) := round(eff_tab[, c(2:4)], digits = 2)]
 
 
 
@@ -426,10 +472,10 @@ eff_tab[
 ]
 
 # Paste upper and lower ci with estimate
-eff_tab[, estimate := paste(format(Estimate, digits = 3), "(")]
-eff_tab[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
+eff_tab[, estimate := paste(format(Estimate, digits = 2), "(")]
+eff_tab[, estimate := paste(estimate, format(lower_ci, digits = 2), sep = "")]
 eff_tab[, estimate := paste(estimate, ",", sep = "")]
-eff_tab[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
+eff_tab[, estimate := paste(estimate, format(upper_ci, digits = 2), sep = " ")]
 eff_tab[, estimate := paste(estimate, ")", sep = "")]
 eff_tab[, c("Estimate", "lower_ci", "upper_ci") := NULL]
 
@@ -479,13 +525,14 @@ my_header <- data.frame(
 my_theme <- function(x, ...) {
   x <- colformat_double(x, big.mark = " ",
                         decimal.mark = ".",
-                        digits = 3)
-  x <- set_table_properties(x, layout = "fixed")
+                        digits = 2)
   x <- border_remove(x)
   std_border <- fp_border(width = 1, color = "black")
   x <- hline_top(x, part = "all", border = std_border)
   x <- hline_bottom(x, part = "all", border = std_border)
-  autofit(x)
+  x <- width(x, j = 1, width = 2.84, unit = "cm")
+  x <- width(x, j = 2, width = 3.78, unit = "cm")
+  x <- width(x, j = c(3:5), width = 3.3, unit = "cm")
 }
 
 
@@ -501,36 +548,19 @@ tab2 <-
   flextable(col_keys = my_header$col_keys) %>%
   set_header_df(mapping = my_header, key = "col_keys") %>%
   my_theme() %>%
+
   # Align repeated rows on column 1
   merge_v(j = 1) %>%
   valign(j = 1, valign = "top", part = "body") %>%
-  # font
-  fontsize(size = 10, part = "all") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
 
   # Align text
   align(align = "left", part = "all", j = 1) %>%
   align(align = "left", part = "all", j = 2) %>%
   align(align = "center", part = "all", j = 3) %>%
   align(align = "center", part = "all", j = 4) %>%
-  align(align = "center", part = "all", j = 5)
+  align(align = "center", part = "all", j = 5) %>%
 
-# ===========================================================================
-# ===========================================================================
-
-
-
-
-
-# ===========================================================================
-# 4. Customize and print the table
-# ===========================================================================
-
-# Autofit to window size
-tab2 <- autofit(tab2)
-
-# Table footnote
-tab2 <- tab2 %>%
+  # Footnote
   footnote(
     i = 1, j = 1,
     part = "header",
@@ -542,23 +572,26 @@ tab2 <- tab2 %>%
     ),
     ref_symbols = " "
   ) %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  width(j = c(2, 3, 4, 5), width = 3.7, unit = "cm") %>%
-  width(j = 1, width = 3.2, unit = "cm")
 
-# Table caption
-set_caption(
-  tab2,
-  caption = "Posterior means and 95% credible intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
-  style = "Table Caption"
-)
+  # Table caption
+  set_caption(
+    caption = "Table 2. Posterior means and 95% credible intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    style = "Table Caption"
+  ) %>%
+
+  # Font options
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 10, part = "all") %>%
+  fontsize(size = 12, part = "footer")
+
+tab2
 
 # ===========================================================================
 # ===========================================================================
 
 ```
 
-At the individual level, we detected differences in the mean movement speed among predators (i.e. the intercept of the mean speed for the predator ID; Table 3). These differences remained stable from the novice to the intermediate stages, and then increased at the advanced stage to reach a level higher than when predators were novice (Table 3 and Appendix S1: Figure S4). Predators displayed considerable differences in their degree of hunting specialization, and these differences increased with experience (i.e. the intercept of sigma for the predator ID increases with experience; Table 3 and Appendix S1: Figure S4). Thus, as individual predators gain experience, the population becomes more heterogeneous, with an assemblage of both specialist and flexible hunters. Moreover, some individual predators switched from a flexible to a specialized hunting tactic, and vice-versa, as they gained experience (Figure 2). Importantly, 12.6% of the predator population displayed a large change in foraging specialization/flexibility with experience (i.e. $\ge$0.2 change in standard deviation), 44.7% displayed lower changes (i.e. >0.05 and <0.2 change in standard deviation), while 42.7% remained relatively stable (i.e. $\le$0.05 change in standard deviation).
+\newpage
 
 ```{r table3, ft.align = "left"}
 
@@ -571,7 +604,7 @@ path <- file.path(here::here("outputs"))
 
 # Import the model
 fit <- readRDS(
-  file.path(path, "02_outputs_models", "02B_DHMLM.rds")
+  file.path(path, "01_outputs_models", "B1_DHMLM-no-outlier.rds")
 )
 
 # ===========================================================================
@@ -650,7 +683,7 @@ ranef_tab[, ":=" (mean = mean(value),
           by = .(parameter)]
 
 ranef_tab <- unique(ranef_tab[, .(parameter, mean, lower_ci, upper_ci)])
-ranef_tab[, c(2:4) := round(ranef_tab[, c(2:4)], 3)]
+ranef_tab[, c(2:4) := round(ranef_tab[, c(2:4)], digits = 2)]
 
 
 
@@ -663,10 +696,10 @@ ranef_tab[parameter %like% "advanced", xp_level := "advanced"]
 
 
 # Paste upper and lower ci with estimate
-ranef_tab[, estimate := paste(format(mean, digits = 3), "(")]
-ranef_tab[, estimate := paste(estimate, format(lower_ci, digits = 3), sep = "")]
+ranef_tab[, estimate := paste(format(mean, digits = 2), "(")]
+ranef_tab[, estimate := paste(estimate, format(lower_ci, digits = 2), sep = "")]
 ranef_tab[, estimate := paste(estimate, ",", sep = "")]
-ranef_tab[, estimate := paste(estimate, format(upper_ci, digits = 3), sep = " ")]
+ranef_tab[, estimate := paste(estimate, format(upper_ci, digits = 2), sep = " ")]
 ranef_tab[, estimate := paste(estimate, ")", sep = "")]
 ranef_tab[, c("mean", "lower_ci", "upper_ci") := NULL]
 
@@ -706,7 +739,7 @@ ranef_tab <- dcast(
 ranef_tab <- ranef_tab[, c(1, 2, 5, 4, 3)]
 
 # Reorder rows
-table <- ranef_tab[c(1:5, 6:9)]
+table <- ranef_tab[c(2:9, 1)]
 
 # ===========================================================================
 # ===========================================================================
@@ -737,13 +770,12 @@ my_header <- data.frame(
 my_theme <- function(x, ...) {
   x <- colformat_double(x, big.mark = " ",
                         decimal.mark = ".",
-                        digits = 3)
-  x <- set_table_properties(x, layout = "fixed")
+                        digits = 2)
+  x <- set_table_properties(x, layout = "autofit")
   x <- border_remove(x)
   std_border <- fp_border(width = 1, color = "black")
   x <- hline_top(x, part = "all", border = std_border)
   x <- hline_bottom(x, part = "all", border = std_border)
-  autofit(x)
 }
 
 
@@ -751,7 +783,7 @@ my_theme <- function(x, ...) {
 # Create the table ----------------------------------------------------------
 
 tab3 <-
-
+  
   # table structure
   table %>%
   select(trait, parameter,
@@ -759,36 +791,22 @@ tab3 <-
   flextable(col_keys = my_header$col_keys) %>%
   set_header_df(mapping = my_header, key = "col_keys") %>%
   my_theme() %>%
-
+  
   # Align repeated rows on column 1
   merge_v(j = 1) %>%
   valign(j = 1, valign = "top", part = "body") %>%
   # font
   fontsize(size = 10, part = "all") %>%
   font(fontname = "Times New Roman", part = "all") %>%
-
+  
   # Align text
   align(align = "left", part = "all", j = 1) %>%
   align(align = "left", part = "all", j = 2) %>%
   align(align = "center", part = "all", j = 3) %>%
   align(align = "center", part = "all", j = 4) %>%
-  align(align = "center", part = "all", j = 5)
-
-# ===========================================================================
-# ===========================================================================
-
-
-
-
-# ===========================================================================
-# 4. Customize and print the table
-# ===========================================================================
-
-# Autofit to window
-tab3 <- autofit(tab3)
-
-# Add footnote
-tab3 <- tab3 %>%
+  align(align = "center", part = "all", j = 5) %>%
+  
+  # Add footnote
   footnote(
     i = 1, j = 1,
     part = "header",
@@ -802,91 +820,68 @@ tab3 <- tab3 %>%
     ),
     ref_symbols = " "
   ) %>%
+
+  # Add table caption
+  set_caption(
+    caption = "Table 3. Posterior means and 95% credible intervals of the random effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    style = "Table Caption"
+  ) %>%
+
+  # Font options
   font(fontname = "Times New Roman", part = "all") %>%
-  width(j = c(2, 3, 4, 5), width = 3.7, unit = "cm") %>%
-  width(j = 1, width = 3.2, unit = "cm")
+  fontsize(size = 10, part = "all") %>%
+  fontsize(size = 12, part = "footer")
 
-# Add table caption
-set_caption(
-  tab3,
-  caption = "Posterior means and 95% credible intervals of the random effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
-  style = "Table Caption"
-)
+tab3
 
 # ===========================================================================
 # ===========================================================================
 
 ```
 
-As we predicted, predators differed in the mean speed of the prey that they encountered across matches. Thus, some individuals encountered prey that were on average slower, while others encountered prey that where on average faster throughout the study period (i.e. the intercept of the mean prey speed for the predator ID; Table 3). These differences were greater when predators reached an advanced level of hunting experience (i.e. the intercept of the mean prey speed for the predator ID was higher at the advanced stage; Table 3 and Appendix S1: Figure S4). In addition, individuals differed in the heterogeneity of the groups of prey encountered across the study period. Hence, some predators encountered prey groups with similar average speeds, while others encountered prey groups with different average speeds throughout the study period (i.e. the intercept of sigma prey speed for the predator ID; Table 3).
+\newpage
 
-```{r fig2, out.width = "100%", fig.cap = "**Figure 2.** Individual behavioural distribution of the predators' speed drawn from the MDHGLM estimates for individuals that had (A) the greatest increase in specialization and (B) the greatest increase in flexibility. The background (gray) distributions are for when individuals were novice hunters, and the foreground (blue) distributions with solid contour lines are for when they were advanced hunters. Both figure panels are ordered by ascending degree of increase in either specialization or flexibility. We selected the individuals displayed in the figure by first substracting the estimated standard deviation of all individuals as novices with their standard deviation as advanced hunters, and then selecting those with the greatest difference using the 25% and 75% quantiles. Individuals on panel A have an increase in specialization equal or greater than 0.2 standard deviations, while those on panel B have an increase in flexibility equal or greater than 0.28 standard deviations."}
+
+
+# FIGURE CAPTIONS
+
+**Figure 1.** Among individual differences in the development of hunting expertise. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. (A) A generalized additive mixed model where we do not control for prey speed (B) A generalized additive mixed model where we control for prey speed.
+
+**Figure 2.** Individual behavioural distribution of the predators' speed drawn from the MDHGLM estimates for individuals that had (A) the greatest increase in specialization and (B) the greatest increase in flexibility. The background (gray) distributions are for when individuals were novice hunters, and the foreground (blue) distributions with solid contour lines are for when they were advanced hunters. Both figure panels are ordered by ascending degree of increase in either specialization or flexibility. We selected the individuals displayed in the figure by first subtracting the estimated standard deviation of all individuals as novices with their standard deviation as advanced hunters, and then selecting those with the greatest difference using the 25% and 75% quantiles. Individuals on panel A have an increase in specialization equal or greater than 0.2 standard deviations, while those on panel B have an increase in flexibility equal or greater than 0.28 standard deviations.
+
+**Figure 3.** Correlation matrices of the MDHGLM relating the mean and intra individual variability (IIV) in speed of the predators, the mean and IIV in speed of the prey they encountered, and mean hunting success. Larger dark blue circles indicate stronger positive correlations (positive values on the color legend), while larger dark red circles indicate stronger negative correlations (negative values on the color legend). A) Correlations when predators were novice hunters. B) Correlations when predators were at an intermediate level of experience. C) Correlations when predators were advanced hunters.
+
+\newpage
+
+
+
+
+# FIGURES
+
+```{r fig1, out.width = "100%", fig.cap = "**Figure 1**"}
 
 knitr::include_graphics(
-  here::here("outputs", "05_outputs_figures", "05_figure2.png")
+  here::here("outputs", "04_outputs_figures", "figure1.png")
 )
 
 ```
 
+\newpage
 
-## Relationship between behavioural specialization and prey variability
-
-At all experience levels, predators that were on average faster (mean) also had a lower intra-individual variability (IIV; Figure 3 and Appendix S2: Table S1). Thus, faster predators specialized on fast movement, while slower predators were more flexible in their movement through time. Predators that were on average faster (mean) also encountered groups of prey that were on average faster (mean) (Figure 3 and Appendix S2: Table S1). At the three experience levels, there were only weak correlations between IIV in predator speed and mean prey speed (Figure 3 and Appendix S2: Table S1). However, predators that encountered groups of prey with similar speeds (IIV) specialized in their hunting tactic (IIV) (Figure 3 and Appendix S2: Table S1). Hence, predators that encountered groups of prey with similar average speeds were more specialized, while those that encountered groups of prey with different average speeds were more flexible. For all the results described above, the correlations strengthen as predators gain experience (Figure 3 and Appendix S2: Table S1).
-
-```{r fig3, out.width = "100%", fig.cap = "**Figure 3.** Correlation matrices of the MDHGLM relating the mean and intra individual variability (IIV) in speed of the predators, the mean and IIV in speed of the prey they encountered, and mean hunting success. Larger dark blue circles indicate stronger positive correlations (positive values on the color legend), while larger dark red circles indicate stronger negative correlations (negative values on the color legend). A) Correlations when predators were novice hunters. B) Correlations when predators were at an intermediate level of experience. C) Correlations when predators were advanced hunters."}
+```{r fig2, out.width = "100%", fig.cap = "**Figure 2**"}
 
 knitr::include_graphics(
-  here::here("outputs", "05_outputs_figures", "05_figure3.png")
+  here::here("outputs", "04_outputs_figures", "figure2.png")
 )
+
 ```
 
+\newpage
 
-## Hunting success of behavioural specialists vs generalists
+```{r fig3, out.width = "100%", fig.cap = "**Figure 3**"}
 
-We did not detect strong correlations between the predators' mean speed and their hunting success (Figure 3 and Appendix S2: Table S1), nor between the predators' IIV in speed and their hunting success (Figure 3 and Appendix S2: Table S1), suggesting that slower/flexible and faster/specialist predators were both equally successful. However, novice individuals that encountered groups of prey with faster speeds were less successful (Figure 3 and Appendix S2: Table S1). This relationship was decoupled at the later experience levels, such that encounters with faster prey at intermediate and advanced stages were not as strongly correlated with hunting success anymore (Figure 3 and Appendix S2: Table S1). Thus, the consequences of hunting faster prey were reduced at greater experience levels.
+knitr::include_graphics(
+  here::here("outputs", "04_outputs_figures", "figure3.png")
+)
 
-
-
-
-# DISCUSSION
-
-Hunting experience is predicted to increase predator foraging specialization when resources are predictable [@Estes.etal2003;@Tinker.etal2008;@Tinker.etal2009]. However, when resources vary, others predict that learning with experience should increase behavioural flexibility [@Stephens1993;@Ishii.Shimada2010;@Mery.Burns2010;@Snell-Rood2013;@Wright.etal2022]. Our results show that there was no directional increase in either behavioural specialization or flexibility with experience at the population level. Instead, individual predators developed their own expertise and behavioural trajectory over successive encounters with prey; some specialized in fast-paced hunting, and others adopted a slower and more flexible tactic with experience. Specialized cursorial hunters encountered similar groups of prey while slower and flexible hunters encountered varying groups of prey, with both achieving similar success over the study period. With experience, predators increasingly matched their tactic to the speed of the prey that they encountered, which simultaneously relaxed the negative consequences of encountering faster prey. Together, our observations suggest that predators in *DBD* learn to adjust their hunting tactic to the behaviour of the prey that they encounter throughout their lifetime in the game.
-
-## The development of expertise with hunting experience
-
-Empirical research shows that task proficiency often increases nonlinearly with experience and stabilizes at an expert level [reviewed in @Dukas2019]. However, we cannot derive conclusions at the individual-level from these studies either because their models assume the same increase in expertise for each individual, or because it is unclear whether their data has repeated measures of individual success through time. Our analyses revealed that there was no population increase in expertise over time. As we mentioned before, the matchmaking pairs players using a rank-based system, and this result may thus be due to predators being paired with prey of similar skills. However, if this was solely due to the ranking system, we would have found a similar flat relationship for every predator. Instead, individual predators in *DBD* displayed distinct patterns of expertise acquisition (Figure 1, Appendix S1: Figure S1A-S1B). 
-
-We predicted that this would occur if, by chance, predators differed in the prey that they encountered, because some may be easier and others more difficult to capture. In nature, prey can use a variety of defenses such as physical armaments, toxins, camouflage, or antipredator behaviours to escape predation [@BrodieIII.BrodieJr.1999;@Bowen.etal2002;@brodieCoEvolutionPredatorsPrey2010;@Nomura.etal2011;@Carey.Wahl2011]. In *DBD* we previously showed that faster movement is an effective strategy used by the prey to avoid predation [@FraserFranco.etal2022], and other studies have found that as well [@Walker.etal2005;@Kelley.Magurran2011;Martin.etal2022]. Yet, prey speed did not shape individual differences in expertise acquisition, but other antipredator tactics may be involved. For example, it is well known in *DBD* that some prey groups use mobbing to confuse the predator or prevent it from capturing an injured individual. However, like natural predator-prey systems, direct predator-mobbing in *DBD* is dangerous and requires coordinated actions that are learned through experience [@Graw.Manser2007;@Dutour.etal2016;@Pitman.etal2017;@Dutour.etal2019;@Rampim.etal2020;@Szymkowiak2021], and was thus probably not a pervasive antipredator strategy. Other antipredator tactics known to confuse human and non-human predators during the attack sequence are unpredictable escapes and turning angles [@Jones.etal2011;@Briffa2013;@Herbert-Read.etal2017;@Moore.etal2017;@Richardson.etal2018]. While predators can adjust to unpredictable prey escapes [@Szopa-Comley.Ioannou2022], it could still be more arduous for a predator to learn and optimize its hunting success if it more often encountered prey using these tactics.
- 
-Alternatively, it is possible that individual variation in learning rates due to time delays between hunting events drove the observed differences in expertise acquisition, irrespective of the prey groups that predators encountered. For example, in *DBD*, a predator that played 300 matches in the span of six months might forget more critical information (e.g. prey escape patterns or muscle memory) than one that played 300 matches in the span of 6 days. While this has not been formally tested, a greater delay between exposure events is hypothesized to attenuate or even negate the relationship between success and experience [@Endler1991;@Wright.etal2022]. Moreover, the predators may have differed in their ability to detect prey. For example, it is widely demonstrated that predators learn visual cues such as coloration to recognize and avoid unpalatable prey [@Skelhorn.etal2016;@Ward-Fear.etal2020;@McLellan.etal2021], or habitat characteristics to locate food patches [@Ehlinger1989;@Hughes.etal1992;@Warburton2003]. @Szopa-Comley.etal2020 also found consistent among individual variation in the capacity to detect cryptic and conspicuous prey in three-spined sticklebacks (*Gasterosteus aculeatus*). Thus, individual predators should differ in their expertise if they do not learn equally how to exploit the visual cues that facilitate prey detection [@dukasEvolutionaryBiologyAnimal2004;@Dukas2019;@Wright.etal2022].
-
-## Changes in individual hunting specialization with experience and consequences for predator-prey interactions
-
-The predator population displayed an increase in foraging flexibility when reaching the intermediate level of experience. As it reached an advanced level of experience, it returned to a level of flexibility that was similar to novice levels. This is commonly observed in juvenile predators across the animal kingdom, because exploring and learning different tactics at this developmental stage is crucial to become a skillful hunter [@Vehanen2003;@Johnson.Wilbrecht2011;@Thiers.etal2014;@deGrissac.etal2016]. Thus, predators in *DBD* were probably exploring and refining different tactics at this stage of experience. Within the population, differences in individual foraging specialization among predators increased with experience, which was related to the degree of variability in prey encounters. Predators that encountered groups of prey with similar speeds across matches specialized in hunting at high speeds, while those that encountered varying groups of prey adopted a slower and flexible strategy. Fast-paced hunting is indeed a highly specialized tactic suited for prey that use rapid escapes [@Endler1991;@Bro-Jorgensen2013;@Wilson.etal2018], while a slower and flexible tactic can be useful to minimize the consequences of uncertainty when hunting prey that use unpredictable escapes [@Szopa-Comley.Ioannou2022]. This is further supported by the fact that specialist and flexible hunters both achieved similar success throughout the study period. Interestingly, the behavioural response (i.e. tactic use and specialization) to experience by individual predators differed. For instance, 42.7% of the population did not alter their degree of specialization with experience (i.e. remaining either faster and more specialized, or slower and more flexible), while 57.3% of the population displayed a switch from a specialized to a flexible tactic or vice-versa with experience. Thus, our results provide direct evidence that the mechanism underlying the resource-predictability hypothesis may indeed involve predators learning at varying degrees how to specialize on their prey [@Weimerskirch.etal2005;@Weimerskirch2007;@Woo.etal2008;@Phillips.etal2017].
-
-As predators gained experience, their tactic was increasingly matched to the speed of their prey. One interpretation could be that both predators and prey learned from each other in an arms-race-like reciprocal relationship [@Kishida.etal2006;@Kishida.etal2009;@Edgell.Rochette2009a;@Mougi.etal2011]. For instance, predators that encountered faster prey could have learned to increase their speed to better capture them, resulting in an increase in the speed of the prey to circumvent the predator's attacks. In this type of system, faster prey should be better at escaping both slower and faster predators [@Mougi.etal2011], which concords with what we previously observed in this sytem [@FraserFranco.etal2022]. @BrodieIII.BrodieJr.1999 argue that when prey express defensive phenotypes (e.g. physical armaments or venom), selection on predators should be strong because the consequences of being injured are greater than missing a meal. If predators improve their exploitative ability, then an arms-race should emerge, and the consequences of hunting dangerous prey should decrease [@BrodieIII.BrodieJr.1999]. Similarly, we found that has the predator gained experience, the negative consequences of encountering prey groups with higher speeds were relaxed, and the variation in success among predators decreased. However, in an arms-race, faster predators would have successfully preyed upon faster and slower prey and would have obtained higher success than slower predators [@Mougi.etal2011], which was not the case in the present study. A more likely scenario is that predators and prey in *DBD* were involved in a matching response relationship [@Mougi.etal2011], because faster-specialist and slower-flexible preyed upon different prey, but they both achieved equal success. Thus predators in *DBD* appear to optimize their success by learning to match their tactic to their prey with experience, suggesting that learning through reciprocal interactions may attenuate selection exerted by prey on predators [@Anderson1995;@Ancel1999;@Borenstein.etal2006;@Paenke.etal2007].
-
-## Conclusions
-
-The interactions of predator and prey traits are probably the most important processes involved in population cycles and should occur when predators match their phenotype to their prey [@abramsEvolutionPredatorPreyInteractions2000]. Yet, it has remained largely unknown whether this trait-matching results from predators learning how to capture their prey, in part because of the challenges of investigating direct interactions in the wild. By capitalizing on a virtual predator-prey system where interactions were directly monitored, we found that individual predators displayed large differences in the development of their expertise. With experience, half of the predator population changed their behaviour by developping either a specialized or flexible tactic that was matched to the speed of their prey. Overall, both type of hunters achieved equal hunting success. Our results have potential applications for predator-prey models of trait-matching. For instance, future studies could incorporate individual variation in experience or learning in their models to better predict under which ecological/evolutionary contexts specialization should be favoured over flexibility. Lastly, virtual systems are increasingly recognized among ecologists as being useful to test hypotheses on consumer-resource interactions [@Barbe.etal2020;@Beauchamp2020;@Cere.etal2021;@FraserFranco.etal2022], but also in other fields such as citizen science and conservation [@Sandbrook.etal2015;@Redpath.etal2018;@Duthie.etal2021]. We therefore hope that our study will inspire more collaborations between scientists and the videogame industry to tackle fundamental questions in ecology.
-
-
-
-# ACKNOWLEDGEMENTS
-
-We warmly thank Behaviour Interactive Inc. for our collaboration which helps in advancing predator-prey science. We thank Julien Céré who smoothly managed the communication between us and the company, and Marine Dupuy who helped us prepare the data used in this study. We thank Alastair J. Wilson for insightful comments on the results. We also thank all members of Pierre-Olivier Montiglio's laboratory who provided useful feedback on earlier versions on this work. This work was supported by an NSERC postgraduate doctoral scholarship (569716-2022).
-
-
-
-
-# CONFLICT OF INTEREST STATEMENT
-
-The authors declare no conflict of interest
-
-
-
-
-# REFERENCES {.unnumbered}
-
-<div id="refs"></div>
-
+```
