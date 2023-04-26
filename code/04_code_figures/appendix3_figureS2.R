@@ -1,6 +1,6 @@
 # =======================================================================
 
-#               Code to produce Appendix 1 : Figure S4                  #
+#               Code to produce Appendix 3 : Figure S2                  #
 
 # =======================================================================
 
@@ -18,7 +18,7 @@ library(ggplot2)
 library(data.table)
 
 path <- file.path(getwd(), "outputs", "01_outputs_models")
-fit <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
+fit <- readRDS(file.path(path, "B1_DHMLM.rds"))
 
 # =======================================================================
 # =======================================================================
@@ -139,7 +139,7 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
 # Export
 ggsave(
-  filename = file.path(path, "appendix1_figureS4.png"),
+  filename = file.path(path, "appendix3_figureS2.png"),
   plot = fig,
   width = 15, height = 10, # 32 14
   #scale = 1.2,
