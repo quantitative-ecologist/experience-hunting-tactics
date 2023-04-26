@@ -494,13 +494,24 @@ tab3
 
 \newpage
 
-```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Posterior median differences and 95% credible intervals between the parameter values of each predator experience level predicted by the MDHGLM. The test is displayed on the y axis (i.e. whether the group of interest has either a greater or smaller value), and the parameter value is displayed on the x axis. Each panel represent the experience level groups that are being compared."}
+```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Posterior median differences and 95% credible intervals between the parameter values of each predator experience level predicted by the MDHGLM. The test is displayed on the y axis (i.e. whether the group of interest has either a greater or smaller value), and the parameter value is displayed on the x axis. Each panel represent the experience level groups that are being compared. The results are from the model that includes the outlier."}
 
 knitr::include_graphics(
     here::here(
         "outputs", "04_outputs_figures",
         "appendix3_figureS1.png"
     )
+)
+
+```
+
+```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Posterior median differences and 95% credible intervals in the correlations of players when they were advanced vs novice. The difference is displayed on the x axis and the parameter correlations are displayed on the y axis. The results are from the MDHGLM that includes the outlier."}
+
+knitr::include_graphics(
+  here::here(
+    "outputs", "04_outputs_figures",
+    "appendix3_figureS2.png"
+  )
 )
 
 ```
