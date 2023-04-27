@@ -53,18 +53,36 @@ tab[, difference_cor := value_adv - value_nov]
 
 
 # Intervals
-lower_interval <- function(x) {
+lower_95 <- function(x) {
   coda::HPDinterval(as.mcmc(x), 0.95)[1]
 }
-upper_interval <- function(x) {
+upper_95 <- function(x) {
   coda::HPDinterval(as.mcmc(x), 0.95)[2]
+}
+
+lower_80 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.80)[1]
+}
+upper_80 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.80)[2]
+}
+
+lower_50 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.50)[1]
+}
+upper_50 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.50)[2]
 }
 
 tab[
   , ":="(
     median_difference = median(difference_cor),
-    lower_ci_difference = lower_interval(difference_cor),
-    upper_ci_difference = upper_interval(difference_cor)),
+    lower_ci_95 = lower_95(difference_cor),
+    upper_ci_95 = upper_95(difference_cor),
+    lower_ci_80 = lower_80(difference_cor),
+    upper_ci_80 = upper_80(difference_cor),
+    lower_ci_50 = lower_50(difference_cor),
+    upper_ci_50 = upper_50(difference_cor)),
   by = variable_adv
 ]
 
@@ -72,12 +90,14 @@ tab <- unique(
   tab[
     , .(
       variable_adv, median_difference,
-      lower_ci_difference, upper_ci_difference
+      lower_ci_95, upper_ci_95,
+      lower_ci_80, upper_ci_80,
+      lower_ci_50, upper_ci_50
     )
   ]
 )
 
-tab[, c(2:4) := round(tab[, c(2:4)], digits = 2)]
+tab[, c(2:8) := round(tab[, c(2:8)], digits = 2)]
 
 
 names <- c(
@@ -103,6 +123,12 @@ tab[, variable_adv := names]
 
 # Compute plots ---------------------------------------------------------
 
+colors <- c(
+  "0.95" = "gray91",
+  "0.80" = "gray71",
+  "0.50" = "gray21"
+)
+
 fig <- ggplot(
   tab,
   aes(x = variable_adv, y = median_difference)
@@ -111,12 +137,37 @@ fig <- ggplot(
     yintercept = 0, linewidth = 1, colour = "red",
     linetype = "dashed", alpha = 0.5
   ) +
-  geom_pointrange(
-    aes(ymin = lower_ci_difference, ymax = upper_ci_difference),
-    size = 0.5, position = position_dodge(width = 0.8)
-  ) +
-  ylab("\nMedian posterior differences") +
+  #geom_pointrange(
+  #  aes(ymin = lower_ci_95, ymax = upper_ci_95),
+  #  size = 0.5, position = position_dodge(width = 0.8)
+  #) +
+  geom_linerange(
+    aes(ymin = lower_ci_95,
+        ymax = upper_ci_95,
+        color = "0.95"),
+    size = 1,
+    key_glyph = "path"
+    ) +
+  geom_linerange(
+    aes(ymin = lower_ci_80,
+        ymax = upper_ci_80,
+        color = "0.80"),
+    size = 1,
+    key_glyph = "path"
+    ) +
+  geom_linerange(
+    aes(ymin = lower_ci_50,
+        ymax = upper_ci_50,
+        color = "0.50"),
+    size = 1,
+    key_glyph = "path"
+    ) +
+  geom_point(size = 3, color = "black") +
+  ylab("\nPosterior median difference") +
   scale_y_continuous(breaks = seq(-0.2, 0.2, 0.1)) +
+  scale_color_manual(
+    name = "Density:",
+    values = colors) +
   coord_flip() +
   theme_bw() +
   theme(
@@ -124,13 +175,14 @@ fig <- ggplot(
     axis.text = element_text(face = "plain", size = 11, color = "black"),
     axis.title = element_text(size = 13, face = "plain", color = "black"),
     strip.text = element_text(size = 11),
+    panel.grid = element_blank(),
     legend.position = "top",
     legend.key = element_rect(fill = "transparent"),
     legend.title = element_text(size = 13),
     legend.text = element_text(size = 11)
   )
 
-
+fig
 
 # Export figure ---------------------------------------------------------
 
@@ -141,7 +193,7 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 ggsave(
   filename = file.path(path, "appendix1_figureS4.png"),
   plot = fig,
-  width = 15, height = 10, # 32 14
+  width = 15, height = 12, # 32 14
   #scale = 1.2,
   units = "cm",
   dpi = 300,
