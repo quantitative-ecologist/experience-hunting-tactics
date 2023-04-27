@@ -505,7 +505,7 @@ knitr::include_graphics(
 
 ```
 
-```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Posterior median differences and 95% credible intervals in the correlations of players when they were advanced vs novice. The difference is displayed on the x axis and the parameter correlations are displayed on the y axis. The results are from the MDHGLM that includes the outlier."}
+```{r figS2, out.width = "80%", fig.cap = "**Figure S2.** Posterior median differences and 95% credible intervals in the correlations of players when they were advanced vs novice. The difference is displayed on the x axis and the parameter correlations are displayed on the y axis. The results are from the MDHGLM that includes the outlier."}
 
 knitr::include_graphics(
   here::here(
