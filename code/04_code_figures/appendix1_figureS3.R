@@ -269,7 +269,7 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
 # Export
 ggsave(
-  filename = file.path(path, "appendix1_figureS3-test.png"),
+  filename = file.path(path, "appendix1_figureS3.png"),
   plot = fig,
   width = 32, height = 14, # 32 14
   units = "cm",
