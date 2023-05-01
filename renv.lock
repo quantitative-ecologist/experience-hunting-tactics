@@ -30,6 +30,13 @@
       "Repository": "CRAN",
       "Hash": "fc53164de9ee32692eef6fdd14115381"
     },
+    "HDInterval": {
+      "Package": "HDInterval",
+      "Version": "0.2.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "b5b77433b286dd869ff33ee7fd5c545f"
+    },
     "MASS": {
       "Package": "MASS",
       "Version": "7.3-57",
@@ -106,6 +113,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "4f57884290cc75ab22f4af9e9d4ca862"
+    },
+    "arrayhelpers": {
+      "Package": "arrayhelpers",
+      "Version": "1.1-0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3d4e52d458784c335af3846f2de64f75"
     },
     "askpass": {
       "Package": "askpass",
@@ -483,12 +497,19 @@
       "Repository": "CRAN",
       "Hash": "a535d76cf92645364997a8751396d63b"
     },
-    "ggplot2": {
-      "Package": "ggplot2",
-      "Version": "3.3.6",
+    "ggdist": {
+      "Package": "ggdist",
+      "Version": "3.2.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "0fb26d0674c82705c6b701d1a61e02ea"
+      "Hash": "07207011c0cc24258b8f33cbca3977bb"
+    },
+    "ggplot2": {
+      "Package": "ggplot2",
+      "Version": "3.4.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3a147ee02e85a8941aad9909f1b43b7b"
     },
     "ggpubr": {
       "Package": "ggpubr",
@@ -931,6 +952,13 @@
       "Repository": "CRAN",
       "Hash": "97def703420c8ab10d8f0e6c72101e02"
     },
+    "quadprog": {
+      "Package": "quadprog",
+      "Version": "1.5-8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "5f919ae5e7f83a6f91dcf2288943370d"
+    },
     "quantreg": {
       "Package": "quantreg",
       "Version": "5.93",
@@ -1120,6 +1148,13 @@
       "Repository": "CRAN",
       "Hash": "6f0a0fadc63bc6570fe172770f15bbc4"
     },
+    "svUnit": {
+      "Package": "svUnit",
+      "Version": "1.0.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "894d0aff9585344af4ab78e2b4d60ab7"
+    },
     "sys": {
       "Package": "sys",
       "Version": "3.4.1",
@@ -1168,6 +1203,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "a84e2cc86d07289b3b6f5069df7a004c"
+    },
+    "tidybayes": {
+      "Package": "tidybayes",
+      "Version": "3.0.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "93b666ce4737ac72e9b8a37eab9175e0"
     },
     "tidyr": {
       "Package": "tidyr",
