@@ -196,6 +196,7 @@ We parametrized every model described above to run four MCMC chains with 1000 po
 
 # RESULTS {.unnumbered}
 
+need to redo the results and change all figure and table references
 
 ## Effect of experience on hunting success
 
@@ -394,9 +395,11 @@ tab1
 
 **Figure 1.** Among individual differences in the development of hunting expertise. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. (A) A generalized additive mixed model where we do not control for prey speed (B) A generalized additive mixed model where we control for prey speed.
 
-**Figure 2.** Individual behavioural distribution of the predators' speed drawn from the MDHGLM estimates for individuals that had (A) the greatest increase in specialization and (B) the greatest increase in flexibility. The background (gray) distributions are for when individuals were novice hunters, and the foreground (blue) distributions with solid contour lines are for when they were advanced hunters. Both figure panels are ordered by ascending degree of increase in either specialization or flexibility. We selected the individuals displayed in the figure by first subtracting the estimated standard deviation of all individuals as novices with their standard deviation as advanced hunters, and then selecting those with the greatest difference using the 25% and 75% quantiles. Individuals on panel A have an increase in specialization equal or greater than 0.2 standard deviations, while those on panel B have an increase in flexibility equal or greater than 0.28 standard deviations.
+**Figure 2.** Posterior median differences and credible intervals comparing the parameter values predicted by the MDHGLM between each predator experience level. Each panel represent the experience levels that are compared. The parameter being compared is displayed on the y axis (e.g. whether the standard deviation of predator ID on the mean differs when the population was intermediate vs novice), and the difference is displayed on the x axis.
 
-**Figure 3.** Correlation matrices of the MDHGLM relating the mean and intra individual variability (IIV) in speed of the predators, the mean and IIV in speed of the prey they encountered, and mean hunting success. Larger dark blue circles indicate stronger positive correlations (positive values on the color legend), while larger dark red circles indicate stronger negative correlations (negative values on the color legend). A) Correlations when predators were novice hunters. B) Correlations when predators were at an intermediate level of experience. C) Correlations when predators were advanced hunters.
+**Figure 3.** Individual behavioural distribution of the predators' speed drawn from the MDHGLM estimates for individuals that had (A) the greatest increase in specialization and (B) the greatest increase in flexibility. The background (gray) distributions are for when individuals were novice hunters, and the foreground (blue) distributions with solid contour lines are for when they were advanced hunters. Both figure panels are ordered by ascending degree of increase in either specialization or flexibility. We selected the individuals displayed in the figure by first subtracting the estimated standard deviation of all individuals as novices with their standard deviation as advanced hunters, and then selecting those with the greatest difference using the 25% and 75% quantiles. Individuals on panel A have an increase in specialization equal or greater than 0.2 standard deviations, while those on panel B have an increase in flexibility equal or greater than 0.28 standard deviations.
+
+**Figure 4.** Correlation matrices of the MDHGLM relating the mean and intra individual variability (IIV) in speed of the predators, the mean and IIV in speed of the prey they encountered, and mean hunting success. Larger dark blue circles indicate stronger positive correlations (positive values on the color legend), while larger dark red circles indicate stronger negative correlations (negative values on the color legend). A) Correlations when predators were novice hunters. B) Correlations when predators were advanced hunters. C) Posterior median differences and credible intervals comparing the correlations between traits when predators were advanced vs novice. The median difference is displayed on the x axis and the trait correlations being compared are displayed on the y axis.
 
 \newpage
 
@@ -429,6 +432,16 @@ knitr::include_graphics(
 
 knitr::include_graphics(
   here::here("outputs", "04_outputs_figures", "figure3.png")
+)
+
+```
+
+\newpage
+
+```{r fig4, out.width = "100%", fig.cap = "**Figure 4**"}
+
+knitr::include_graphics(
+  here::here("outputs", "04_outputs_figures", "figure4.png")
 )
 
 ```

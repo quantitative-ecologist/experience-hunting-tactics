@@ -5,7 +5,7 @@ title: |
     
 output: 
   word_document:
-    reference_docx: Chapter2-styles.docx
+    reference_docx: Chapter2-styles-appendix.docx
     fig_caption: yes
 bibliography: references2.bib
 csl: ecology.csl
@@ -22,6 +22,12 @@ library(officer)
 library(dplyr)
 
 ```
+
+Journal name : Ecology 
+
+Authors : Maxime Fraser Franco, Francesca Santostefano, Julien G. A. Martin, Clint D. Kelly, Pierre-Olivier Montiglio
+
+
 
 \newpage
 
