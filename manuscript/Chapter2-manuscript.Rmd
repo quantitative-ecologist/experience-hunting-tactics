@@ -203,10 +203,12 @@ Our results confirm that individual predators display substantial differences in
 
 We predicted that the relationship between hunting success and experience would vary among predators because they should differ in the type of prey that they encounter. However, after controlling for the mean speed of the prey group within a match, we did not find evidence confirming this prediction, because differences among predators remained stable (Figure 1B).
 
+parler du % de joueurs qui ont eu une augmentation vs % qui ont eu une diminution
+
 
 ## Effect of experience on the development of behavioural specialization
 
-At the population level, predators did not change their mean speed with experience (i.e. intercept of the mean predator speed; Table 2). Moreover, there was no directional increase in foraging flexibility or specialization with experience. Indeed, the observed pattern is more complex given that predators became more flexible with experience at intermediate levels of experience (i.e. intercept of sigma for predator speed is larger for intermediates than novices; Table 2 and Appendix S1: Figure S3), but then return to novice-levels of flexibility with advanced experience (i.e. intercept of sigma for predator speed is smaller for advanced players than intermediates; Table 2 and Appendix S1: Figure S3). Thus, our analyses suggest that population-level behavioural specialization changes nonlinearly (quadratic) with experience rather than linearly.
+At the population level, predators did not change their mean speed with experience (i.e. intercept of the mean predator speed; Table 2 and Appendix S1: Figure S3). Moreover, there was no directional increase in foraging flexibility or specialization with experience. Indeed, the observed pattern is more complex given that predators became more flexible with experience at intermediate levels of experience (i.e. intercept of sigma for predator speed is larger for intermediates than novices; Table 2 and Appendix S1: Figure S3), but then return to novice-levels of flexibility with advanced experience (i.e. intercept of sigma for predator speed is smaller for advanced players than intermediates; Table 2 and Appendix S1: Figure S3). Thus, our analyses suggest that population-level behavioural specialization changes nonlinearly (quadratic) with experience rather than linearly.
 
 At the individual level, we detected differences in the mean movement speed among predators (i.e. the intercept of the mean speed for the predator ID; Table 3). These differences remained stable from the novice to the intermediate stages, and then increased at the advanced stage to reach a level higher than when predators were novice (Table 3 and Appendix S1: Figure S3). Predators displayed considerable differences in their degree of hunting specialization, and these differences increased with experience (i.e. the intercept of sigma for the predator ID increases with experience; Table 3 and Appendix S1: Figure S3). Thus, as individual predators gain experience, the population becomes more heterogeneous, with an assemblage of both specialist and flexible hunters. Moreover, some individual predators switched from a flexible to a specialized hunting tactic, and vice-versa, as they gained experience (Figure 2). Importantly, 12.6% of the predator population displayed a large change in foraging specialization/flexibility with experience (i.e. $\ge$0.2 change in standard deviation), 44.7% displayed lower changes (i.e. >0.05 and <0.2 change in standard deviation), while 42.7% remained relatively stable (i.e. $\le$0.05 change in standard deviation).
 
@@ -226,6 +228,8 @@ We did not detect strong correlations between the predators' mean speed and thei
 
 
 # DISCUSSION
+
+retravailler ici pour moins faire comme si il y avait un gros cluster. C'est surtout un continuum.
 
 Hunting experience is predicted to increase predator foraging specialization when resources are predictable [@Estes.etal2003;@Tinker.etal2008;@Tinker.etal2009]. However, when resources vary, others predict that learning with experience should increase behavioural flexibility [@Stephens1993;@Ishii.Shimada2010;@Mery.Burns2010;@Snell-Rood2013;@Wright.etal2022]. Our results show that there was no directional increase in either behavioural specialization or flexibility with experience at the population level. Instead, individual predators developed their own expertise and behavioural trajectory over successive encounters with prey; some specialized in fast-paced hunting, and others adopted a slower and more flexible tactic with experience. Specialized cursorial hunters encountered similar groups of prey while slower and flexible hunters encountered varying groups of prey, with both achieving similar success over the study period. With experience, predators increasingly matched their tactic to the speed of the prey that they encountered, which simultaneously relaxed the negative consequences of encountering faster prey. Together, our observations suggest that predators in *DBD* learn to adjust their hunting tactic to the behaviour of the prey that they encounter throughout their lifetime in the game.
 
@@ -284,12 +288,18 @@ The authors declare no conflict of interest
 
 # Open the loo table
 path <- file.path(here::here("outputs", "02_outputs_model-validation"))
-loo_tab <- data.table(readRDS(file.path(path, "A1-3_lootable.rds")))
+loo_tab <- data.table(readRDS(file.path(path, "A1-3_loo-cv-table.rds")))
 
 # Add model column
-loo_tab[, model := c("Group-level smoothers only",
-                     "Global smoother + group-level smoothers",
-                     "Global smoother only")]
+loo_tab[
+  , model := c(
+    "prey speed + group-level smoothers",
+    "predator xp + prey speed + group-level smoothers",
+    "group-level smoothers",
+    "predator xp + group-level smoothers",
+    "predator xp"
+    )
+ ]
 
 # Reorder columns
 loo_tab <- loo_tab[, c(9, 1:8)]
@@ -352,13 +362,16 @@ tab1 <- loo_tab %>%
     i = 1, j = 1,
     part = "header",
     value = as_paragraph(
-      "* 'elpd' refers to the expected log pointwise density and is the value chosen to select the best model."),
+      as_sup("a "),
+      "'elpd' refers to the expected log pointwise density and is the value chosen to select the best model.",
+      as_sup("\nb "),
+      "'xp' is an acronym for experience"),
     ref_symbols = " "
   ) %>%
 
   # Table caption
   set_caption(
-    caption = "Table 1. Leave-one-out cross-validation table of the three hierarchical GAMMs relating hunting success to player experience.",
+    caption = "Table 1. Leave-one-out cross-validation table of the five hierarchical GAMMs relating hunting success to player experience.",
     style = "Table Caption"
   ) %>%
 
@@ -368,472 +381,6 @@ tab1 <- loo_tab %>%
   fontsize(size = 12, part = "footer")
 
 tab1
-
-# ===========================================================================
-# ===========================================================================
-
-```
-
-\newpage
-
-```{r table2, ft.align = "left"}
-
-# ===========================================================================
-# 1. Import the model fit
-# ===========================================================================
-
-
-# path
-path <- file.path(here::here("outputs"))
-
-# Import the model
-fit <- readRDS(
-  file.path(path, "01_outputs_models", "B1_DHMLM-no-outlier.rds")
-)
-
-# ===========================================================================
-# ===========================================================================
-
-
-
-
-
-# ===========================================================================
-# 2. Fixed effects table
-# ===========================================================================
-
-
-# Prepare the table ---------------------------------------------------------
-
-# Extract the fixed effects from the model
-eff_tab <- data.table(fixef(fit), keep.rownames = TRUE)
-eff_tab <- eff_tab[, c(1, 2, 4:5)]
-
-# Rename variables
-setnames(
-  eff_tab,
-  c("rn", "Q2.5", "Q97.5"),
-  c("parameter", "lower_ci", "upper_ci")
-)
-
-# Add a column that specifies the experience level
-eff_tab[parameter %like% "novice", xp_level := "novice"]
-eff_tab[parameter %like% "interm", xp_level := "intermediate"]
-eff_tab[parameter %like% "advanced", xp_level := "advanced"]
-
-# Back transform success
-eff_tab[
-  parameter %like% "success",
-  c(2:4) := lapply(.SD, function(x) {plogis(x)}),
-  .SDcols = c(2:4)
-]
-
-# Back transform sigma
-eff_tab[
-  parameter %like% "sigma",
-  c(2:4) := lapply(.SD, function(x) {exp(x)}),
-  .SDcols = c(2:4)
-]
-
-# Round values to 3 digits
-eff_tab[, c(2:4) := round(eff_tab[, c(2:4)], digits = 2)]
-
-
-
-# Reorganize the table ------------------------------------------------------
-
-# reorder columns, and then rows based on xp level
-eff_tab <- eff_tab[, c(5, 1:4)]
-setorder(
-  eff_tab,
-  cols = -"xp_level"
-)
-
-# Create trait column
-eff_tab[
-  , trait := rep(c(
-    "predator speed", "predator speed",
-    "prey speed", "prey speed", "hunting success"),
-    6
-  )
-]
-
-# Rename parameter
-eff_tab[
-   , parameter := rep(
-      c(
-         rep(c("intercept (mean)", "intercept (sigma)"), 2),
-         "intercept (mean)",
-         rep(c("prey rank (mean)", "prey rank (sigma)"), 2),
-         "match duration (mean)"
-      ),
-      3
-   )
-]
-
-# Paste upper and lower ci with estimate
-eff_tab[, estimate := paste(format(Estimate, digits = 2), "(")]
-eff_tab[, estimate := paste(estimate, format(lower_ci, digits = 2), sep = "")]
-eff_tab[, estimate := paste(estimate, ",", sep = "")]
-eff_tab[, estimate := paste(estimate, format(upper_ci, digits = 2), sep = " ")]
-eff_tab[, estimate := paste(estimate, ")", sep = "")]
-eff_tab[, c("Estimate", "lower_ci", "upper_ci") := NULL]
-
-
-# Reshape
-eff_tab <- dcast(
-  eff_tab,
-  trait + parameter ~ xp_level,
-  value.var = "estimate"
-)
-
-# Reorder columns
-eff_tab <- eff_tab[, c(1, 2, 5, 4, 3)]
-
-# Reorder rows
-table <- eff_tab[c(3, 5, 4, 6, 7, 9, 8, 10, 1, 2)]
-
-# Because I can't align hunting success properly
-table[10, 1] <- " "
-
-# ===========================================================================
-# ===========================================================================
-
-
-
-
-
-# ===========================================================================
-# 3. Create the table using flextable
-# ===========================================================================
-
-# Prepare the table parameters ----------------------------------------------
-
-# Custom header
-my_header <- data.frame(
-  col_keys = c("trait", "parameter",
-               "novice", "intermediate", "advanced"),
-  line1 = c("Trait",
-            "Parameter",
-            "Novice",
-            "Intermediate",
-            "Advanced"),
-  stringsAsFactors = FALSE
-)
-
-# Custom theme
-my_theme <- function(x, ...) {
-  x <- colformat_double(x, big.mark = " ",
-                        decimal.mark = ".",
-                        digits = 2)
-  x <- border_remove(x)
-  std_border <- fp_border(width = 1, color = "black")
-  x <- hline_top(x, part = "all", border = std_border)
-  x <- hline_bottom(x, part = "all", border = std_border)
-  x <- width(x, j = 1, width = 2.84, unit = "cm")
-  x <- width(x, j = 2, width = 3.78, unit = "cm")
-  x <- width(x, j = c(3:5), width = 3.3, unit = "cm")
-}
-
-
-
-# Create the table ----------------------------------------------------------
-
-tab2 <-
-
-  # table structure
-  table %>%
-  select(trait, parameter,
-         novice, intermediate, advanced) %>%
-  flextable(col_keys = my_header$col_keys) %>%
-  set_header_df(mapping = my_header, key = "col_keys") %>%
-  my_theme() %>%
-
-  # Align repeated rows on column 1
-  merge_v(j = 1) %>%
-  valign(j = 1, valign = "top", part = "body") %>%
-
-  # Align text
-  align(align = "left", part = "all", j = 1) %>%
-  align(align = "left", part = "all", j = 2) %>%
-  align(align = "center", part = "all", j = 3) %>%
-  align(align = "center", part = "all", j = 4) %>%
-  align(align = "center", part = "all", j = 5) %>%
-
-  # Footnote
-  footnote(
-    i = 1, j = 1,
-    part = "header",
-    value = as_paragraph(
-      as_sup("a "),
-      "We exponentiated the dispersion parameters (i.e. sigma) which are estimated on a log scale. We back-transformed the hunting success values, estimated on a logit scale, back to a probability scale.",
-      as_sup("\nb "),
-      "The intercept values on the mean part of the equation for all traits indicate mean behaviour and success at the population level. The intercept values on the dispersion (i.e. sigma) part of the equation for predator speed indicate behavioural specialization at the population level."
-    ),
-    ref_symbols = " "
-  ) %>%
-
-  # Table caption
-  set_caption(
-    caption = "Table 2. Posterior means and 95% credible intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
-    style = "Table Caption"
-  ) %>%
-
-  # Font options
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 10, part = "all") %>%
-  fontsize(size = 12, part = "footer")
-
-tab2
-
-# ===========================================================================
-# ===========================================================================
-
-```
-
-\newpage
-
-```{r table3, ft.align = "left"}
-
-# ===========================================================================
-# 1. Import the model fit
-# ===========================================================================
-
-# path
-path <- file.path(here::here("outputs"))
-
-# Import the model
-fit <- readRDS(
-  file.path(path, "01_outputs_models", "B1_DHMLM-no-outlier.rds")
-)
-
-# ===========================================================================
-# ===========================================================================
-
-
-
-
-
-# ===========================================================================
-# 2. Random effects table
-# ===========================================================================
-
-
-# Prepare data --------------------------------------------------------------
-
-# Extract the random effect variances
-sd_draws <- data.table(
-   as_draws_df(
-      fit, variable = "^sd_", regex = TRUE
-   )
-)
-
-sd_draws[, c(28:30) := NULL]
-
-
-
-# Calculate parameters -------------------------------------------------------
-
-# Take the exponent of sigma parameters
-sd_draws[
-   , c("sd_predator_id__sigma_speednovice_Intercept",
-       "sd_predator_id__sigma_speedinterm_Intercept",
-       "sd_predator_id__sigma_speedadvanced_Intercept",
-       "sd_predator_id__sigma_preyspeednovice_Intercept",
-       "sd_predator_id__sigma_preyspeedinterm_Intercept",
-       "sd_predator_id__sigma_preyspeedadvanced_Intercept"
-   )
-   := lapply(.SD, function(x) {exp(x)}),
-   .SDcols = c(
-      "sd_predator_id__sigma_speednovice_Intercept",
-      "sd_predator_id__sigma_speedinterm_Intercept",
-      "sd_predator_id__sigma_speedadvanced_Intercept",
-      "sd_predator_id__sigma_preyspeednovice_Intercept",
-      "sd_predator_id__sigma_preyspeedinterm_Intercept",
-      "sd_predator_id__sigma_preyspeedadvanced_Intercept"
-   )
-]
-
-
-
-# Reshape the table -----------------------------------------------------------
-
-ranef_tab <- melt(
-   sd_draws,
-   variable.name = "parameter"
-)
-
-
-
-# Summarize the values (means + 95% CI) --------------------------------------
-
-# Intervals
-lower_interval <- function(x) {
-  coda::HPDinterval(as.mcmc(x), 0.95)[1]
-}
-upper_interval <- function(x) {
-  coda::HPDinterval(as.mcmc(x), 0.95)[2]
-}
-
-
-# Summarize values
-ranef_tab[, ":=" (mean = mean(value),
-                  lower_ci = lower_interval(value),
-                  upper_ci = upper_interval(value)),
-          by = .(parameter)]
-
-ranef_tab <- unique(ranef_tab[, .(parameter, mean, lower_ci, upper_ci)])
-ranef_tab[, c(2:4) := round(ranef_tab[, c(2:4)], digits = 2)]
-
-
-
-# Rearrange the table --------------------------------------------------------
-
-# Add a column that specifies the experience level
-ranef_tab[parameter %like% "novice", xp_level := "novice"]
-ranef_tab[parameter %like% "interm", xp_level := "intermediate"]
-ranef_tab[parameter %like% "advanced", xp_level := "advanced"]
-
-
-# Paste upper and lower ci with estimate
-ranef_tab[, estimate := paste(format(mean, digits = 2), "(")]
-ranef_tab[, estimate := paste(estimate, format(lower_ci, digits = 2), sep = "")]
-ranef_tab[, estimate := paste(estimate, ",", sep = "")]
-ranef_tab[, estimate := paste(estimate, format(upper_ci, digits = 2), sep = " ")]
-ranef_tab[, estimate := paste(estimate, ")", sep = "")]
-ranef_tab[, c("mean", "lower_ci", "upper_ci") := NULL]
-
-# Parameter column
-ranef_tab[
-   , parameter1 := ifelse(
-       parameter %like% "predator_id__sigma",
-       "predator ID (sigma)",
-       "predator ID (mean)"
-   )
-]
-ranef_tab[parameter %like% "avatar", parameter1 := "avatar (mean)"]
-ranef_tab[parameter %like% "env", parameter1 := "environment (mean)"]
-
-# Trait column
-ranef_tab[
-   , trait := ifelse(
-       parameter %like% "preyspeed",
-       "prey speed",
-       "predator speed"
-   )
-]
-ranef_tab[parameter %like% "success", trait := "hunting success"]
-
-# Remove old parameter column and replace by new
-ranef_tab[, parameter := NULL]
-setnames(ranef_tab, "parameter1", "parameter")
-
-# Reshape
-ranef_tab <- dcast(
-   ranef_tab,
-   trait + parameter ~ xp_level,
-   value.var = "estimate"
-)
-
-# Reorder columns
-ranef_tab <- ranef_tab[, c(1, 2, 5, 4, 3)]
-
-# Reorder rows
-table <- ranef_tab[c(2:9, 1)]
-
-# ===========================================================================
-# ===========================================================================
-
-
-
-
-
-# ===========================================================================
-# 3. Create the table using flextable
-# ===========================================================================
-
-# Prepare the table parameters ----------------------------------------------
-
-# Custom header
-my_header <- data.frame(
-  col_keys = c("trait", "parameter",
-               "novice", "intermediate", "advanced"),
-  line1 = c("Trait",
-            "Parameter",
-            "Novice",
-            "Intermediate",
-            "Advanced"),
-  stringsAsFactors = FALSE
-)
-
-# Custom theme
-my_theme <- function(x, ...) {
-  x <- colformat_double(x, big.mark = " ",
-                        decimal.mark = ".",
-                        digits = 2)
-  x <- set_table_properties(x, layout = "autofit")
-  x <- border_remove(x)
-  std_border <- fp_border(width = 1, color = "black")
-  x <- hline_top(x, part = "all", border = std_border)
-  x <- hline_bottom(x, part = "all", border = std_border)
-}
-
-
-
-# Create the table ----------------------------------------------------------
-
-tab3 <-
-  
-  # table structure
-  table %>%
-  select(trait, parameter,
-         novice, intermediate, advanced) %>%
-  flextable(col_keys = my_header$col_keys) %>%
-  set_header_df(mapping = my_header, key = "col_keys") %>%
-  my_theme() %>%
-  
-  # Align repeated rows on column 1
-  merge_v(j = 1) %>%
-  valign(j = 1, valign = "top", part = "body") %>%
-  # font
-  fontsize(size = 10, part = "all") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  
-  # Align text
-  align(align = "left", part = "all", j = 1) %>%
-  align(align = "left", part = "all", j = 2) %>%
-  align(align = "center", part = "all", j = 3) %>%
-  align(align = "center", part = "all", j = 4) %>%
-  align(align = "center", part = "all", j = 5) %>%
-  
-  # Add footnote
-  footnote(
-    i = 1, j = 1,
-    part = "header",
-    value = as_paragraph(
-      as_sup("a "),
-      "We exponentiated the dispersion parameters (i.e. sigma) which are estimated on a log scale. All the reported values are standard deviations.",
-      as_sup("\nb "),
-      "The intercept values on the mean part of the equation for all traits indicate among individual differences in mean behaviour and success.",
-      as_sup("\nc "),
-      "The intercept values on the dispersion (i.e. sigma) part of the equation for predator speed indicate among individual differences in behavioural specialization. For prey speed and hunting success, they indicate among individual differences in the variability of prey encounters and variability in hunting success, respectively."
-    ),
-    ref_symbols = " "
-  ) %>%
-
-  # Add table caption
-  set_caption(
-    caption = "Table 3. Posterior means and 95% credible intervals of the random effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
-    style = "Table Caption"
-  ) %>%
-
-  # Font options
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 10, part = "all") %>%
-  fontsize(size = 12, part = "footer")
-
-tab3
-
 # ===========================================================================
 # ===========================================================================
 
