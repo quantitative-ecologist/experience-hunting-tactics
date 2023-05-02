@@ -20,10 +20,15 @@
  library(ggpubr)
  library(viridis)
 
- path <- file.path(getwd(), "outputs", "02_outputs_models")
+ path <- file.path(getwd(), "outputs", "01_outputs_models")
 
- mod1 <- readRDS(file.path(path, "02A3_GAMM.rds"))
- mod2 <- readRDS(file.path(path, "02A3_prey-GAMM.rds"))
+
+
+
+ modA2 <- readRDS(file.path(path, "A2_GAMM.rds"))
+ modA3 <- readRDS(file.path(path, "A3_GAMM.rds"))
+ modA2_prey <- readRDS(file.path(path, "A2_GAMM-prey.rds"))
+ modA3_prey <- readRDS(file.path(path, "A3_GAMM-prey.rds"))
 
 
 
@@ -44,7 +49,7 @@
 
 # Post processing preparations for custom family ---------------------------
 
- expose_functions(mod1, vectorize = TRUE)
+ expose_functions(modA2, vectorize = TRUE)
 
  # Define the log likelihood function
  log_lik_beta_binomial2 <- function(i, prep) {
@@ -83,13 +88,13 @@
     # axis ticks lenght
     axis.ticks.length = unit(.15, "cm"),
     # axis ticks width
-    axis.ticks = element_line(size = 0.90,
+    axis.ticks = element_line(linewidth = 0.90,
                               color = "black"),
     # axis titles size
     axis.title = element_text(size = 16,
                               face = "plain",
                               color = "black"),
-    axis.line = element_line(size = 0.95,
+    axis.line = element_line(linewidth = 0.95,
                              color = "black"),
     legend.position = "none",
     panel.grid = element_blank(),
@@ -109,26 +114,86 @@
 
 
 
-# Prepare the plot ---------------------------------------------------------
+# Prepare the plots --------------------------------------------------------
 
- # Using built-in function
- # With conditional_smooths, the predictions are on the link scale
- fig1 <- conditional_smooths(mod1, method = "fitted", robust = FALSE)
- fig2 <- conditional_smooths(mod2, method = "fitted", robust = FALSE)
+ # Group-level smooths model A2
+ tabA2_a <- conditional_effects(
+  modA2, method = "fitted",
+  effects = "Zcumul_xp:predator_id",
+  robust = FALSE, re_formula = NULL
+ )
+ tabA2_a <- data.table(tabA2_a[[1]])
 
- # Extract values in a table
- tab1 <- fig1[[1]]
- tab2 <- fig2[[1]]
+ # Cumulative XP global trend model A2
+ tabA2_b <- conditional_effects(
+  modA2, method = "fitted",
+  robust = FALSE, re_formula = NULL,
+  effects = "Zcumul_xp",
+  conditions = data.frame(predator_id = NA)
+ )
+ tabA2_b <- data.table(tabA2_b[[1]])
 
- # Transform as data.table
-  tab1 <- data.table(tab1)
-  tab2 <- data.table(tab2)
+ # Group-level smooths model A2prey
+ tabA2_prey_a <- conditional_effects(
+  modA2_prey, method = "fitted",
+  effects = "Zcumul_xp:predator_id",
+  robust = FALSE, re_formula = NULL
+ )
+ tabA2_prey_a <- data.table(tabA2_prey_a[[1]])
 
+ # Cumulative XP global trend model A2prey
+ tabA2_prey_b <- conditional_effects(
+  modA2_prey, method = "fitted",
+  robust = FALSE, re_formula = NULL,
+  effects = "Zcumul_xp",
+  conditions = data.frame(predator_id = NA)
+ )
+ tabA2_prey_b <- data.table(tabA2_prey_b[[1]])
+
+ # Group-level smooths model A3
+ tabA3 <- conditional_effects(
+  modA3, method = "fitted",
+  effects = "Zcumul_xp:predator_id",
+  robust = FALSE, re_formula = NULL
+ )
+ tabA3 <- data.table(tabA3[[1]])
+
+ # Group-level smooths model A3prey
+ tabA3_prey <- conditional_effects(
+  modA3_prey, method = "fitted",
+  effects = "Zcumul_xp:predator_id",
+  robust = FALSE, re_formula = NULL
+ )
+ tabA3_prey <- data.table(tabA3_prey[[1]])
+
+
+
+
+# Transform values --------------------------------------------------------
 
  # Back transform x-axis values
  sequence <- (seq(0, 500, 100) - mean(data$cumul_xp_pred))
  standev <- sd(data$cumul_xp_pred)
  scaled_breaks <- sequence / standev
+
+ # List the tables
+ tables <- list(
+  tabA2_a, tabA2_b, tabA2_prey_a,
+  tabA2_prey_b, tabA3, tabA3_prey
+ )
+ names(tables) <- c(
+  "tabA2_a", "tabA2_b", "tabA2_prey_a",
+  "tabA2_prey_b", "tabA3", "tabA3_prey"
+ )
+
+ # Function to apply transformation
+ # Computes non standardized cumulative XP
+ func <- function(x) {
+   x[, cumul_xp := (Zcumul_xp * standev) + mean(data$cumul_xp_pred)]
+ }
+
+ # Apply function
+ lapply(tables, func)
 
 
 
@@ -137,27 +202,27 @@
  # Extract player IDs with their total XP from the original data
  xp <- unique(data[, .(predator_id, total_xp_pred)])
 
- # Compute non standardized cumulative XP
- tab1[, cumul_xp := (Zcumul_xp * standev) + mean(data$cumul_xp_pred)]
- tab2[, cumul_xp := (Zcumul_xp * standev) + mean(data$cumul_xp_pred)]
-
- # Now merge the two tables adding the total XP
- tab1 <- merge(tab1, xp, by = "predator_id")
- tab2 <- merge(tab2, xp, by = "predator_id")
+ # Merge the two tables adding the total XP
+ tabA2_a <- merge(tabA2_a, xp, by = "predator_id")
+ tabA3 <- merge(tabA3, xp, by = "predator_id")
+ tabA2_prey_a <- merge(tabA2_prey_a, xp, by = "predator_id")
+ tabA3_prey <- merge(tabA3_prey, xp, by = "predator_id")
 
  # Cut all matches where fitted values are above total XP
- tab1 <- tab1[cumul_xp <= total_xp_pred, ]
- tab2 <- tab2[cumul_xp <= total_xp_pred, ]
+ tabA2_a <- tabA2_a[cumul_xp <= total_xp_pred]
+ tabA3 <- tabA3[cumul_xp <= total_xp_pred]
+ tabA2_prey_a <- tabA2_prey_a[cumul_xp <= total_xp_pred, ]
+ tabA3_prey <- tabA3_prey[cumul_xp <= total_xp_pred, ]
 
 
 
 # Produce the plot --------------------------------------------------------
 
- gamm_plot1 <- ggplot(tab1,
+ plotA2_a <- ggplot(tabA2_a,
                       aes(x = Zcumul_xp,
-                          y = plogis(estimate__),
+                          y = estimate__ / 4,
                           color = predator_id)) +
-    geom_line(size = 1) +
+    geom_line(linewidth = 1) +
     scale_color_viridis(discrete = TRUE, option = "D") + #B
     ylab("Hunting success\n") +
     scale_y_continuous(breaks = seq(0, 1, 0.25),
@@ -167,23 +232,30 @@
     xlab("\nCumulative experience") +
     custom_theme
 
- #gamm_plot1 <- ggplot(tab1,
- #                     aes(x = Zcumul_xp,
- #                         y = plogis(estimate__))) +
- #   geom_line(aes(alpĥa = predator_id), size = 1) +
- #   ylab("Hunting success\n") +
- #   scale_y_continuous(breaks = seq(0, 1, 0.25),
- #                      limits = c(0, 1)) +
- #   scale_x_continuous(breaks = scaled_breaks,
- #                      labels = seq(0, 500, 100)) +
- #   xlab("\nCumulative experience") +
- #   custom_theme
+ plotA2_b <- ggplot(
+   tabA2_b,
+   aes(x = Zcumul_xp,
+       y = estimate__ / 4)
+   ) +
+   geom_ribbon(
+     aes(
+       ymin = lower__ / 4,
+       ymax = upper__ / 4),
+     fill = "gray") +
+   geom_line(linewidth = 1) +
+   ylab("Hunting success\n") +
+   scale_y_continuous(breaks = seq(0, 1, 0.25),
+                      limits = c(0, 1)) +
+   scale_x_continuous(breaks = scaled_breaks,
+                      labels = seq(0, 500, 100)) +
+   xlab("\nCumulative experience") +
+   custom_theme
 
- gamm_plot2 <- ggplot(tab2,
+ plotA2p_a <- ggplot(tabA2_prey_a,
                       aes(x = Zcumul_xp,
-                          y = plogis(estimate__),
+                          y = estimate__ / 4,
                           color = predator_id)) +
-    geom_line(size = 1) +
+    geom_line(linewidth = 1) +
     scale_color_viridis(discrete = TRUE, option = "D") + #B
     ylab("Hunting success\n") +
     scale_y_continuous(breaks = seq(0, 1, 0.25),
@@ -193,38 +265,30 @@
     xlab("\nCumulative experience") +
     custom_theme
 
+ plotA2p_b <- ggplot(
+   tabA2_prey_b,
+   aes(x = Zcumul_xp,
+       y = estimate__ / 4)
+   ) +
+   geom_ribbon(
+     aes(
+       ymin = lower__ / 4,
+       ymax = upper__ / 4),
+     fill = "gray") +
+   geom_line(linewidth = 1) +
+   ylab("Hunting success\n") +
+   scale_y_continuous(breaks = seq(0, 1, 0.25),
+                      limits = c(0, 1)) +
+   scale_x_continuous(breaks = scaled_breaks,
+                      labels = seq(0, 500, 100)) +
+   xlab("\nCumulative experience") +
+   custom_theme
 
-
-# Plot with transparent background ----------------------------------------
-
- # With transparent background and white lines
- custom_theme <- theme(
-    # axis values size
-    axis.text = element_text(face = "plain",
-                             size = 14,
-                             color = "white"),
-    # axis ticks lenght
-    axis.ticks.length = unit(.15, "cm"),
-    # axis ticks width
-    axis.ticks = element_line(size = 0.90,
-                              color = "white"),
-    # axis titles size
-    axis.title = element_text(size = 16,
-                              face = "plain",
-                              color = "white"),
-    axis.line = element_line(size = 0.95,
-                             color = "white"),
-    legend.position = "none",
-    panel.grid = element_blank(),
-    panel.background = element_rect(fill = "transparent"),
-    plot.background = element_rect(fill = "transparent", color = NA)
- )
-
- gamm_plot1T <- ggplot(tab1,
+ plotA3_a <- ggplot(tabA3,
                       aes(x = Zcumul_xp,
-                          y = plogis(estimate__),
+                          y = estimate__ / 4,
                           color = predator_id)) +
-    geom_line(size = 1) +
+    geom_line(linewidth = 1) +
     scale_color_viridis(discrete = TRUE, option = "D") + #B
     ylab("Hunting success\n") +
     scale_y_continuous(breaks = seq(0, 1, 0.25),
@@ -233,12 +297,12 @@
                        labels = seq(0, 500, 100)) +
     xlab("\nCumulative experience") +
     custom_theme
- 
- gamm_plot2T <- ggplot(tab2,
+
+ plotA3p_b <- ggplot(tabA3_prey,
                       aes(x = Zcumul_xp,
-                          y = plogis(estimate__),
+                          y = estimate__ / 4,
                           color = predator_id)) +
-    geom_line(size = 1) +
+    geom_line(linewidth = 1) +
     scale_color_viridis(discrete = TRUE, option = "D") + #B
     ylab("Hunting success\n") +
     scale_y_continuous(breaks = seq(0, 1, 0.25),
@@ -266,42 +330,21 @@
 
  # Arrange paneled figure
  figure <- ggarrange(
-    NULL, gamm_plot1, NULL, gamm_plot2,
-    ncol = 4, nrow = 1,
-    labels = c("(A)", "", "(B)", ""),
-    widths = c(0.15, 1.5, 0.15, 1.5)
+    NULL, plotA3_a, NULL, plotA2p_a, NULL, plotA2p_b,
+    ncol = 6, nrow = 1,
+    labels = c("(A)", "", "(B)", "", "(C)"),
+    widths = c(0.15, 1.5, 0.15, 1.5, 0.15, 1.5)
  )
 
 # Export the figure -----------------------------------------------------
 
- path <- file.path(getwd(), "outputs", "05_outputs_figures")
+ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
  ggexport(figure,
-          filename = file.path(path, "05_figure1.png"),
-          width = 3000,
+          filename = file.path(path, "figure1.png"),
+          width = 4500,
           height = 1200,
           res = 300)
-
-
- # Transparent figure
- path <- file.path(getwd(), "tests")
-
- # Arrange paneled figure
- figureT <- ggarrange(
-   NULL, gamm_plot1T, NULL, gamm_plot2T,
-   ncol = 4, nrow = 1,
-   labels = c("(A)", "", "(B)", ""),
-   font.label = list(color = "white"),
-   widths = c(0.15, 1.5, 0.15, 1.5)
- )
-
- ggsave(figureT,
-        filename = file.path(path, "05_figure1-transparent.png"),
-        width = 3000,
-        height = 1200,
-        dpi = 300,
-        units = "px",
-        bg = "transparent")
 
 # ==========================================================================
 # ==========================================================================
