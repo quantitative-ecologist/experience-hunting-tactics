@@ -13,4 +13,4 @@ module load r-bundle-bioconductor/3.14
 module load r/4.1.2
 
 #export R_LIBS=~/.local/R/$EBVERSIONR/
-Rscript 02B_DHMLM-trunc.R
+Rscript B1_DHMLM-trunc.R
