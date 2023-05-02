@@ -127,7 +127,7 @@
 
   # Export to powerpoint
  graph2ppt(
-    file = file.path(path, "05_figure3raw-test.pptx"),
+    file = file.path(path, "figure4-raw.pptx"),
     width = 10, height = 6
  )
 
@@ -146,7 +146,7 @@
 
  # add 2nd slide
  graph2ppt(
-    file = file.path(path, "05_figure3raw-test.pptx"),
+    file = file.path(path, "figure4-raw.pptx"),
     width = 10, height = 6, append = TRUE
  )
 
@@ -165,7 +165,7 @@
 
  # add 3rd slide
  graph2ppt(
-    file = file.path(path, "05_figure3raw-test.pptx"),
+    file = file.path(path, "figure4-raw.pptx"),
     width = 10, height = 6, append = TRUE
  )
 
