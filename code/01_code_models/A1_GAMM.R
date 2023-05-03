@@ -40,13 +40,6 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
                          "cumul_xp_pred",
                          "prey_avg_speed"))
 
-# Project path for testing
-#data <- fread("./data/FraserFrancoetalXXXX-data.csv",
-#              select = c("predator_id",
-#                         "hunting_success",
-#                         "game_duration",
-#                         "cumul_xp_pred"))
-
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
 
@@ -111,9 +104,9 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 
 model_formula <- brmsformula(
   hunting_success | vint(4) ~
-      s(Zcumul_xp) +
-      s(predator_id, bs = "re") +
-      Zgame_duration
+    s(Zcumul_xp) +
+    s(predator_id, bs = "re") +
+    Zgame_duration
 )
 
 
@@ -122,7 +115,7 @@ model_formula <- brmsformula(
 
 priors <- c(
   # priors on fixed effects
-  set_prior("normal(0, 1)",
+  set_prior("normal(1, 0.5)",
             class = "b",
             coef = "Zgame_duration"),
   set_prior("normal(0, 2)",
@@ -131,13 +124,9 @@ priors <- c(
   # prior on the intercept
   set_prior("normal(0, 0.5)",
             class = "Intercept"),
-  # prior on sds predator_id
+  # prior on sds parameters
   set_prior("normal(0, 0.5)",
             class = "sds"),
-  # priors on smooth terms
-  #set_prior("cauchy(0, 0.5)",
-  #          class = "sds",
-  #          coef = "s(Zcumul_xp)"),
   # priors on phi
   set_prior("normal(2, 0.5)",
             class = "phi")

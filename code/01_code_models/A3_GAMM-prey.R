@@ -41,13 +41,6 @@ data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
                          "game_duration",
                          "cumul_xp_pred"))
 
-# Project path for testing
-#data <- fread("./data/FraserFrancoetalXXXX-data.csv",
-#              select = c("predator_id",
-#                         "hunting_success"
-#                         "game_duration",
-#                         "cumul_xp_pred",))
-
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
 
@@ -111,10 +104,10 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 # Model formula ------------------------------------------------------------
 
 model_formula <- brmsformula(
-    hunting_success | vint(4) ~
-        s(Zcumul_xp, predator_id, bs = "fs", m = 2) +
-        s(Zprey_speed) +
-        Zgame_duration
+  hunting_success | vint(4) ~
+    s(Zcumul_xp, predator_id, bs = "fs", m = 2) +
+    Zgame_duration +
+    Zprey_speed
 )
 
 
@@ -123,15 +116,18 @@ model_formula <- brmsformula(
 
 priors <- c(
   # priors on fixed effects
-  set_prior("normal(0, 1)",
+  set_prior("normal(1, 0.5)",
             class = "b",
             coef = "Zgame_duration"),
-  #set_prior("normal(0, 2)",
-  #          class = "b",
-  #          coef = "sZcumul_xp_1"),
+  set_prior("normal(-1, 0.5)",
+            class = "b",
+            coef = "Zprey_speed"),
   # prior on the intercept
   set_prior("normal(0, 0.5)",
             class = "Intercept"),
+  # prior on sds parameters
+  set_prior("normal(0, 0.5)",
+            class = "sds"),
   # priors on phi
   set_prior("normal(2, 0.5)",
             class = "phi")
