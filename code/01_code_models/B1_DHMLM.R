@@ -343,10 +343,7 @@ priors <- c(
                      "speedadvanced",
                      "preyspeednovice",
                      "preyspeedinterm",
-                     "preyspeedadvanced",
-                     "successnovice",
-                     "successinterm",
-                     "successadvanced")),
+                     "preyspeedadvanced")),
   # priors on phi
   set_prior("normal(2, 1)",
             class = "phi",
