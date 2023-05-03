@@ -23,12 +23,12 @@
 
 # Prepare model draws --------------------------------------------------------------
 
- path <- file.path(getwd(), "outputs", "02_outputs_models")
+ path <- file.path(getwd(), "outputs", "01_outputs_models")
  
  # Import model in R session
- mod1 <- readRDS(file.path(path, "02A1_GAMM.rds"))
- mod2 <- readRDS(file.path(path, "02A2_GAMM.rds"))
- mod3 <- readRDS(file.path(path, "02A3_GAMM.rds"))
+ mod1 <- readRDS(file.path(path, "A1_GAMM.rds"))
+ mod2 <- readRDS(file.path(path, "A2_GAMM.rds"))
+ mod3 <- readRDS(file.path(path, "A3_GAMM.rds"))
  
  
  # Extract posterior draws
