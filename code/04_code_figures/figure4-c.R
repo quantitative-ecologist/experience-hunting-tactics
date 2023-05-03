@@ -169,18 +169,17 @@ fig <- ggplot(
   theme(
     axis.title.x = element_blank(),
     axis.text.x = element_text(
-      face = "plain", size = 10,
-      color = "black"),
-    axis.text.y = element_text(
       face = "plain", size = 11,
       color = "black"),
-    axis.title = element_text(size = 13, face = "plain", color = "black"),
-    strip.text = element_text(size = 11),
+    axis.text.y = element_text(
+      face = "plain", size = 12,
+      color = "black"),
+    axis.title = element_text(size = 15, face = "plain", color = "black"),
     panel.grid = element_blank(),
     legend.position = "bottom",
     legend.key = element_rect(fill = "transparent"),
-    legend.title = element_text(size = 13),
-    legend.text = element_text(size = 11)
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 13)
   )
 
 fig
