@@ -76,31 +76,6 @@
    mu * trials
  }
 
-
-
-# Setup a custom theme for the plot ----------------------------------------
-
- custom_theme <- theme(
-    # axis values size
-    axis.text = element_text(face = "plain",
-                             size = 14,
-                             color = "black"),
-    # axis ticks lenght
-    axis.ticks.length = unit(.15, "cm"),
-    # axis ticks width
-    axis.ticks = element_line(linewidth = 0.90,
-                              color = "black"),
-    # axis titles size
-    axis.title = element_text(size = 16,
-                              face = "plain",
-                              color = "black"),
-    axis.line = element_line(linewidth = 0.95,
-                             color = "black"),
-    legend.position = "none",
-    panel.grid = element_blank(),
-    panel.background = element_blank()
- )
-
 # ==========================================================================
 # ==========================================================================
 
@@ -214,6 +189,31 @@
  tabA2_prey_a <- tabA2_prey_a[cumul_xp <= total_xp_pred, ]
  tabA3_prey <- tabA3_prey[cumul_xp <= total_xp_pred, ]
 
+ 
+ 
+# Setup a custom theme for the plot ----------------------------------------
+ 
+ custom_theme <- theme(
+   # axis values size
+   axis.text = element_text(face = "plain",
+                            size = 14,
+                            color = "black"),
+   # axis ticks lenght
+   axis.ticks.length = unit(.15, "cm"),
+   # axis ticks width
+   axis.ticks = element_line(linewidth = 0.90,
+                             color = "black"),
+   # axis titles size
+   axis.title = element_text(size = 16,
+                             face = "plain",
+                             color = "black"),
+   axis.line = element_line(linewidth = 0.95,
+                            color = "black"),
+   legend.position = "none",
+   panel.grid = element_blank(),
+   panel.background = element_blank()
+ )
+
 
 
 # Produce the plot --------------------------------------------------------
@@ -278,7 +278,8 @@
      aes(label = paste("y =", round(min(tabA2_prey_b$estimate__ / 4), digits = 2)),
          y = min(tabA2_prey_b$estimate__ / 4) + 0.15,
          x = min(tabA2_prey_b$Zcumul_xp) + 0.5),
-     color = "#5ec962"
+     color = "#5ec962",
+     size = 5
      ) +
    geom_vline(
      xintercept = tabA2_prey_b[which.max(estimate__), Zcumul_xp],
@@ -288,7 +289,8 @@
      aes(label = paste("y =", round(max(tabA2_prey_b$estimate__ / 4), digits = 2)),
          y = max(tabA2_prey_b$estimate__ / 4) + 0.10,
          x = tabA2_prey_b[which.max(estimate__), Zcumul_xp] + 0.5),
-     color = "#440154"
+     color = "#440154",
+     size = 5
    ) +
    geom_ribbon(
      aes(
