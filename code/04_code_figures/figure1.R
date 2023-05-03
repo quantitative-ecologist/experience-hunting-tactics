@@ -270,6 +270,26 @@
    aes(x = Zcumul_xp,
        y = estimate__ / 4)
    ) +
+   geom_vline(
+     xintercept = min(tabA2_prey_b$Zcumul_xp),
+     lty = "dashed",
+     color = "#5ec962") +
+   geom_text(
+     aes(label = paste("y =", round(min(tabA2_prey_b$estimate__ / 4), digits = 2)),
+         y = min(tabA2_prey_b$estimate__ / 4) + 0.15,
+         x = min(tabA2_prey_b$Zcumul_xp) + 0.5),
+     color = "#5ec962"
+     ) +
+   geom_vline(
+     xintercept = tabA2_prey_b[which.max(estimate__), Zcumul_xp],
+     lty = "dashed",
+     color = "#440154") +
+   geom_text(
+     aes(label = paste("y =", round(max(tabA2_prey_b$estimate__ / 4), digits = 2)),
+         y = max(tabA2_prey_b$estimate__ / 4) + 0.10,
+         x = tabA2_prey_b[which.max(estimate__), Zcumul_xp] + 0.5),
+     color = "#440154"
+   ) +
    geom_ribbon(
      aes(
        ymin = lower__ / 4,
@@ -283,7 +303,7 @@
                       labels = seq(0, 500, 100)) +
    xlab("\nCumulative experience") +
    custom_theme
-
+ 
  plotA3_a <- ggplot(tabA3,
                       aes(x = Zcumul_xp,
                           y = estimate__ / 4,
