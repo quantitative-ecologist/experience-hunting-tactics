@@ -178,6 +178,12 @@ table <- merge(
 # Extract players with the greatest increase and decrease in success
 quantile(table$difference)
 
+# Some percentages %
+table[, diff_t := plogis(difference)]
+length(unique(table[difference < -0.1, predator_id]))
+length(unique(table[difference > 0.1, predator_id]))
+length(unique(table[difference %between% c(-0.1, 0.1) , predator_id]))
+
 table <- unique(
   table[
     difference > 0.86 | difference < 0,
