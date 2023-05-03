@@ -1,6 +1,6 @@
 # =======================================================================
 
-#                       Code to produce Figure S3                       #
+#                       Code to produce Figure 2                        #
 
 # =======================================================================
 
@@ -212,7 +212,7 @@ fig <- ggplot(
         ymax = upper_95,
         color = "0.95"),
     position = position_dodge(width = 0.8),
-    size = 1,
+    linewidth = 1,
     key_glyph = "path"
     ) +
   geom_linerange(
@@ -220,7 +220,7 @@ fig <- ggplot(
         ymax = upper_80,
         color = "0.80"),
     position = position_dodge(width = 0.8),
-    size = 1,
+    linewidth = 1,
     key_glyph = "path"
     ) +
   geom_linerange(
@@ -228,7 +228,7 @@ fig <- ggplot(
         ymax = upper_50,
         color = "0.50"),
     position = position_dodge(width = 0.8),
-    size = 1,
+    linewidth = 1,
     key_glyph = "path"
     ) +
   geom_point(
@@ -250,14 +250,14 @@ fig <- ggplot(
   facet_wrap(~ test) +
   theme(
     axis.title.y = element_blank(),
-    axis.text = element_text(face = "plain", size = 11, color = "black"),
-    axis.title = element_text(size = 13, face = "plain", color = "black"),
-    strip.text = element_text(size = 11),
+    axis.title = element_text(size = 15, face = "plain", color = "black"),
+    axis.text = element_text(face = "plain", size = 12, color = "black"),
+    strip.text = element_text(size = 13),
     panel.grid = element_blank(),
     legend.position = "top",
     legend.key = element_rect(fill = "transparent"),
-    legend.title = element_text(size = 13),
-    legend.text = element_text(size = 11)
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 13)
   )
 
 
@@ -269,7 +269,7 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
 # Export
 ggsave(
-  filename = file.path(path, "appendix1_figureS3.png"),
+  filename = file.path(path, "figure2.png"),
   plot = fig,
   width = 32, height = 14, # 32 14
   units = "cm",
