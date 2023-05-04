@@ -184,7 +184,29 @@ ggplot(posterior_fit) +
 
 # Sigma ----------------------------------------------------------------------------
 
-# flat priors
+# slope rank pred speed
+ggplot(posterior_fit) +
+  geom_density(aes(prior_b_sigma_speednovice_sqrt_prey_avg_rank),
+               fill = "steelblue",
+               color = "black",
+               alpha = 0.6) +
+  geom_density(aes(b_sigma_speednovice_sqrt_prey_avg_rank),
+               fill = "#FC4E07",
+               color = "black",
+               alpha = 0.6) +
+  theme_classic()
+
+# slope rank prey speed
+ggplot(posterior_fit) +
+  geom_density(aes(prior_b_sigma_preyspeednovice_sqrt_prey_avg_rank),
+               fill = "steelblue",
+               color = "black",
+               alpha = 0.6) +
+  geom_density(aes(b_sigma_preyspeednovice_sqrt_prey_avg_rank),
+               fill = "#FC4E07",
+               color = "black",
+               alpha = 0.6) +
+  theme_classic()
 
 # ==================================================================================
 # ==================================================================================
