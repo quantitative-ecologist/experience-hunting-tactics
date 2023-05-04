@@ -283,79 +283,135 @@ priors <- c(
   set_prior("normal(0.5, 0.5)",
             class = "b",
             coef = "sqrt_game_duration",
-            resp = c("successnovice",
-                     "successinterm",
-                     "successadvanced")),
+            resp = c(
+              "successnovice",
+              "successinterm",
+              "successadvanced"
+            )
+  ),
   # Prior on prey rank
   set_prior("normal(0, 1)",
             class = "b",
             coef = "sqrt_prey_avg_rank",
-            resp = c("speednovice",
-                     "speedinterm",
-                     "speedadvanced",
-                     "preyspeednovice",
-                     "preyspeedinterm",
-                     "preyspeedadvanced")),
+            resp = c(
+              "speednovice",
+              "speedinterm",
+              "speedadvanced",
+              "preyspeednovice",
+              "preyspeedinterm",
+              "preyspeedadvanced"
+            )
+  ),
+  # Prior on sigma prey rank
   set_prior("normal(0, 1)",
             class = "b",
             dpar = "sigma",
             coef = "sqrt_prey_avg_rank",
-            resp = c("speednovice",
-                     "speedinterm",
-                     "speedadvanced",
-                     "preyspeednovice",
-                     "preyspeedinterm",
-                     "preyspeedadvanced")),
-  set_prior("normal(0, 1)",
+            resp = c(
+              "speednovice",
+              "speedinterm",
+              "speedadvanced",
+              "preyspeednovice",
+              "preyspeedinterm",
+              "preyspeedadvanced"
+            )
+  ),
+  # Prior on intercept success
+  set_prior("normal(-4, 1)",
             class = "Intercept",
-            resp = c("speednovice",
-                     "speedinterm",
-                     "speedadvanced",
-                     "preyspeednovice",
-                     "preyspeedinterm",
-                     "preyspeedadvanced",
-                     "successnovice",
-                     "successinterm",
-                     "successadvanced")),
+            resp = c(
+              "successnovice",
+              "successinterm",
+              "successadvanced"
+            )
+  ),
+  # Prior on intercept speed
+  set_prior("normal(3, 0.5)",
+            class = "Intercept",
+            resp = c(
+              "speednovice",
+              "speedinterm",
+              "speedadvanced",
+              "preyspeednovice",
+              "preyspeedinterm",
+              "preyspeedadvanced"
+            )
+  ),
+  # Prior on sigma intercept
   set_prior("normal(0, 1)",
             class = "Intercept",
             dpar = "sigma",
-            resp = c("speednovice",
-                     "speedinterm",
-                     "speedadvanced",
-                     "preyspeednovice",
-                     "preyspeedinterm",
-                     "preyspeedadvanced")),
-  # priors on var. parameters (brms automatically detects half-normal)
+            resp = c(
+              "speednovice",
+              "speedinterm",
+              "speedadvanced",
+              "preyspeednovice",
+              "preyspeedinterm",
+              "preyspeedadvanced"
+            )
+  ),
+  # Prior on random effects
   set_prior("normal(0, 1)",
-            class = "sd", # applies to all variance parameters
-            resp = c("speednovice",
-                     "speedinterm",
-                     "speedadvanced",
-                     "preyspeednovice",
-                     "preyspeedinterm",
-                     "preyspeedadvanced",
-                     "successnovice",
-                     "successinterm",
-                     "successadvanced")),
+            class = "sd",
+            coef = "Intercept",
+            group = "predator_id",
+            resp = c(
+              "speednovice",
+              "speedinterm",
+              "speedadvanced",
+              "preyspeednovice",
+              "preyspeedinterm",
+              "preyspeedadvanced",
+              "successnovice",
+              "successinterm",
+              "successadvanced"
+            )
+  ),
+  # Prior on random effects
   set_prior("normal(0, 1)",
-            class = "sd", # applies to all variance parameters
+            class = "sd",
+            coef = "Intercept",
+            group = c(
+              "avatar_id",
+              "environment_id"
+            ),
+            resp = c(
+              "speednovice",
+              "speedinterm",
+              "speedadvanced",
+              "preyspeednovice",
+              "preyspeedinterm",
+              "preyspeedadvanced"
+            )
+  ),
+  # Prior on random effects for sigma
+  set_prior("normal(0, 1)",
+            class = "sd",
             dpar = "sigma",
-            resp = c("speednovice",
-                     "speedinterm",
-                     "speedadvanced",
-                     "preyspeednovice",
-                     "preyspeedinterm",
-                     "preyspeedadvanced")),
+            coef = "Intercept",
+            group = "predator_id",
+            resp = c(
+              "speednovice",
+              "speedinterm",
+              "speedadvanced",
+              "preyspeednovice",
+              "preyspeedinterm",
+              "preyspeedadvanced"
+            )
+  ),
   # priors on phi
   set_prior("normal(2, 1)",
             class = "phi",
-            resp = c("successnovice",
-                     "successinterm",
-                     "successadvanced")),
+            resp = c(
+              "successnovice",
+              "successinterm",
+              "successadvanced"
+            )
+  ),
   set_prior("lkj(2)",
             class = "cor",
-            group = "predator_id")
+            group = "predator_id"
+  )
 )
 
 # =======================================================================
