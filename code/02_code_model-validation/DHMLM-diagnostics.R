@@ -90,7 +90,7 @@
 
 # Trace plots and parameter distributions -------------------------------
 
- plot(mod1)
+# plot(mod1)
  # Convergence is attained for all the parameters
 
 
@@ -256,7 +256,7 @@
    geom_point(aes(x = fitted1e, y = resid1e), alpha = 0.2) +
    theme_bw() + theme(panel.grid = element_blank()) +
    ggtitle("prey speed interm")
- 
+
  fitted1f <- fitted(mod1, resp = "preyspeedadvanced")[, 1]
  resid1f <- residuals(mod1, resp = "preyspeedadvanced")[, 1]
  assum1f <- ggplot() +
