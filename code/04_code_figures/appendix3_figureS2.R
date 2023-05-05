@@ -31,7 +31,6 @@ fit <- readRDS(file.path(path, "B1_DHMLM.rds"))
 # 2. Estimate differences between novices and advanced levels
 # =======================================================================
 
-
 cors <- as_draws_df(fit, variable = "cor", regex = TRUE)
 cors <- data.table(cors)
 cors <- cors[, !c(".chain", ".iteration", ".draw")]
@@ -145,21 +144,21 @@ fig <- ggplot(
     aes(ymin = lower_ci_95,
         ymax = upper_ci_95,
         color = "0.95"),
-    size = 1,
+    linewidth = 1,
     key_glyph = "path"
   ) +
   geom_linerange(
     aes(ymin = lower_ci_80,
         ymax = upper_ci_80,
         color = "0.80"),
-    size = 1,
+    linewidth = 1,
     key_glyph = "path"
   ) +
   geom_linerange(
     aes(ymin = lower_ci_50,
         ymax = upper_ci_50,
         color = "0.50"),
-    size = 1,
+    linewidth = 1,
     key_glyph = "path"
   ) +
   geom_point(size = 3, color = "black") +
