@@ -212,7 +212,7 @@ fig <- ggplot(
         ymax = upper_95,
         color = "0.95"),
     position = position_dodge(width = 0.8),
-    size = 1,
+    linewidth = 1,
     key_glyph = "path"
     ) +
   geom_linerange(
@@ -220,7 +220,7 @@ fig <- ggplot(
         ymax = upper_80,
         color = "0.80"),
     position = position_dodge(width = 0.8),
-    size = 1,
+    linewidth = 1,
     key_glyph = "path"
     ) +
   geom_linerange(
@@ -228,7 +228,7 @@ fig <- ggplot(
         ymax = upper_50,
         color = "0.50"),
     position = position_dodge(width = 0.8),
-    size = 1,
+    linewidth = 1,
     key_glyph = "path"
     ) +
   geom_point(
