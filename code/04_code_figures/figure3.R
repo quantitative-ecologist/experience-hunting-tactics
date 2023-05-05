@@ -354,21 +354,23 @@ length(unique(dat_sample[, predator_id])) / length(unique(dat[, predator_id]))
 
 # Highest increase in specialization
 plot1 <- ggplot() +
-  geom_density(data = dat_sample[difference_sigma > 0.2],
-               fill = "#999999",
-               color = "#999999",
-               alpha = 0.5,
-               aes(x = value_nov)) +
-  geom_density(data = dat_sample[difference_sigma > 0.2],
-               fill = "#00AFBB",
-               alpha = 0.5,
-               aes(x = value_adv)) +
+  geom_density(
+    data = dat_sample[difference_sigma > 0.2 & predator_id != "pred600874"],
+    fill = "#999999",
+    color = "#999999",
+    alpha = 0.5,
+    aes(x = value_nov)) +
+  geom_density(
+    data = dat_sample[difference_sigma > 0.2 & predator_id != "pred600874"],
+    fill = "#00AFBB",
+    alpha = 0.5,
+    aes(x = value_adv)) +
   ylab("Density\n") +
   xlab("\nPredator speed (m/s)") +
   scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 9)) +
   theme_bw() +
-  theme(axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
+  theme(#axis.text.y = element_blank(),
+        #axis.ticks.y = element_blank(),
         panel.grid = element_blank()) +
   facet_wrap(~ reorder(as.factor(predator_id), difference_sigma))
 
@@ -386,63 +388,11 @@ plot2 <- ggplot() +
   ylab("Density\n") +
   xlab("\nPredator speed (m/s)") +
   scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 9)) +
+  scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.5)) +
   theme_bw() +
-  theme(axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
+  theme(#axis.text.y = element_blank(),
+        #axis.ticks.y = element_blank(),
         panel.grid = element_blank()) +
-  facet_wrap(~ reorder(as.factor(predator_id), -difference_sigma))
-
-
-
-# Transparent version ---------------------------------------------------
-
-plot1T <- ggplot() +
-  geom_density(data = dat_sample[difference_sigma > 0.2],
-               fill = "#999999",
-               color = "#999999",
-               alpha = 0.5,
-               aes(x = value_nov)) +
-  geom_density(data = dat_sample[difference_sigma > 0.2],
-               fill = "#00AFBB",
-               alpha = 0.5,
-               aes(x = value_adv)) +
-  ylab("Density\n") +
-  xlab("\nPredator speed (m/s)") +
-  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 8)) +
-  theme_bw() +
-  theme(axis.text = element_text(color = "white"),
-        axis.ticks = element_line(color = "white"),
-        axis.title = element_text(color = "white"),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        panel.grid = element_blank(),
-        panel.background = element_rect(fill = "transparent"),
-        plot.background = element_rect(fill = "transparent", color = NA)) +
-  facet_wrap(~ reorder(as.factor(predator_id), difference_sigma))
-
-# Highest increase in flexibility
-plot2T <- ggplot() +
-  geom_density(data = dat_sample[difference_sigma < -0.28],
-               fill = "#999999",
-               color = "#999999",
-               alpha = 0.5,
-               aes(x = value_nov)) +
-  geom_density(data = dat_sample[difference_sigma < -0.28],
-               fill = "#00AFBB",
-               alpha = 0.5,
-               aes(x = value_adv)) +
-  ylab("Density\n") +
-  xlab("\nPredator speed (m/s)") +
-  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 8)) +
-  theme_bw() +
-  theme(axis.text = element_text(color = "white"),
-        axis.ticks = element_line(color = "white"),
-        axis.title = element_text(color = "white"),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        panel.grid = element_blank(),
-        panel.background = element_rect(fill = "transparent"),
-        plot.background = element_rect(fill = "transparent", color = NA)) +
   facet_wrap(~ reorder(as.factor(predator_id), -difference_sigma))
 
 # =======================================================================
@@ -469,33 +419,11 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 # Save figure
 ggexport(
   figure,
-  filename = file.path(path, "figure2.png"),
+  filename = file.path(path, "figure3.png"),
   width = 2500,
   height = 1200,
   res = 300
 )
-
-
-
-# Transparent version ---------------------------------------------------
-
-# Combine
-figureT <- ggarrange(plot1T, plot2T,
-                    labels = c("(A)", "(B)"),
-                    font.label = list(color = "white"),
-                    ncol = 2, nrow = 1)
-
-# Folder path
-path <- file.path(getwd(), "plots_presentations")
-
-# Save figure
-ggsave(figureT,
-        filename = file.path(path, "05_figure2-transparent.png"),
-        width = 2500,
-        height = 1200,
-        dpi = 300,
-        units = "px",
-        bg = "transparent")
 
 # =======================================================================
 # =======================================================================
