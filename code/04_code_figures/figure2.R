@@ -50,6 +50,42 @@ dt <- dt[, c(1:15, 48:62)]
 
 
 
+# Back-transform values -------------------------------------------------
+
+# Take the exponent of sigma parameters
+dt[
+  , c("b_sigma_speednovice_Intercept",
+      "b_sigma_speedinterm_Intercept",
+      "b_sigma_speedadvanced_Intercept",
+      "b_sigma_preyspeednovice_Intercept",
+      "b_sigma_preyspeedinterm_Intercept",
+      "b_sigma_preyspeedadvanced_Intercept",
+      "sd_predator_id__sigma_speednovice_Intercept",
+      "sd_predator_id__sigma_speedinterm_Intercept",
+      "sd_predator_id__sigma_speedadvanced_Intercept",
+      "sd_predator_id__sigma_preyspeednovice_Intercept",
+      "sd_predator_id__sigma_preyspeedinterm_Intercept",
+      "sd_predator_id__sigma_preyspeedadvanced_Intercept"
+  )
+  := lapply(.SD, function(x) {exp(x)}),
+  .SDcols = c(
+    "b_sigma_speednovice_Intercept",
+    "b_sigma_speedinterm_Intercept",
+    "b_sigma_speedadvanced_Intercept",
+    "b_sigma_preyspeednovice_Intercept",
+    "b_sigma_preyspeedinterm_Intercept",
+    "b_sigma_preyspeedadvanced_Intercept",
+    "sd_predator_id__sigma_speednovice_Intercept",
+    "sd_predator_id__sigma_speedinterm_Intercept",
+    "sd_predator_id__sigma_speedadvanced_Intercept",
+    "sd_predator_id__sigma_preyspeednovice_Intercept",
+    "sd_predator_id__sigma_preyspeedinterm_Intercept",
+    "sd_predator_id__sigma_preyspeedadvanced_Intercept"
+  )
+]
+
+
+
 # Prepare the data ------------------------------------------------------
 
 # Reshape the table
