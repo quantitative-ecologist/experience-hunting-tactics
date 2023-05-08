@@ -27,7 +27,7 @@ Journal name : Ecology
 
 Authors : Maxime Fraser Franco, Francesca Santostefano, Julien G. A. Martin, Clint D. Kelly, Pierre-Olivier Montiglio
 
-
+Update the plot legend to tell what is the *greatest increase*
 
 \newpage
 
