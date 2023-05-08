@@ -61,52 +61,130 @@ fit <- readRDS(
 
 # Prepare the table ---------------------------------------------------------
 
-# Extract the fixed effects from the model
-eff_tab <- data.table(fixef(fit), keep.rownames = TRUE)
-eff_tab <- eff_tab[, c(1, 2, 4:5)]
-
-# Rename variables
-setnames(
-  eff_tab,
-  c("rn", "Q2.5", "Q97.5"),
-  c("parameter", "lower_ci", "upper_ci")
+# Extract the fixed effects posterior samples
+b_draws <- data.table(
+  as_draws_df(
+    fit, variable = "^b_", regex = TRUE
+  )
 )
 
+b_draws[, c(31:33) := NULL]
+
+
+
+# Back-transform the parameters ----------------------------------------------
+
+# Take the exponent of sigma parameters
+b_draws[
+  , c("b_sigma_speednovice_Intercept",
+      "b_sigma_speedinterm_Intercept",
+      "b_sigma_speedadvanced_Intercept",
+      "b_sigma_preyspeednovice_Intercept",
+      "b_sigma_preyspeedinterm_Intercept",
+      "b_sigma_preyspeedadvanced_Intercept",
+      "b_sigma_speednovice_sqrt_prey_avg_rank",
+      "b_sigma_speedinterm_sqrt_prey_avg_rank",
+      "b_sigma_speedadvanced_sqrt_prey_avg_rank",
+      "b_sigma_preyspeednovice_sqrt_prey_avg_rank",
+      "b_sigma_preyspeedinterm_sqrt_prey_avg_rank",
+      "b_sigma_preyspeedadvanced_sqrt_prey_avg_rank"
+  )
+  := lapply(.SD, function(x) {exp(x)}),
+  .SDcols = c(
+    "b_sigma_speednovice_Intercept",
+    "b_sigma_speedinterm_Intercept",
+    "b_sigma_speedadvanced_Intercept",
+    "b_sigma_preyspeednovice_Intercept",
+    "b_sigma_preyspeedinterm_Intercept",
+    "b_sigma_preyspeedadvanced_Intercept",
+    "b_sigma_speednovice_sqrt_prey_avg_rank",
+    "b_sigma_speedinterm_sqrt_prey_avg_rank",
+    "b_sigma_speedadvanced_sqrt_prey_avg_rank",
+    "b_sigma_preyspeednovice_sqrt_prey_avg_rank",
+    "b_sigma_preyspeedinterm_sqrt_prey_avg_rank",
+    "b_sigma_preyspeedadvanced_sqrt_prey_avg_rank"
+  )
+]
+
+# plogis for the success parameters
+# Take the exponent of sigma parameters
+b_draws[
+  , c("b_successnovice_Intercept",
+      "b_successinterm_Intercept",
+      "b_successadvanced_Intercept",
+      "b_successnovice_sqrt_game_duration",
+      "b_successinterm_sqrt_game_duration",
+      "b_successadvanced_sqrt_game_duration"
+  )
+  := lapply(.SD, function(x) {plogis(x)}),
+  .SDcols = c(
+    "b_successnovice_Intercept",
+    "b_successinterm_Intercept",
+    "b_successadvanced_Intercept",
+    "b_successnovice_sqrt_game_duration",
+    "b_successinterm_sqrt_game_duration",
+    "b_successadvanced_sqrt_game_duration"
+  )
+]
+
+
+# Reshape the table -----------------------------------------------------------
+
+fixef_tab <- melt(
+  b_draws,
+  variable.name = "parameter"
+)
+
+
+
+# Summarize the values (medians + 95% CI) -------------------------------------
+
+# Intervals
+lower_interval <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.95)[1]
+}
+upper_interval <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.95)[2]
+}
+
+
+# Summarize values
+fixef_tab[, ":=" (median = median(value),
+                  lower_ci = lower_interval(value),
+                  upper_ci = upper_interval(value)),
+          by = .(parameter)]
+
+fixef_tab <- unique(fixef_tab[, .(parameter, median, lower_ci, upper_ci)])
+fixef_tab[, c(2:4) := round(fixef_tab[, c(2:4)], digits = 2)]
+
+
+
+# Rearrange the table --------------------------------------------------------
+
 # Add a column that specifies the experience level
-eff_tab[parameter %like% "novice", xp_level := "novice"]
-eff_tab[parameter %like% "interm", xp_level := "intermediate"]
-eff_tab[parameter %like% "advanced", xp_level := "advanced"]
-
-# Back transform success
-eff_tab[
-  parameter %like% "success",
-  c(2:4) := lapply(.SD, function(x) {plogis(x)}),
-  .SDcols = c(2:4)
-]
-
-# Back transform sigma
-eff_tab[
-  parameter %like% "sigma",
-  c(2:4) := lapply(.SD, function(x) {exp(x)}),
-  .SDcols = c(2:4)
-]
-
-# Round values to 3 digits
-eff_tab[, c(2:4) := round(eff_tab[, c(2:4)], digits = 2)]
+fixef_tab[parameter %like% "novice", xp_level := "novice"]
+fixef_tab[parameter %like% "interm", xp_level := "intermediate"]
+fixef_tab[parameter %like% "advanced", xp_level := "advanced"]
 
 
+# Paste upper and lower ci with estimate
+fixef_tab[, estimate := paste(format(median, digits = 2), "(")]
+fixef_tab[, estimate := paste(estimate, format(lower_ci, digits = 2), sep = "")]
+fixef_tab[, estimate := paste(estimate, ",", sep = "")]
+fixef_tab[, estimate := paste(estimate, format(upper_ci, digits = 2), sep = " ")]
+fixef_tab[, estimate := paste(estimate, ")", sep = "")]
+fixef_tab[, c("median", "lower_ci", "upper_ci") := NULL]
 
-# Reorganize the table ------------------------------------------------------
 
 # reorder columns, and then rows based on xp level
-eff_tab <- eff_tab[, c(5, 1:4)]
 setorder(
-  eff_tab,
+  fixef_tab,
   cols = -"xp_level"
 )
 
+
 # Create trait column
-eff_tab[
+fixef_tab[
   , trait := rep(c(
     "predator speed", "predator speed",
     "prey speed", "prey speed", "hunting success"),
@@ -114,40 +192,33 @@ eff_tab[
   )
 ]
 
-# Rename parameter
-eff_tab[
-   , parameter := rep(
-      c(
-         rep(c("intercept (mean)", "intercept (sigma)"), 2),
-         "intercept (mean)",
-         rep(c("prey rank (mean)", "prey rank (sigma)"), 2),
-         "match duration (mean)"
-      ),
-      3
-   )
-]
 
-# Paste upper and lower ci with estimate
-eff_tab[, estimate := paste(format(Estimate, digits = 2), "(")]
-eff_tab[, estimate := paste(estimate, format(lower_ci, digits = 2), sep = "")]
-eff_tab[, estimate := paste(estimate, ",", sep = "")]
-eff_tab[, estimate := paste(estimate, format(upper_ci, digits = 2), sep = " ")]
-eff_tab[, estimate := paste(estimate, ")", sep = "")]
-eff_tab[, c("Estimate", "lower_ci", "upper_ci") := NULL]
+# Rename parameter column
+fixef_tab[
+  , parameter := rep(
+    c(
+      rep(c("intercept (mean)", "intercept (sigma)"), 2),
+      "intercept (mean)",
+      rep(c("prey rank (mean)", "prey rank (sigma)"), 2),
+      "match duration (mean)"
+    ),
+    3
+  )
+]
 
 
 # Reshape
-eff_tab <- dcast(
-  eff_tab,
+fixef_tab <- dcast(
+  fixef_tab,
   trait + parameter ~ xp_level,
   value.var = "estimate"
 )
 
-# Reorder columns
-eff_tab <- eff_tab[, c(1, 2, 5, 4, 3)]
 
-# Reorder rows
-table <- eff_tab[c(3, 5, 4, 6, 7, 9, 8, 10, 1, 2)]
+# Reorder columns and rows
+fixef_tab <- fixef_tab[, c(1, 2, 5, 4, 3)]
+table <- fixef_tab[c(3, 5, 4, 6, 7, 9, 8, 10, 1, 2)]
+
 
 # Because I can't align hunting success properly
 table[10, 1] <- " "
@@ -231,7 +302,7 @@ tab1 <-
 
   # Table caption
   set_caption(
-    caption = "Table S1. Posterior means and 95% credible intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    caption = "Table S1. Posterior medians and 95% credible intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
     style = "Table Caption"
   ) %>%
 
@@ -333,12 +404,12 @@ upper_interval <- function(x) {
 
 
 # Summarize values
-ranef_tab[, ":=" (mean = mean(value),
+ranef_tab[, ":=" (median = median(value),
                   lower_ci = lower_interval(value),
                   upper_ci = upper_interval(value)),
           by = .(parameter)]
 
-ranef_tab <- unique(ranef_tab[, .(parameter, mean, lower_ci, upper_ci)])
+ranef_tab <- unique(ranef_tab[, .(parameter, median, lower_ci, upper_ci)])
 ranef_tab[, c(2:4) := round(ranef_tab[, c(2:4)], digits = 2)]
 
 
@@ -352,12 +423,12 @@ ranef_tab[parameter %like% "advanced", xp_level := "advanced"]
 
 
 # Paste upper and lower ci with estimate
-ranef_tab[, estimate := paste(format(mean, digits = 2), "(")]
+ranef_tab[, estimate := paste(format(median, digits = 2), "(")]
 ranef_tab[, estimate := paste(estimate, format(lower_ci, digits = 2), sep = "")]
 ranef_tab[, estimate := paste(estimate, ",", sep = "")]
 ranef_tab[, estimate := paste(estimate, format(upper_ci, digits = 2), sep = " ")]
 ranef_tab[, estimate := paste(estimate, ")", sep = "")]
-ranef_tab[, c("mean", "lower_ci", "upper_ci") := NULL]
+ranef_tab[, c("median", "lower_ci", "upper_ci") := NULL]
 
 # Parameter column
 ranef_tab[
@@ -470,16 +541,16 @@ tab2 <-
       as_sup("a "),
       "We exponentiated the dispersion parameters (i.e. sigma) which are estimated on a log scale. All the reported values are standard deviations.",
       as_sup("\nb "),
-      "The intercept values on the mean part of the equation for all traits indicate among individual differences in mean behaviour and success.",
+      "The standard deviation values on the mean part of the equation indicate, for all traits, among individual differences in mean behaviour, prey encountered, and success.",
       as_sup("\nc "),
-      "The intercept values on the dispersion (i.e. sigma) part of the equation for predator speed indicate among individual differences in behavioural specialization. For prey speed and hunting success, they indicate among individual differences in the variability of prey encounters and variability in hunting success, respectively."
+      "Values on the dispersion (i.e. sigma) for predator speed indicate among individual differences in behavioural specialization. For prey speed, they indicate among individual differences in the variability of prey encounters."
     ),
     ref_symbols = " "
   ) %>%
 
   # Add table caption
   set_caption(
-    caption = "Table S2. Posterior means and 95% credible intervals of the random effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    caption = "Table S2. Posterior medians and 95% credible intervals of the random effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success. All the reported values are standard deviations.",
     style = "Table Caption"
   ) %>%
 
