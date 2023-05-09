@@ -129,6 +129,8 @@ colors <- c(
   "0.50" = "gray21"
 )
 
+scaleFUN <- function(x) sprintf("%.2f", x)
+
 fig <- ggplot(
   tab,
   aes(x = variable_adv, y = median_difference)
@@ -160,7 +162,14 @@ fig <- ggplot(
   ) +
   geom_point(size = 3, color = "black") +
   ylab("Posterior median difference\n") +
-  scale_y_continuous(breaks = seq(-0.2, 0.2, 0.1)) +
+  #scale_y_continuous(
+  #  labels = scaleFUN,
+  #  breaks = seq(-0.3, 0.3, 0.15),
+  #  limits = c(-0.3,0.3)
+  #  ) +
+  scale_y_continuous(
+    breaks = seq(-0.2, 0.2, 0.1)
+    ) +
   scale_color_manual(
     name = "Density:",
     values = colors
