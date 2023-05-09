@@ -1,6 +1,6 @@
 # =======================================================================
 
-#               Code to produce Appendix 1 : Figure S4                  #
+#                       Code to produce Figure 4 C                      #
 
 # =======================================================================
 
@@ -31,6 +31,7 @@ fit <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
 # 2. Estimate differences between novices and advanced levels
 # =======================================================================
 
+# Prepare the draws -----------------------------------------------------
 
 cors <- as_draws_df(fit, variable = "cor", regex = TRUE)
 cors <- data.table(cors)
@@ -48,8 +49,13 @@ setnames(cors1, c("variable", "value"), c("variable_adv", "value_adv"))
 setnames(cors2, c("variable", "value"), c("variable_nov", "value_nov"))
 
 
+
+# Compute the differences -----------------------------------------------
+
+# Compute the difference in absolute values
+# since the signs of the correlations do not change
 tab <- cbind(cors1, cors2)
-tab[, difference_cor := value_adv - value_nov]
+tab[, difference_cor := abs(value_adv) - abs(value_nov)]
 
 
 # Intervals
