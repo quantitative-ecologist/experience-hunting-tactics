@@ -107,7 +107,6 @@ b_draws[
 ]
 
 # plogis for the success parameters
-# Take the exponent of sigma parameters
 b_draws[
   , c("b_successnovice_Intercept",
       "b_successinterm_Intercept",
