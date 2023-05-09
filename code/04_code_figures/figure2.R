@@ -84,6 +84,19 @@ dt[
   )
 ]
 
+# Back-transform hunting success
+dt[
+  , c("b_successnovice_Intercept",
+      "b_successinterm_Intercept",
+      "b_successadvanced_Intercept"
+  )
+  := lapply(.SD, function(x) {plogis(x)}),
+  .SDcols = c(
+    "b_successnovice_Intercept",
+    "b_successinterm_Intercept",
+    "b_successadvanced_Intercept"
+  )
+]
 
 
 # Prepare the data ------------------------------------------------------
