@@ -220,7 +220,7 @@ gamm_plot1 <- ggplot(table[difference > 0.05, ],
 length(unique(table[diff_dir == "decrease", predator_id]))
 # 4 players had a decrease in hunting success
 
-gamm_plot2 <- ggplot(table[difference <= 0, ],
+gamm_plot2 <- ggplot(table[difference < -0.05, ],
                      aes(x = Zcumul_xp,
                          y = estimate__ / 4,
                          color = predator_id)) +
@@ -238,7 +238,7 @@ gamm_plot2 <- ggplot(table[difference <= 0, ],
 
 # Plot for players that kept a stable success ------------------------------
 
-gamm_plot3 <- ggplot(table[difference %between% c(0, 0.05),],
+gamm_plot3 <- ggplot(table[difference %between% c(-0.05, 0.05), ],
                      aes(x = Zcumul_xp,
                          y = estimate__ / 4,
                          color = predator_id)) +
