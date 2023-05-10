@@ -108,7 +108,7 @@ custom_theme <- theme(
 
 fig1 <- conditional_effects(
   fit1, method = "fitted", effects = "Zcumul_xp:predator_id",
-  robust = FALSE, re_formula = NULL
+  robust = TRUE, re_formula = NULL
 )
 
 # Extract values in a table
@@ -164,7 +164,7 @@ tab2 <- dcast(
 # Calculate the difference in predicted success between minimum and maximum xp
 # - value means decrease in success
 # + value means increase in success
-tab2[, difference := max - min]
+tab2[, difference := plogis(tab2$max) - plogis(tab2$min)]
 
 
 # Remerge the table with the original
@@ -178,21 +178,10 @@ table <- merge(
 # Extract players with the greatest increase and decrease in success
 quantile(table$difference)
 
-# Some percentages %
-table[, diff_t := plogis(difference)]
-length(unique(table[difference < -0.1, predator_id]))
-length(unique(table[difference > 0.1, predator_id]))
-length(unique(table[difference %between% c(-0.1, 0.1) , predator_id]))
-
-table <- unique(
-  table[
-    difference > 0.86 | difference < 0,
-    .(predator_id, difference, Zcumul_xp, estimate__)
-  ]
-)
-
-# 1 = increase and 0 = decrease
-table[, diff_dir := ifelse(difference >= 0.86, 1, 0)]
+# increase, decrease, and stable
+table[, diff_dir := ifelse(difference > 0.10, "increase", NA)]
+table[difference < -0.10, diff_dir := "decrease"]
+table[difference %between% c(-0.10, 0.10), diff_dir := "stable"]
 
 # ==========================================================================
 # ==========================================================================
@@ -207,10 +196,10 @@ table[, diff_dir := ifelse(difference >= 0.86, 1, 0)]
 
 # Plot for players that had an increase in success -------------------------
 
-length(unique(table[diff_dir == 1, predator_id]))
-# 62 players had an increase in hunting success
+length(unique(table[diff_dir == "increase", predator_id]))
+# 63 players had an increase in hunting success
 
-gamm_plot1 <- ggplot(table[diff_dir == 1, ],
+gamm_plot1 <- ggplot(table[difference > 0.05, ],
                      aes(x = Zcumul_xp,
                          y = estimate__ / 4,
                          color = predator_id)) +
@@ -228,10 +217,10 @@ gamm_plot1 <- ggplot(table[diff_dir == 1, ],
 
 # Plot for players that had an decrease in success -------------------------
 
-length(unique(table[diff_dir == 0, predator_id]))
-# 48 players had a decrease in hunting success
+length(unique(table[diff_dir == "decrease", predator_id]))
+# 4 players had a decrease in hunting success
 
-gamm_plot2 <- ggplot(table[diff_dir == 0, ],
+gamm_plot2 <- ggplot(table[difference <= 0, ],
                      aes(x = Zcumul_xp,
                          y = estimate__ / 4,
                          color = predator_id)) +
@@ -244,6 +233,25 @@ gamm_plot2 <- ggplot(table[diff_dir == 0, ],
                      labels = seq(0, 500, 100)) +
   xlab("\nCumulative experience") +
   custom_theme
+
+
+
+# Plot for players that kept a stable success ------------------------------
+
+gamm_plot3 <- ggplot(table[difference %between% c(0, 0.05),],
+                     aes(x = Zcumul_xp,
+                         y = estimate__ / 4,
+                         color = predator_id)) +
+  geom_line(linewidth = 1) +
+  viridis::scale_color_viridis(discrete = TRUE, option = "D") + #B
+  ylab("Hunting success\n") +
+  scale_y_continuous(breaks = seq(0, 1, 0.25),
+                     limits = c(0, 1)) +
+  scale_x_continuous(breaks = scaled_breaks,
+                     labels = seq(0, 500, 100)) +
+  xlab("\nCumulative experience") +
+  custom_theme
+
 
 # ==========================================================================
 # ==========================================================================
@@ -259,27 +267,23 @@ gamm_plot2 <- ggplot(table[diff_dir == 0, ],
 
 # Prepare figure --------------------------------------------------------
 
-# Figure S1
-figureS1 <- ggarrange(
-  NULL, gamm_plot1, NULL, gamm_plot2,
-  ncol = 4, nrow = 1,
-  labels = c("(A)", "", "(B)", ""),
-  widths = c(0.15, 1.5, 0.15, 1.5)
-)
+# Arrange paneled figure
+ figure <- ggarrange(
+    NULL, gamm_plot1, NULL, gamm_plot2, NULL, gamm_plot3,
+    ncol = 6, nrow = 1,
+    labels = c("(A)", "", "(B)", "", "(C)"),
+    widths = c(0.15, 1.5, 0.15, 1.5, 0.15, 1.5)
+ )
 
+# Export the figure -----------------------------------------------------
 
+ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
-# Export figure  --------------------------------------------------------
-
-# Folder path
-path <- file.path(getwd(), "outputs", "04_outputs_figures")
-
-# Save figures
-ggexport(figureS1,
-         filename = file.path(path, "appendix1_figureS1.png"),
-         width = 3000,
-         height = 1200,
-         res = 300)
+ ggexport(figure,
+          filename = file.path(path, "appendix1_figureS1.png"),
+          width = 4500,
+          height = 1200,
+          res = 300)
 
 # =======================================================================
 # =======================================================================
