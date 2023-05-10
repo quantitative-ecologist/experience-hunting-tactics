@@ -95,14 +95,14 @@
  tabA2_a <- conditional_effects(
   modA2, method = "fitted",
   effects = "Zcumul_xp:predator_id",
-  robust = FALSE, re_formula = NULL
+  robust = TRUE, re_formula = NULL
  )
  tabA2_a <- data.table(tabA2_a[[1]])
 
  # Cumulative XP global trend model A2
  tabA2_b <- conditional_effects(
   modA2, method = "fitted",
-  robust = FALSE, re_formula = NULL,
+  robust = TRUE, re_formula = NULL,
   effects = "Zcumul_xp",
   conditions = data.frame(predator_id = NA)
  )
@@ -112,14 +112,14 @@
  tabA2_prey_a <- conditional_effects(
   modA2_prey, method = "fitted",
   effects = "Zcumul_xp:predator_id",
-  robust = FALSE, re_formula = NULL
+  robust = TRUE, re_formula = NULL
  )
  tabA2_prey_a <- data.table(tabA2_prey_a[[1]])
 
  # Cumulative XP global trend model A2prey
  tabA2_prey_b <- conditional_effects(
   modA2_prey, method = "fitted",
-  robust = FALSE, re_formula = NULL,
+  robust = TRUE, re_formula = NULL,
   effects = "Zcumul_xp",
   conditions = data.frame(predator_id = NA)
  )
@@ -129,7 +129,7 @@
  tabA3 <- conditional_effects(
   modA3, method = "fitted",
   effects = "Zcumul_xp:predator_id",
-  robust = FALSE, re_formula = NULL
+  robust = TRUE, re_formula = NULL
  )
  tabA3 <- data.table(tabA3[[1]])
 
@@ -137,7 +137,7 @@
  tabA3_prey <- conditional_effects(
   modA3_prey, method = "fitted",
   effects = "Zcumul_xp:predator_id",
-  robust = FALSE, re_formula = NULL
+  robust = TRUE, re_formula = NULL
  )
  tabA3_prey <- data.table(tabA3_prey[[1]])
 
@@ -189,10 +189,10 @@
  tabA2_prey_a <- tabA2_prey_a[cumul_xp <= total_xp_pred, ]
  tabA3_prey <- tabA3_prey[cumul_xp <= total_xp_pred, ]
 
- 
- 
+
+
 # Setup a custom theme for the plot ----------------------------------------
- 
+
  custom_theme <- theme(
    # axis values size
    axis.text = element_text(face = "plain",
@@ -305,7 +305,7 @@
                       labels = seq(0, 500, 100)) +
    xlab("\nCumulative experience") +
    custom_theme
- 
+
  plotA3_a <- ggplot(tabA3,
                       aes(x = Zcumul_xp,
                           y = estimate__ / 4,
