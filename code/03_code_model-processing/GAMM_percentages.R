@@ -206,28 +206,28 @@ quantile(tab2pa$difference)
 
 # percentages table
 val1 <- c(
-length(unique(tab2a[difference < -0.1, predator_id])) / 253,
-length(unique(tab2a[difference > 0.1, predator_id])) / 253,
+length(unique(tab2a[difference < -0.05, predator_id])) / 253,
+length(unique(tab2a[difference > 0.05, predator_id])) / 253,
 length(
     unique(tab2a[
-        difference %between% c(-0.1, 0.1), predator_id]
+        difference %between% c(-0.05, 0.05), predator_id]
     )
 ) / 253
 )
 
 val2 <- c(
-length(unique(tab2pa[difference < -0.1, predator_id])) / 253,
-length(unique(tab2pa[difference > 0.1, predator_id])) / 253,
+length(unique(tab2pa[difference < -0.05, predator_id])) / 253,
+length(unique(tab2pa[difference > 0.05, predator_id])) / 253,
 length(
     unique(
-        tab2pa[difference %between% c(-0.1, 0.1), predator_id]
+        tab2pa[difference %between% c(-0.05, 0.05), predator_id]
     )
 ) / 253
 )
 
 dat <- data.frame(
     model = c(rep("model1", 3), rep("model2", 3)),
-    trend = rep(c(">10% decrease", ">10% increase", "between -10% and 10%"), 2),
+    trend = rep(c(">5% decrease", ">5% increase", "between -5% and 5%"), 2),
     percentage = c(val1, val2)
 )
 
@@ -240,11 +240,3 @@ saveRDS(dat, file = file.path(path, "GAMM_percentages.rds"))
 
 # ==========================================================================
 # ==========================================================================
-
-#length(unique(tab2a[difference < -0.05, predator_id])) / 253
-#length(unique(tab2a[difference > 0.05, predator_id])) / 253
-#length(unique(tab2a[difference %between% c(-0.05, 0.05), predator_id])) / 253
-#
-#length(unique(tab2pa[difference < -0.05, predator_id])) / 253
-#length(unique(tab2pa[difference > 0.05, predator_id])) / 253
-#length(unique(tab2pa[difference %between% c(-0.05, 0.05), predator_id])) / 253
