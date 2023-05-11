@@ -33,12 +33,14 @@ folder <- file.path("/home", "maxime11", "projects", "def-monti",
                     "maxime11", "phd_project", "data")
 
 # Load data
-data <- fread(file.path(folder, "FraserFrancoetalXXXX-data.csv"),
-              select = c("predator_id",
-                         "hunting_success",
-                         "prey_avg_speed",
-                         "game_duration",
-                         "cumul_xp_pred"))
+data <- fread(
+  file.path(folder, "FraserFrancoetalXXXX-data.csv"),
+  select = c("predator_id",
+             "hunting_success",
+             "prey_avg_speed",
+             "game_duration",
+             "cumul_xp_pred")
+)
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
