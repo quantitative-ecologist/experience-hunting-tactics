@@ -575,3 +575,14 @@ knitr::include_graphics(
 )
 
 ```
+
+```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Correlations between the predators' mean hunting success and intra individual variance in speed indicating differences in success between specialist and flexible hunters. Individuals with lower IIV are specialist hunters, while individuals with higher IIV are flexible hunters. (A) Correlation when predators were novice (B) Correlation when predators were advanced"}
+
+knitr::include_graphics(
+  here::here(
+    "outputs", "04_outputs_figures",
+    "appendix1_figureS2.png"
+  )
+)
+
+```
