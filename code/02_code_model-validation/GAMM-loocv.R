@@ -101,10 +101,15 @@
 
  # LOO-PSIS
  loo1 <- loo(mod1)
+ rm(mod1)
  loo2 <- loo(mod2)
+ rm(mod2)
  loo3 <- loo(mod3)
+ rm(mod3)
  loo4 <- loo(mod4)
+ rm(mod4)
  loo5 <- loo(mod5)
+ rm(mod5)
 
 
 
@@ -114,23 +119,26 @@
  loo_tab <- loo_compare(loo1, loo2, loo3, loo4, loo5)
 
  # Compute table with complete information
- loo_table <- print(loo_tab, simplify = FALSE)
-
+ loo_table <- data.table(
+  print(loo_tab, simplify = FALSE),
+  keep.rownames = TRUE
+ )
+ setnames(loo_table, "rn", "model")
 
 
 # Save outputs ----------------------------------------------------------
 
+ path <- file.path(getwd(), "outputs", "02_outputs_model-validation")
+
  # Save loo
- #saveRDS(loo1, file = file.path(path1, "A1_loo.rds"))
- #saveRDS(loo2, file = file.path(path1, "A2_loo.rds"))
- #saveRDS(loo3, file = file.path(path1, "A3_loo.rds"))
- #saveRDS(loo4, file = file.path(path1, "A2_loo-prey.rds"))
- #saveRDS(loo5, file = file.path(path1, "A3_loo-prey.rds"))
+ saveRDS(loo1, file = file.path(path, "A1_loo.rds"))
+ saveRDS(loo2, file = file.path(path, "A2_loo.rds"))
+ saveRDS(loo3, file = file.path(path, "A3_loo.rds"))
+ saveRDS(loo4, file = file.path(path, "A2_loo-prey.rds"))
+ saveRDS(loo5, file = file.path(path, "A3_loo-prey.rds"))
 
  # Save table
  saveRDS(loo_table, file = file.path(path, "GAMM_loo-cv-table.rds"))
-
- # ordre --> 4, 5, 3, 2, 1
 
 # =======================================================================
 # =======================================================================
