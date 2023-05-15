@@ -338,9 +338,9 @@ n_player_moderate <- length(unique(dat[change == "moderate", predator_id]))
 
 percent_tab <- data.frame(
     percentage = c(
-        round(n_player_large / n_pred, digits = 2),
-        round(n_player_stable / n_pred, digits = 2),
-        round(n_player_moderate / n_pred, digits = 2)
+        n_player_large / n_pred,
+        n_player_stable / n_pred,
+        n_player_moderate / n_pred
     ),
     change = c("large", "moderate", "stable")
 )
