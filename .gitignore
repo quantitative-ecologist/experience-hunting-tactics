@@ -1,6 +1,7 @@
 manuscript/dump_ideas.txt
 manuscript/submission_files
-data
+data/assemble_data.R
+data/FraserFranco-demande-partage-donnees.docx
 tests
 plan
 dump
