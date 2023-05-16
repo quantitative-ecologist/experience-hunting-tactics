@@ -158,7 +158,7 @@ plot1 <- ggplot() +
    ) +
    scale_x_continuous(
     breaks = seq(-1, 2, 1),
-    limits = c(-1, 2)
+    limits = c(-1.2, 2.3)
    ) +
    ylab("Hunting success\n") +
    xlab("\nIIV in predator speed") +
@@ -170,19 +170,19 @@ plot1 <- ggplot() +
 # Plot for advanceds ------------------------------------------------------
 
 plot2 <- ggplot() +
-  geom_segment(data = table1,
+  geom_segment(data = table2,
                aes(x = pred_speed_lower_ci,
                    xend = pred_speed_upper_ci,
                    y = mean_success,
                    yend = mean_success),
                color = "#00AFBB", alpha = 0.2) +
-  geom_segment(data = table1,
+  geom_segment(data = table2,
                aes(x = sigma_pred_speed,
                    xend = sigma_pred_speed,
                    y = success_lower_ci,
                    yend = success_upper_ci), 
                color = "#00AFBB", alpha = 0.2) +
-  geom_point(data = table1,
+  geom_point(data = table2,
              aes(x = sigma_pred_speed,
                  y = mean_success,
                  fill = "#00AFBB"),
@@ -196,7 +196,7 @@ plot2 <- ggplot() +
    ) +
    scale_x_continuous(
     breaks = seq(-1, 2, 1),
-    limits = c(-1, 2)
+    limits = c(-1.2, 2.3)
    ) +
    ylab("Hunting success\n") +
    xlab("\nIIV in predator speed") +
