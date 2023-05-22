@@ -38,9 +38,10 @@ data <- fread(
   file.path(folder, "FraserFrancoetalXXXX-data.csv"),
   select = c("predator_id",
              "hunting_success",
+             "prey_avg_speed",
              "game_duration",
              "cumul_xp_pred",
-             "prey_avg_speed")
+             "prey_avg_rank")
 )
 
 # Predator id as factor
@@ -57,9 +58,13 @@ standardize <- function(x) {
   (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
 }
 
-data[, c("Zgame_duration",
-         "Zcumul_xp") := lapply(.SD, standardize),
-       .SDcols = c(3:4)]
+data[, c(
+    "Zprey_speed",
+    "Zgame_duration",
+    "Zcumul_xp",
+    "Zprey_avg_rank"
+    ) := lapply(.SD, standardize),
+       .SDcols = c(3:6)]
 
 # ==========================================================================
 # ==========================================================================
@@ -108,7 +113,8 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 model_formula <- brmsformula(
     hunting_success | vint(4) ~
         s(Zcumul_xp, predator_id, bs = "fs", m = 2) +
-        Zgame_duration
+        Zgame_duration +
+        Zprey_avg_rank
 )
 
 
@@ -120,6 +126,9 @@ priors <- c(
   set_prior("normal(1, 0.5)",
             class = "b",
             coef = "Zgame_duration"),
+  set_prior("normal(0, 1)",
+            class = "b",
+            coef = "Zprey_avg_rank"),
   # prior on the intercept
   set_prior("normal(0, 0.5)",
             class = "Intercept"),

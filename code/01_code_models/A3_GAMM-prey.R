@@ -40,11 +40,15 @@ data <- fread(
              "hunting_success",
              "prey_avg_speed",
              "game_duration",
-             "cumul_xp_pred")
+             "cumul_xp_pred",
+             "prey_avg_rank")
 )
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
+
+# Remove any NAs
+data <- data[complete.cases(data)]
 
 
 
@@ -57,9 +61,10 @@ standardize <- function(x) {
 data[, c(
     "Zprey_speed",
     "Zgame_duration",
-    "Zcumul_xp"
+    "Zcumul_xp",
+    "Zprey_avg_rank"
     ) := lapply(.SD, standardize),
-       .SDcols = c(3:5)]
+       .SDcols = c(3:6)]
 
 # ==========================================================================
 # ==========================================================================
@@ -109,7 +114,8 @@ model_formula <- brmsformula(
   hunting_success | vint(4) ~
     s(Zcumul_xp, predator_id, bs = "fs", m = 2) +
     Zgame_duration +
-    Zprey_speed
+    Zprey_speed +
+    Zprey_avg_rank
 )
 
 
@@ -121,6 +127,9 @@ priors <- c(
   set_prior("normal(1, 0.5)",
             class = "b",
             coef = "Zgame_duration"),
+  set_prior("normal(0, 1)",
+            class = "b",
+            coef = "Zprey_avg_rank"),
   set_prior("normal(-1, 0.5)",
             class = "b",
             coef = "Zprey_speed"),
