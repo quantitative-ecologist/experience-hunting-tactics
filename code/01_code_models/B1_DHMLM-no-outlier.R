@@ -111,21 +111,22 @@ data[, sub3 := ifelse(xp_level == "advanced", 1, 0)]
 
 
 
-# Transform the variables (sqrt) ----------------------------------------
+# Standardise the variables (Z-scores) -------------------------------------
 
 # Apply the function and create new columns
 # The function standardizes the variables by group :
 # in this case, by level of experience
 
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
 data[
-  , c("sqrt_game_duration", "sqrt_prey_avg_rank") := lapply(
-    .SD, function(x) {
-      sqrt(x)
-    }
-  ),
-  .SDcols = c("game_duration", "prey_avg_rank"),
-  by = xp_level
+  , c("Zgame_duration", "Zprey_avg_rank") := lapply(.SD, standardize),
+    .SDcols = c("game_duration", "prey_avg_rank"),
+     by = xp_level
 ]
+
 
 # Compute the new columns for each level of experience
 data[, ":=" (
@@ -162,34 +163,34 @@ data[, ":=" (
 
 speed_novice <- bf(
   speed_novice | subset(sub1) + trunc(lb = 0) ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id)
 ) + gaussian()
 
 speed_intermediate <- bf(
   speed_interm | subset(sub2) + trunc(lb = 0) ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id)
 ) + gaussian()
 
 speed_advanced <- bf(
   speed_advanced | subset(sub3) + trunc(lb = 0) ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id)
 ) + gaussian()
 
@@ -199,34 +200,34 @@ speed_advanced <- bf(
 
 prey_speed_novice <- bf(
   prey_speed_novice | subset(sub1) + trunc(lb = 0) ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id)
 ) + gaussian()
 
 prey_speed_intermediate <- bf(
   prey_speed_interm | subset(sub2) + trunc(lb = 0) ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id)
 ) + gaussian()
 
 prey_speed_advanced <- bf(
   prey_speed_advanced | subset(sub3) + trunc(lb = 0) ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id) +
       (1 | environment_id) +
       (1 | avatar_id),
   sigma ~
-      1 + sqrt_prey_avg_rank +
+      1 + Zprey_avg_rank +
       (1 | a | predator_id)
 ) + gaussian()
 
@@ -235,7 +236,6 @@ prey_speed_advanced <- bf(
 # Hunting success at three levels of experience -------------------------
 
 # Compute the custom family
-
 beta_binomial2 <- custom_family(
   "beta_binomial2", dpars = c("mu", "phi"),
   links = c("logit", "log"), lb = c(NA, 0),
@@ -258,19 +258,19 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 # Sub models
 success_novice <- bf(
   success_novice | vint(4) + subset(sub1) ~
-      1 + sqrt_game_duration +
+      1 + Zgame_duration +
       (1 | a | predator_id)
 ) + beta_binomial2
 
 success_interm <- bf(
   success_interm | vint(4) + subset(sub2) ~
-      1 + sqrt_game_duration +
+      1 + Zgame_duration +
       (1 | a | predator_id)
 ) + beta_binomial2
 
 success_advanced <- bf(
   success_advanced | vint(4) + subset(sub3) ~
-      1 + sqrt_game_duration +
+      1 + Zgame_duration +
       (1 | a | predator_id)
 ) + beta_binomial2
 
@@ -280,9 +280,9 @@ success_advanced <- bf(
 
 priors <- c(
   # Prior on game duration
-  set_prior("normal(0.5, 0.5)",
+  set_prior("normal(1, 0.5)",
             class = "b",
-            coef = "sqrt_game_duration",
+            coef = "Zgame_duration",
             resp = c(
               "successnovice",
               "successinterm",
@@ -292,7 +292,7 @@ priors <- c(
   # Prior on prey rank
   set_prior("normal(0, 1)",
             class = "b",
-            coef = "sqrt_prey_avg_rank",
+            coef = "Zprey_avg_rank",
             resp = c(
               "speednovice",
               "speedinterm",
@@ -306,7 +306,7 @@ priors <- c(
   set_prior("normal(0, 1)",
             class = "b",
             dpar = "sigma",
-            coef = "sqrt_prey_avg_rank",
+            coef = "Zprey_avg_rank",
             resp = c(
               "speednovice",
               "speedinterm",
@@ -317,7 +317,7 @@ priors <- c(
             )
   ),
   # Prior on intercept success
-  set_prior("normal(-4, 1)",
+  set_prior("normal(-0.7, 1)",
             class = "Intercept",
             resp = c(
               "successnovice",

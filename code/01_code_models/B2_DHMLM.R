@@ -1,7 +1,6 @@
 # =======================================================================
 
-#                     Run a multivariate model                          #
-#               to evaluate how tactics change with XP                  #
+#            Compare results of our data to random samples              #
 
 # =======================================================================
 
@@ -36,20 +35,22 @@ library(parallel)
 # Import the data -------------------------------------------------------
 
 # Folder path Compute Canada
-folder <- file.path("/home", "maxime11", "projects", "def-monti", 
+folder <- file.path("/home", "maxime11", "projects", "def-monti",
                     "maxime11", "phd_project", "data")
 
 # Load data on compute canada
-data <- fread(file.path(folder, "FraserFrancoetal2023-data-random.csv"),
-              select = c("predator_id",
-                         "avatar_id",
-                         "hunting_success",
-                         "cumul_xp_pred",
-                         "total_xp_pred",
-                         "game_duration",
-                         "pred_speed",
-                         "prey_avg_speed",
-                         "prey_avg_rank"))
+data <- fread(
+  file.path(folder, "FraserFrancoetal2023-data-random.csv"),
+  select = c("predator_id",
+             "avatar_id",
+             "hunting_success",
+             "cumul_xp_pred",
+             "total_xp_pred",
+             "game_duration",
+             "pred_speed",
+             "prey_avg_speed",
+             "prey_avg_rank")
+)
 
 # Predator id as factor
 data[, predator_id := as.factor(predator_id)]
@@ -76,18 +77,22 @@ data[, total_xp_pred := player_type]
 # 2. Prepare the data for the model
 # =======================================================================
 
-# Here we prepare the data so the model can estimate trait correlations
 
-
-
-# Transform the variables (sqrt) ----------------------------------------
+# Standardise the variables (Z-scores) ----------------------------------
 
 # Apply the function and create new columns
-# The function standardizes the variables :
+# The function standardizes the variables by group :
+# in this case, by level of experience
 
-data[, c("sqrt_game_duration", "sqrt_prey_avg_rank") :=
-       lapply(.SD, function (x) {sqrt(x)}), 
-       .SDcols = c("game_duration", "prey_avg_rank")]
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
+data[
+  , c("Zcumul_xp_pred", "Zprey_avg_rank", "Zgame_duration") :=
+  lapply(.SD, standardize),
+  .SDcols = c("cumul_xp_pred", "prey_avg_rank", "game_duration"),
+]
 
 # =======================================================================
 # =======================================================================
@@ -97,7 +102,7 @@ data[, c("sqrt_game_duration", "sqrt_prey_avg_rank") :=
 
 
 # =======================================================================
-# 3. Build the multivariate model 
+# 3. Build the multivariate model
 # =======================================================================
 
 # We first compute submodels
@@ -110,17 +115,17 @@ data[, c("sqrt_game_duration", "sqrt_prey_avg_rank") :=
 
 pred_speed <- bf(
   pred_speed ~
-      0 + sqrt_prey_avg_rank +
-      cumul_xp_pred +
+      0 +
+      Zprey_avg_rank +
+      Zcumul_xp_pred +
       total_xp_pred +
- #     cumul_xp_pred : total_xp_pred +
       (1 | predator_id) +
       (1 | avatar_id),
-  sigma ~  
-      0 + sqrt_prey_avg_rank +
-      cumul_xp_pred +
+  sigma ~
+      0 +
+      Zprey_avg_rank +
+      Zcumul_xp_pred +
       total_xp_pred +
-#      cumul_xp_pred : total_xp_pred +
       (1 | predator_id)
 ) + gaussian()
 
@@ -130,15 +135,16 @@ pred_speed <- bf(
 
 prey_speed <- bf(
   prey_avg_speed ~
-      0 + sqrt_prey_avg_rank +
-      cumul_xp_pred +
+      0 +
+      Zprey_avg_rank +
+      Zcumul_xp_pred +
       total_xp_pred +
-#      cumul_xp_pred : total_xp_pred +
       (1 | predator_id) +
       (1 | avatar_id),
-  sigma ~  
-      0 + sqrt_prey_avg_rank +
-      cumul_xp_pred +
+  sigma ~
+      0 +
+      Zprey_avg_rank +
+      Zcumul_xp_pred +
       total_xp_pred +
 #      cumul_xp_pred : total_xp_pred +
       (1 | predator_id)
@@ -171,11 +177,11 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 
 # Sub models
 success <- bf(
-  hunting_success | vint(4) ~ 
-      0 + sqrt_game_duration +
-      cumul_xp_pred +
+  hunting_success | vint(4) ~
+      0 +
+      Zgame_duration +
+      Zcumul_xp_pred +
       total_xp_pred +
-#      cumul_xp_pred : total_xp_pred +
       (1 | predator_id)
 ) + beta_binomial2
 
@@ -185,18 +191,18 @@ success <- bf(
 
 priors <- c(
   # Prior on game duration
-  set_prior("normal(1, 0.5)", 
+  set_prior("normal(1, 0.5)",
             class = "b",
-            coef = "sqrt_game_duration",
+            coef = "Zgame_duration",
             resp = "huntingsuccess"),
   # Prior on prey rank
-  set_prior("normal(2.5, 1)", 
+  set_prior("normal(0.5, 1)",
             class = "b",
-            coef = "sqrt_prey_avg_rank",
+            coef = "Zprey_avg_rank",
             resp = c("predspeed",
                      "preyavgspeed")),
   # Prior on total XP
-  set_prior("normal(3, 1)", 
+  set_prior("normal(3, 1)",
             class = "b",
             coef = c("total_xp_predearly_quitters",
                      "total_xp_predengaged",
@@ -204,7 +210,7 @@ priors <- c(
                      "total_xp_predslightly_engaged"),
             resp = c("predspeed",
                      "preyavgspeed")),
-  set_prior("normal(-0.05, 1)",
+  set_prior("normal(-0.7, 1)",
             class = "b",
             coef = c("total_xp_predearly_quitters",
                      "total_xp_predengaged",
@@ -212,9 +218,9 @@ priors <- c(
                      "total_xp_predslightly_engaged"),
             resp = "huntingsuccess"),
   # Prior on cumul xp
-  set_prior("normal(0, 1)", 
+  set_prior("normal(0, 1)",
             class = "b",
-            coef = "cumul_xp_pred",
+            coef = "Zcumul_xp_pred",
             resp = c("predspeed",
                      "preyavgspeed",
                      "huntingsuccess")),
@@ -246,7 +252,7 @@ mv_model <- brm(pred_speed +
                 prey_speed +
                 success +
                 set_rescor(FALSE),
-                warmup = 1000, 
+                warmup = 1000,
                 iter = 23000,
                 thin = 88,
                 chains = 4,
@@ -258,7 +264,6 @@ mv_model <- brm(pred_speed +
                 sample_prior = TRUE,
                 control = list(adapt_delta = 0.99),
                 stanvars = stanvars,
-                #save_pars = save_pars(all = TRUE),
                 data = data)
 
 saveRDS(mv_model, file = "B2_DHMLM.rds")
