@@ -26,11 +26,11 @@
  path <- file.path(getwd(), "outputs", "01_outputs_models")
 
  # Import model in R session
- mod1 <- readRDS(file.path(path, "A1_GAMM.rds"))
- mod2 <- readRDS(file.path(path, "A2_GAMM.rds"))
- mod3 <- readRDS(file.path(path, "A3_GAMM.rds"))
- mod2p <- readRDS(file.path(path, "A2_GAMM-prey.rds"))
- mod3p <- readRDS(file.path(path, "A3_GAMM-prey.rds"))
+ mod1 <- readRDS(file.path(path, "A1_GAMM-rank.rds"))
+ mod2 <- readRDS(file.path(path, "A2_GAMM-rank.rds"))
+ mod3 <- readRDS(file.path(path, "A3_GAMM-rank.rds"))
+ mod2p <- readRDS(file.path(path, "A2_GAMM-speed-rank.rds"))
+ mod3p <- readRDS(file.path(path, "A3_GAMM-speed-rank.rds"))
 
 
  # Extract posterior draws

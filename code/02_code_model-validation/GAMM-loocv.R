@@ -30,11 +30,11 @@
  path <- file.path(getwd(), "outputs", "01_outputs_models")
 
  # Load models
- mod1 <- readRDS(file.path(path, "A1_GAMM.rds"))
- mod2 <- readRDS(file.path(path, "A2_GAMM.rds"))
- mod3 <- readRDS(file.path(path, "A3_GAMM.rds"))
- mod4 <- readRDS(file.path(path, "A2_GAMM-prey.rds"))
- mod5 <- readRDS(file.path(path, "A3_GAMM-prey.rds"))
+ mod1 <- readRDS(file.path(path, "A1_GAMM-rank.rds"))
+ mod2 <- readRDS(file.path(path, "A2_GAMM-rank.rds"))
+ mod3 <- readRDS(file.path(path, "A3_GAMM-rank.rds"))
+ mod4 <- readRDS(file.path(path, "A2_GAMM-speed-rank.rds"))
+ mod5 <- readRDS(file.path(path, "A3_GAMM-speed-rank.rds"))
 
  # Check object size
  #print(object.size(mod1), units = "MB")
@@ -131,11 +131,11 @@
  path <- file.path(getwd(), "outputs", "02_outputs_model-validation")
 
  # Save loo
- saveRDS(loo1, file = file.path(path, "A1_loo.rds"))
- saveRDS(loo2, file = file.path(path, "A2_loo.rds"))
- saveRDS(loo3, file = file.path(path, "A3_loo.rds"))
- saveRDS(loo4, file = file.path(path, "A2_loo-prey.rds"))
- saveRDS(loo5, file = file.path(path, "A3_loo-prey.rds"))
+ saveRDS(loo1, file = file.path(path, "A1_rank-loo.rds"))
+ saveRDS(loo2, file = file.path(path, "A2_rank-loo.rds"))
+ saveRDS(loo3, file = file.path(path, "A3_rank-loo.rds"))
+ saveRDS(loo4, file = file.path(path, "A2_speed-rank-loo.rds"))
+ saveRDS(loo5, file = file.path(path, "A3_speed-rank-loo.rds"))
 
  # Save table
  saveRDS(loo_table, file = file.path(path, "GAMM_loo-cv-table.rds"))
