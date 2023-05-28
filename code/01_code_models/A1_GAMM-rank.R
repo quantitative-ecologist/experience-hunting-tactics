@@ -113,7 +113,8 @@ model_formula <- brmsformula(
   hunting_success | vint(4) ~
     s(Zcumul_xp) +
     s(predator_id, bs = "re") +
-    Zgame_duration
+    Zgame_duration +
+    Zprey_avg_rank
 )
 
 
@@ -125,6 +126,9 @@ priors <- c(
   set_prior("normal(1, 0.5)",
             class = "b",
             coef = "Zgame_duration"),
+  set_prior("normal(0, 1)",
+            class = "b",
+            coef = "Zprey_avg_rank"),
   set_prior("normal(0, 2)",
             class = "b",
             coef = "sZcumul_xp_1"),
@@ -168,7 +172,7 @@ model_g <- brm(formula = model_formula,
                data = data,
                stanvars = stanvars)
 
-saveRDS(model_g, file = "A1_GAMM.rds")
+saveRDS(model_g, file = "A1_GAMM-rank.rds")
 
 # ==========================================================================
 # ==========================================================================

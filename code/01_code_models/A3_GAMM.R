@@ -113,8 +113,7 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 model_formula <- brmsformula(
     hunting_success | vint(4) ~
         s(Zcumul_xp, predator_id, bs = "fs", m = 2) +
-        Zgame_duration +
-        Zprey_avg_rank
+        Zgame_duration
 )
 
 
@@ -126,9 +125,6 @@ priors <- c(
   set_prior("normal(1, 0.5)",
             class = "b",
             coef = "Zgame_duration"),
-  set_prior("normal(0, 1)",
-            class = "b",
-            coef = "Zprey_avg_rank"),
   # prior on the intercept
   set_prior("normal(0, 0.5)",
             class = "Intercept"),

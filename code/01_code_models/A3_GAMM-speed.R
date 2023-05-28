@@ -1,6 +1,7 @@
 # ==========================================================================
 
-#            GAMM model G - single common smoother - Hunting success
+#         GAMM model S - individual curves without common smoother
+#                              hunting success
 
 # ==========================================================================
 
@@ -32,7 +33,7 @@ library(parallel)
 folder <- file.path("/home", "maxime11", "projects", "def-monti", 
                     "maxime11", "phd_project", "data")
 
-# Load data on compute canada
+# Load data
 data <- fread(
   file.path(folder, "FraserFrancoetalXXXX-data.csv"),
   select = c("predator_id",
@@ -110,10 +111,10 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 # Model formula ------------------------------------------------------------
 
 model_formula <- brmsformula(
-  hunting_success | vint(4) ~
-    s(Zcumul_xp) +
-    s(predator_id, bs = "re") +
-    Zgame_duration
+    hunting_success | vint(4) ~
+        s(Zcumul_xp, predator_id, bs = "fs", m = 2) +
+        Zgame_duration +
+        Zprey_speed
 )
 
 
@@ -125,9 +126,9 @@ priors <- c(
   set_prior("normal(1, 0.5)",
             class = "b",
             coef = "Zgame_duration"),
-  set_prior("normal(0, 2)",
+  set_prior("normal(-1, 0.5)",
             class = "b",
-            coef = "sZcumul_xp_1"),
+            coef = "Zprey_speed"),
   # prior on the intercept
   set_prior("normal(0, 0.5)",
             class = "Intercept"),
@@ -137,9 +138,7 @@ priors <- c(
   # priors on phi
   set_prior("normal(2, 0.5)",
             class = "phi")
-            )
-
-
+)
 
 # ==========================================================================
 # ==========================================================================
@@ -152,23 +151,23 @@ priors <- c(
 # 3. Run the model
 # ==========================================================================
 
-model_g <- brm(formula = model_formula,
-               family = beta_binomial2,
-               warmup = 500,
-               iter = 2500,
-               thin = 8,
-               chains = 4,
-               threads = threading(12),
-               backend = "cmdstanr",
-               inits = "0",
-               seed = 123,
-               prior = priors,
-               sample_prior = TRUE,
-               control = list(adapt_delta = 0.99),
-               data = data,
-               stanvars = stanvars)
+model_s <- brm(formula = model_formula,
+                family = beta_binomial2,
+                warmup = 500,
+                iter = 1500,
+                thin = 4,
+                chains = 4,
+                threads = threading(12),
+                backend = "cmdstanr",
+                inits = "0",
+                seed = 123,
+                prior = priors,
+                sample_prior = TRUE,
+                control = list(adapt_delta = 0.99),
+                data = data,
+                stanvars = stanvars)
 
-saveRDS(model_g, file = "A1_GAMM.rds")
+saveRDS(model_s, file = "A3_GAMM-speed.rds")
 
 # ==========================================================================
 # ==========================================================================
