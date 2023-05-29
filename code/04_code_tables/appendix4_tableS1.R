@@ -24,7 +24,7 @@
 
  # Import the model
  fit <- readRDS(
-   file.path(path, "02_outputs_models", "02B_DHMLM.rds")
+   file.path(path, "01_outputs_models", "B1_DHMLM-no-outlier.rds")
  )
 # ===========================================================================
 # ===========================================================================
