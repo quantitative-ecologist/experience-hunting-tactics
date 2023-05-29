@@ -281,7 +281,7 @@ gamm_plot3 <- ggplot(table[difference %between% c(-0.05, 0.05), ],
  path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
  ggexport(figure,
-          filename = file.path(path, "appendix1_figureS1-A.png"),
+          filename = file.path(path, "appendix1_figureS1.png"),
           width = 4500,
           height = 1200,
           res = 300)
