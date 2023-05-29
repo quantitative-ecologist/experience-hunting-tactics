@@ -355,13 +355,13 @@ length(unique(dat_sample[, predator_id])) / length(unique(dat[, predator_id]))
 # Highest increase in specialization
 plot1 <- ggplot() +
   geom_density(
-    data = dat_sample[difference_sigma > 0.2 & predator_id != "pred600874"],
+    data = dat_sample[difference_sigma > 0.19 & predator_id != "pred600874"],
     fill = "#999999",
     color = "#999999",
     alpha = 0.5,
     aes(x = value_nov)) +
   geom_density(
-    data = dat_sample[difference_sigma > 0.2 & predator_id != "pred600874"],
+    data = dat_sample[difference_sigma > 0.19 & predator_id != "pred600874"],
     fill = "#00AFBB",
     alpha = 0.5,
     aes(x = value_adv)) +
