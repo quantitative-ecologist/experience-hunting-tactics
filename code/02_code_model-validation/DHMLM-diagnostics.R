@@ -25,6 +25,7 @@
  library(brms)
  library(ggpubr)
  library(tidybayes)
+ library(parallel)
 
 
 

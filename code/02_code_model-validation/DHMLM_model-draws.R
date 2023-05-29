@@ -101,6 +101,16 @@ ggplot(posterior_fit) +
                alpha = 0.6) +
   theme_classic()
 
+ggplot(posterior_fit) +
+  geom_density(aes(prior_Intercept_successadvanced),
+               fill = "steelblue",
+               color = "black",
+               alpha = 0.6) +
+  geom_density(aes(b_successadvanced_Intercept),
+               fill = "#FC4E07",
+               color = "black",
+               alpha = 0.6) +
+  theme_classic()
 
 
 # Sigma ------------------------------------------------------------------------
@@ -146,11 +156,11 @@ ggplot(posterior_fit) +
 
 # slope rank pred speed
 ggplot(posterior_fit) +
-  geom_density(aes(prior_b_speednovice_sqrt_prey_avg_rank),
+  geom_density(aes(prior_b_speednovice_Zprey_avg_rank),
                fill = "steelblue",
                color = "black",
                alpha = 0.6) +
-  geom_density(aes(b_speednovice_sqrt_prey_avg_rank),
+  geom_density(aes(b_speednovice_Zprey_avg_rank),
                fill = "#FC4E07",
                color = "black",
                alpha = 0.6) +
@@ -158,11 +168,11 @@ ggplot(posterior_fit) +
 
 # slope rank prey speed
 ggplot(posterior_fit) +
-  geom_density(aes(prior_b_preyspeednovice_sqrt_prey_avg_rank),
+  geom_density(aes(prior_b_preyspeednovice_Zprey_avg_rank),
                fill = "steelblue",
                color = "black",
                alpha = 0.6) +
-  geom_density(aes(b_preyspeednovice_sqrt_prey_avg_rank),
+  geom_density(aes(b_preyspeednovice_Zprey_avg_rank),
                fill = "#FC4E07",
                color = "black",
                alpha = 0.6) +
@@ -170,11 +180,11 @@ ggplot(posterior_fit) +
 
 # game duration success
 ggplot(posterior_fit) +
-  geom_density(aes(prior_b_successnovice_sqrt_game_duration),
+  geom_density(aes(prior_b_successnovice_Zgame_duration),
                fill = "steelblue",
                color = "black",
                alpha = 0.6) +
-  geom_density(aes(b_successnovice_sqrt_game_duration),
+  geom_density(aes(b_successnovice_Zgame_duration),
                fill = "#FC4E07",
                color = "black",
                alpha = 0.6) +
@@ -186,11 +196,11 @@ ggplot(posterior_fit) +
 
 # slope rank pred speed
 ggplot(posterior_fit) +
-  geom_density(aes(prior_b_sigma_speednovice_sqrt_prey_avg_rank),
+  geom_density(aes(prior_b_sigma_speednovice_Zprey_avg_rank),
                fill = "steelblue",
                color = "black",
                alpha = 0.6) +
-  geom_density(aes(b_sigma_speednovice_sqrt_prey_avg_rank),
+  geom_density(aes(b_sigma_speednovice_Zprey_avg_rank),
                fill = "#FC4E07",
                color = "black",
                alpha = 0.6) +
@@ -198,11 +208,11 @@ ggplot(posterior_fit) +
 
 # slope rank prey speed
 ggplot(posterior_fit) +
-  geom_density(aes(prior_b_sigma_preyspeednovice_sqrt_prey_avg_rank),
+  geom_density(aes(prior_b_sigma_preyspeednovice_Zprey_avg_rank),
                fill = "steelblue",
                color = "black",
                alpha = 0.6) +
-  geom_density(aes(b_sigma_preyspeednovice_sqrt_prey_avg_rank),
+  geom_density(aes(b_sigma_preyspeednovice_Zprey_avg_rank),
                fill = "#FC4E07",
                color = "black",
                alpha = 0.6) +
