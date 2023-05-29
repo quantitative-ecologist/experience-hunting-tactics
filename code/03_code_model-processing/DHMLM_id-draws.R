@@ -105,7 +105,7 @@
 
  # Add variable telling if its sigma or not
  draws[, sigma := ifelse(ID_raw %like% "sigma", 1, 0)]
- 
+
  # Delete older column
  draws[, ID_raw := NULL]
 
