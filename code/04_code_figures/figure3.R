@@ -302,7 +302,7 @@ length(unique(flex$predator_id)) / length(unique(dat$predator_id))
 # 8%
 
 length(unique(specialists$predator_id)) / length(unique(dat$predator_id))
-# 5%
+# 4%
 
 length(unique(constant$predator_id)) / length(unique(dat$predator_id))
 # 43%
@@ -310,8 +310,8 @@ length(unique(constant$predator_id)) / length(unique(dat$predator_id))
 dat[difference_sigma <= -0.2, change := "large"]
 dat[difference_sigma >= 0.2, change := "large"]
 dat[difference_sigma %between% c(-0.05, 0.05), change := "stable"]
-dat[difference_sigma %between% c(-0.1999, -0.0503), change := "moderate"]
-dat[difference_sigma %between% c(0.051, 0.1999), change := "moderate"]
+dat[difference_sigma %between% c(-0.1999, -0.0499), change := "moderate"]
+dat[difference_sigma %between% c(0.0504, 0.1999), change := "moderate"]
 
 length(unique(dat[change == "large", predator_id])) / length(unique(dat$predator_id))
 length(unique(dat[change == "stable", predator_id])) / length(unique(dat$predator_id))
@@ -376,12 +376,12 @@ plot1 <- ggplot() +
 
 # Highest increase in flexibility
 plot2 <- ggplot() +
-  geom_density(data = dat_sample[difference_sigma < -0.27],
+  geom_density(data = dat_sample[difference_sigma < -0.279],
                fill = "#999999",
                color = "#999999",
                alpha = 0.5,
                aes(x = value_nov)) +
-  geom_density(data = dat_sample[difference_sigma < -0.27],
+  geom_density(data = dat_sample[difference_sigma < -0.279],
                fill = "#00AFBB",
                alpha = 0.5,
                aes(x = value_adv)) +
