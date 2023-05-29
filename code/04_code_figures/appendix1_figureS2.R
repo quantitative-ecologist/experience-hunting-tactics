@@ -142,7 +142,7 @@ plot1 <- ggplot() +
                aes(x = sigma_pred_speed,
                    xend = sigma_pred_speed,
                    y = success_lower_ci,
-                   yend = success_upper_ci), 
+                   yend = success_upper_ci),
                color = "#999999", alpha = 0.2) +
   geom_point(data = table1,
              aes(x = sigma_pred_speed,
@@ -180,7 +180,7 @@ plot2 <- ggplot() +
                aes(x = sigma_pred_speed,
                    xend = sigma_pred_speed,
                    y = success_lower_ci,
-                   yend = success_upper_ci), 
+                   yend = success_upper_ci),
                color = "#00AFBB", alpha = 0.2) +
   geom_point(data = table2,
              aes(x = sigma_pred_speed,
@@ -200,7 +200,7 @@ plot2 <- ggplot() +
    ) +
    ylab("Hunting success\n") +
    xlab("\nIIV in predator speed") +
-   labs(title = "Advanced: r = -0.11 (-0.23, 0.01)") +
+   labs(title = "Advanced: r = -0.12 (-0.23, 0.01)") +
    custom_theme
 
 # =======================================================================
