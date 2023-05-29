@@ -22,7 +22,8 @@ library(ggpubr)
 
 path <- file.path(getwd(), "outputs", "01_outputs_models")
 
-fit1 <- readRDS(file.path(path, "A2_GAMM-prey.rds"))
+fit1 <- readRDS(file.path(path, "A2_GAMM.rds"))
+#fit1 <- readRDS(file.path(path, "A2_GAMM-speed-rank.rds"))
 
 
 
@@ -82,7 +83,7 @@ custom_theme <- theme(
   # axis ticks lenght
   axis.ticks.length = unit(.15, "cm"),
   # axis ticks width
-  axis.ticks = element_line(size = 0.90,
+  axis.ticks = element_line(linewidth = 0.90,
                             color = "black"),
   # axis titles size
   axis.title = element_text(size = 16,
@@ -280,7 +281,7 @@ gamm_plot3 <- ggplot(table[difference %between% c(-0.05, 0.05), ],
  path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
  ggexport(figure,
-          filename = file.path(path, "appendix1_figureS1.png"),
+          filename = file.path(path, "appendix1_figureS1-A.png"),
           width = 4500,
           height = 1200,
           res = 300)
