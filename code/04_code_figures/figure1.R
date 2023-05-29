@@ -22,13 +22,8 @@
 
  path <- file.path(getwd(), "outputs", "01_outputs_models")
 
-
-
-
- modA2 <- readRDS(file.path(path, "A2_GAMM.rds"))
- modA3 <- readRDS(file.path(path, "A3_GAMM.rds"))
- modA2_prey <- readRDS(file.path(path, "A2_GAMM-prey.rds"))
- modA3_prey <- readRDS(file.path(path, "A3_GAMM-prey.rds"))
+ modA2 <- readRDS(file.path(path, "A2_GAMM-rank.rds"))
+ modA2_prey <- readRDS(file.path(path, "A2_GAMM-speed-rank.rds"))
 
 
 
@@ -39,6 +34,7 @@
                           "game_duration",
                           "pred_speed",
                           "prey_avg_speed",
+                          "prey_avg_rank",
                           "cumul_xp_pred",
                           "total_xp_pred",
                           "hunting_success"))
@@ -84,7 +80,7 @@
 
 
 # ==========================================================================
-# 2. Plot 1 : GAMM fitted line
+# 2. Prepare the data for the plots
 # ==========================================================================
 
 
@@ -125,23 +121,6 @@
  )
  tabA2_prey_b <- data.table(tabA2_prey_b[[1]])
 
- # Group-level smooths model A3
- tabA3 <- conditional_effects(
-  modA3, method = "fitted",
-  effects = "Zcumul_xp:predator_id",
-  robust = TRUE, re_formula = NULL
- )
- tabA3 <- data.table(tabA3[[1]])
-
- # Group-level smooths model A3prey
- tabA3_prey <- conditional_effects(
-  modA3_prey, method = "fitted",
-  effects = "Zcumul_xp:predator_id",
-  robust = TRUE, re_formula = NULL
- )
- tabA3_prey <- data.table(tabA3_prey[[1]])
-
-
 
 
 # Transform values --------------------------------------------------------
@@ -153,12 +132,12 @@
 
  # List the tables
  tables <- list(
-  tabA2_a, tabA2_b, tabA2_prey_a,
-  tabA2_prey_b, tabA3, tabA3_prey
+  tabA2_a, tabA2_b,
+  tabA2_prey_a, tabA2_prey_b,
  )
  names(tables) <- c(
-  "tabA2_a", "tabA2_b", "tabA2_prey_a",
-  "tabA2_prey_b", "tabA3", "tabA3_prey"
+  "tabA2_a", "tabA2_b",
+  "tabA2_prey_a", "tabA2_prey_b",
  )
 
  # Function to apply transformation
@@ -179,15 +158,11 @@
 
  # Merge the two tables adding the total XP
  tabA2_a <- merge(tabA2_a, xp, by = "predator_id")
- tabA3 <- merge(tabA3, xp, by = "predator_id")
  tabA2_prey_a <- merge(tabA2_prey_a, xp, by = "predator_id")
- tabA3_prey <- merge(tabA3_prey, xp, by = "predator_id")
 
  # Cut all matches where fitted values are above total XP
  tabA2_a <- tabA2_a[cumul_xp <= total_xp_pred]
- tabA3 <- tabA3[cumul_xp <= total_xp_pred]
  tabA2_prey_a <- tabA2_prey_a[cumul_xp <= total_xp_pred, ]
- tabA3_prey <- tabA3_prey[cumul_xp <= total_xp_pred, ]
 
 
 
@@ -214,17 +189,28 @@
    panel.background = element_blank()
  )
 
+# ==========================================================================
+# ==========================================================================
 
 
-# Produce the plot --------------------------------------------------------
+
+
+
+# ==========================================================================
+# 3. Individual variance plots
+# ==========================================================================
+
+
+# Model A2 rank only -------------------------------------------------------
 
  plotA2_a <- ggplot(tabA2_a,
                       aes(x = Zcumul_xp,
                           y = estimate__ / 4,
                           color = predator_id)) +
-    geom_line(linewidth = 1) +
+    geom_line(linewidth = 1, alpha = 0.5) +
     scale_color_viridis(discrete = TRUE, option = "D") + #B
     ylab("Hunting success\n") +
+    ggtitle("Prey rank") +
     scale_y_continuous(breaks = seq(0, 1, 0.25),
                        limits = c(0, 1)) +
     scale_x_continuous(breaks = scaled_breaks,
@@ -232,38 +218,84 @@
     xlab("\nCumulative experience") +
     custom_theme
 
- plotA2_b <- ggplot(
-   tabA2_b,
-   aes(x = Zcumul_xp,
-       y = estimate__ / 4)
-   ) +
-   geom_ribbon(
-     aes(
-       ymin = lower__ / 4,
-       ymax = upper__ / 4),
-     fill = "gray") +
-   geom_line(linewidth = 1) +
-   ylab("Hunting success\n") +
-   scale_y_continuous(breaks = seq(0, 1, 0.25),
-                      limits = c(0, 1)) +
-   scale_x_continuous(breaks = scaled_breaks,
-                      labels = seq(0, 500, 100)) +
-   xlab("\nCumulative experience") +
-   custom_theme
+
+
+# Model A2 rank + speed ----------------------------------------------------
 
  plotA2p_a <- ggplot(tabA2_prey_a,
                       aes(x = Zcumul_xp,
                           y = estimate__ / 4,
                           color = predator_id)) +
-    geom_line(linewidth = 1) +
+    geom_line(linewidth = 1, alpha = 0.5) +
     scale_color_viridis(discrete = TRUE, option = "D") + #B
     ylab("Hunting success\n") +
+    ggtitle("Prey rank + prey speed") +
     scale_y_continuous(breaks = seq(0, 1, 0.25),
                        limits = c(0, 1)) +
     scale_x_continuous(breaks = scaled_breaks,
                        labels = seq(0, 500, 100)) +
     xlab("\nCumulative experience") +
     custom_theme
+
+# ==========================================================================
+# ==========================================================================
+
+
+
+
+
+# ==========================================================================
+# 4. Global trend plots
+# ==========================================================================
+
+
+# Model A2 rank only -------------------------------------------------------
+
+ plotA2_b <- ggplot(
+    tabA2_b,
+    aes(x = Zcumul_xp,
+        y = estimate__ / 4)
+    ) +
+     geom_vline(
+     xintercept = min(tabA2_b$Zcumul_xp),
+     lty = "dashed",
+     color = "#5ec962") +
+   geom_text(
+     aes(label = paste("y =", round(min(tabA2_b$estimate__ / 4), digits = 2)),
+         y = min(tabA2_b$estimate__ / 4),
+         x = min(tabA2_b$Zcumul_xp) + 0.6),
+     color = "#5ec962",
+     size = 5
+     ) +
+   geom_vline(
+     xintercept = tabA2_b[which.max(estimate__), Zcumul_xp],
+     lty = "dashed",
+     color = "#440154") +
+   geom_text(
+     aes(label = paste("y =", format(round(max(tabA2_b$estimate__ / 4), digits = 2), nsmall = 2)),
+         y = max(tabA2_b$estimate__ / 4) + 0.10,
+         x = tabA2_b[which.max(estimate__), Zcumul_xp] + 0.35),
+     color = "#440154",
+     size = 5
+   ) +
+    geom_ribbon(
+      aes(
+        ymin = lower__ / 4,
+        ymax = upper__ / 4),
+      fill = "gray") +
+    geom_line(linewidth = 1) +
+    ylab("Hunting success\n") +
+    ggtitle("Prey rank") +
+    scale_y_continuous(breaks = seq(0, 1, 0.25),
+                       limits = c(0, 1)) +
+    scale_x_continuous(breaks = scaled_breaks,
+                       labels = seq(0, 500, 100)) +
+    xlab("\nCumulative experience") +
+    custom_theme
+
+
+
+# Model A2 rank + speed ----------------------------------------------------
 
  plotA2p_b <- ggplot(
    tabA2_prey_b,
@@ -276,8 +308,8 @@
      color = "#5ec962") +
    geom_text(
      aes(label = paste("y =", round(min(tabA2_prey_b$estimate__ / 4), digits = 2)),
-         y = min(tabA2_prey_b$estimate__ / 4) + 0.15,
-         x = min(tabA2_prey_b$Zcumul_xp) + 0.5),
+         y = min(tabA2_prey_b$estimate__ / 4),
+         x = min(tabA2_prey_b$Zcumul_xp) + 0.6),
      color = "#5ec962",
      size = 5
      ) +
@@ -286,9 +318,9 @@
      lty = "dashed",
      color = "#440154") +
    geom_text(
-     aes(label = paste("y =", round(max(tabA2_prey_b$estimate__ / 4), digits = 2)),
+     aes(label = paste("y =", format(round(max(tabA2_prey_b$estimate__ / 4), digits = 2), nsmall = 2)),
          y = max(tabA2_prey_b$estimate__ / 4) + 0.10,
-         x = tabA2_prey_b[which.max(estimate__), Zcumul_xp] + 0.5),
+         x = tabA2_prey_b[which.max(estimate__), Zcumul_xp] + 0.35),
      color = "#440154",
      size = 5
    ) +
@@ -299,40 +331,13 @@
      fill = "gray") +
    geom_line(linewidth = 1) +
    ylab("Hunting success\n") +
+   ggtitle("Prey rank + prey speed") +
    scale_y_continuous(breaks = seq(0, 1, 0.25),
                       limits = c(0, 1)) +
    scale_x_continuous(breaks = scaled_breaks,
                       labels = seq(0, 500, 100)) +
    xlab("\nCumulative experience") +
    custom_theme
-
- plotA3_a <- ggplot(tabA3,
-                      aes(x = Zcumul_xp,
-                          y = estimate__ / 4,
-                          color = predator_id)) +
-    geom_line(linewidth = 1) +
-    scale_color_viridis(discrete = TRUE, option = "D") + #B
-    ylab("Hunting success\n") +
-    scale_y_continuous(breaks = seq(0, 1, 0.25),
-                       limits = c(0, 1)) +
-    scale_x_continuous(breaks = scaled_breaks,
-                       labels = seq(0, 500, 100)) +
-    xlab("\nCumulative experience") +
-    custom_theme
-
- plotA3p_b <- ggplot(tabA3_prey,
-                      aes(x = Zcumul_xp,
-                          y = estimate__ / 4,
-                          color = predator_id)) +
-    geom_line(linewidth = 1) +
-    scale_color_viridis(discrete = TRUE, option = "D") + #B
-    ylab("Hunting success\n") +
-    scale_y_continuous(breaks = seq(0, 1, 0.25),
-                       limits = c(0, 1)) +
-    scale_x_continuous(breaks = scaled_breaks,
-                       labels = seq(0, 500, 100)) +
-    xlab("\nCumulative experience") +
-    custom_theme
 
 # ==========================================================================
 # ==========================================================================
@@ -352,10 +357,17 @@
 
  # Arrange paneled figure
  figure <- ggarrange(
-    NULL, plotA3_a, NULL, plotA2p_a, NULL, plotA2p_b,
-    ncol = 6, nrow = 1,
-    labels = c("(A)", "", "(B)", "", "(C)"),
-    widths = c(0.15, 1.5, 0.15, 1.5, 0.15, 1.5)
+    NULL, plotA2_a, NULL, plotA2p_a,
+    NULL, plotA2_b, NULL, plotA2p_b,
+    ncol = 4, nrow = 2,
+    labels = c(
+      "(A)", "", "(B)", "",
+      "(C)", "", "(D)", ""
+    ),
+    widths = c(
+      0.15, 1.5, 0.15, 1.5,
+      0.15, 1.5, 0.15, 1.5
+    )
  )
 
 # Export the figure -----------------------------------------------------
@@ -364,8 +376,8 @@
 
  ggexport(figure,
           filename = file.path(path, "figure1.png"),
-          width = 4500,
-          height = 1200,
+          width = 2700,
+          height = 2200,
           res = 300)
 
 # ==========================================================================
