@@ -21,7 +21,7 @@ library(data.table)
 path <- file.path(getwd(), "outputs", "01_outputs_models")
 
 fit2 <- readRDS(file.path(path, "A2_GAMM.rds"))
-fit2p <- readRDS(file.path(path, "A2_GAMM-prey.rds"))
+fit2p <- readRDS(file.path(path, "A2_GAMM-speed-rank.rds"))
 
 
 
