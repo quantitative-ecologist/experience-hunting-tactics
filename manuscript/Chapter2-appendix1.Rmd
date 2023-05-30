@@ -80,12 +80,12 @@ b_draws[
       "b_sigma_preyspeednovice_Intercept",
       "b_sigma_preyspeedinterm_Intercept",
       "b_sigma_preyspeedadvanced_Intercept",
-      "b_sigma_speednovice_sqrt_prey_avg_rank",
-      "b_sigma_speedinterm_sqrt_prey_avg_rank",
-      "b_sigma_speedadvanced_sqrt_prey_avg_rank",
-      "b_sigma_preyspeednovice_sqrt_prey_avg_rank",
-      "b_sigma_preyspeedinterm_sqrt_prey_avg_rank",
-      "b_sigma_preyspeedadvanced_sqrt_prey_avg_rank"
+      "b_sigma_speednovice_Zprey_avg_rank",
+      "b_sigma_speedinterm_Zprey_avg_rank",
+      "b_sigma_speedadvanced_Zprey_avg_rank",
+      "b_sigma_preyspeednovice_Zprey_avg_rank",
+      "b_sigma_preyspeedinterm_Zprey_avg_rank",
+      "b_sigma_preyspeedadvanced_Zprey_avg_rank"
   )
   := lapply(.SD, function(x) {exp(x)}),
   .SDcols = c(
@@ -95,12 +95,12 @@ b_draws[
     "b_sigma_preyspeednovice_Intercept",
     "b_sigma_preyspeedinterm_Intercept",
     "b_sigma_preyspeedadvanced_Intercept",
-    "b_sigma_speednovice_sqrt_prey_avg_rank",
-    "b_sigma_speedinterm_sqrt_prey_avg_rank",
-    "b_sigma_speedadvanced_sqrt_prey_avg_rank",
-    "b_sigma_preyspeednovice_sqrt_prey_avg_rank",
-    "b_sigma_preyspeedinterm_sqrt_prey_avg_rank",
-    "b_sigma_preyspeedadvanced_sqrt_prey_avg_rank"
+    "b_sigma_speednovice_Zprey_avg_rank",
+    "b_sigma_speedinterm_Zprey_avg_rank",
+    "b_sigma_speedadvanced_Zprey_avg_rank",
+    "b_sigma_preyspeednovice_Zprey_avg_rank",
+    "b_sigma_preyspeedinterm_Zprey_avg_rank",
+    "b_sigma_preyspeedadvanced_Zprey_avg_rank"
   )
 ]
 
@@ -109,18 +109,18 @@ b_draws[
   , c("b_successnovice_Intercept",
       "b_successinterm_Intercept",
       "b_successadvanced_Intercept",
-      "b_successnovice_sqrt_game_duration",
-      "b_successinterm_sqrt_game_duration",
-      "b_successadvanced_sqrt_game_duration"
+      "b_successnovice_Zgame_duration",
+      "b_successinterm_Zgame_duration",
+      "b_successadvanced_Zgame_duration"
   )
   := lapply(.SD, function(x) {plogis(x)}),
   .SDcols = c(
     "b_successnovice_Intercept",
     "b_successinterm_Intercept",
     "b_successadvanced_Intercept",
-    "b_successnovice_sqrt_game_duration",
-    "b_successinterm_sqrt_game_duration",
-    "b_successadvanced_sqrt_game_duration"
+    "b_successnovice_Zgame_duration",
+    "b_successinterm_Zgame_duration",
+    "b_successadvanced_Zgame_duration"
   )
 ]
 
@@ -565,7 +565,7 @@ tab2
 
 \newpage
 
-```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Among individual differences in the development of hunting expertise. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. (A) Individuals with a >0.5 change in hunting success with experience (B) Individuals with a <-0.5 change in hunting success with experience. (C) Individuals with a change in hunting success between -0.5 and 0.5"}
+```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Among individual differences in the development of hunting expertise in the model where we do not account for prey speed and average rank. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. (A) Individuals with a >0.5 unit increase in hunting success with experience (B) Individuals with a <-0.5 unit decrease in hunting success with experience. (C) Individuals that maintained a stable hunting success (between -0.5 and 0.5 unit change in hunting success)"}
 
 knitr::include_graphics(
   here::here(
@@ -576,7 +576,7 @@ knitr::include_graphics(
 
 ```
 
-```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Correlations between the predators' mean hunting success and intra individual variance in speed indicating differences in success between specialist and flexible hunters. Individuals with lower IIV are specialist hunters, while individuals with higher IIV are flexible hunters. (A) Correlation when predators were novice (B) Correlation when predators were advanced"}
+```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Correlations between the predators' mean hunting success (y axis) and intra individual variance in speed (x axis) to test for differences in success between specialist and flexible hunters. Individuals with lower IIV are specialist hunters, while individuals with higher IIV are flexible hunters. (A) Correlation when predators were novice (B) Correlation when predators were advanced"}
 
 knitr::include_graphics(
   here::here(
