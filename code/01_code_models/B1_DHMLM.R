@@ -255,19 +255,25 @@ stanvars <- stanvar(scode = stan_funs, block = "functions")
 # Sub models
 success_novice <- bf(
   success_novice | vint(4) + subset(sub1) ~
-      1 + Zgame_duration +
+      1 +
+      Zgame_duration +
+      Zprey_avg_rank +
       (1 | a | predator_id)
 ) + beta_binomial2
 
 success_interm <- bf(
   success_interm | vint(4) + subset(sub2) ~
-      1 + Zgame_duration +
+      1 +
+      Zgame_duration +
+      Zprey_avg_rank +
       (1 | a | predator_id)
 ) + beta_binomial2
 
 success_advanced <- bf(
   success_advanced | vint(4) + subset(sub3) ~
-      1 + Zgame_duration +
+      1 +
+      Zgame_duration +
+      Zprey_avg_rank +
       (1 | a | predator_id)
 ) + beta_binomial2
 
@@ -296,7 +302,10 @@ priors <- c(
               "speedadvanced",
               "preyspeednovice",
               "preyspeedinterm",
-              "preyspeedadvanced"
+              "preyspeedadvanced",
+              "successnovice",
+              "successinterm",
+              "successadvanced"
             )
   ),
   # Prior on sigma prey rank
