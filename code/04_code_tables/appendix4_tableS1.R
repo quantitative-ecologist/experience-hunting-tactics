@@ -287,11 +287,6 @@
     color(j = c(12:16), color = "#00AFBB", part = "header") %>%
     color(i = c(11:15), j = c(1), color = "#00AFBB", part = "body")
 
- # Save the table
- path1 <- file.path("./outputs/05_outputs_tables")
-
- # Save R object
- saveRDS(cor_table, file = file.path(path1, "05_tableS1.rds"))
  # Image was saved from the Rstudio export option
  # width = 1630  height = 570 on large computer screen from the viewer in Rstudio
 
