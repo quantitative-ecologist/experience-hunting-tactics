@@ -112,24 +112,24 @@ dt1[variable %like% "advanced", xp_level := "advanced"]
 # Add variable
 dt1[
   , parameter := ifelse(
-    variable %like% "sd" & 
+    variable %like% "sd" &
       variable %like% "sigma",
-    "predator ID (sigma)",
-    "intercept (sigma)"
+    "individual variation IIV",
+    "population variation"
   )
 ]
 
 dt1[
   !(variable %like% "sigma") &
     variable %like% "sd",
-  parameter := "predator ID (mean)"
+  parameter := "individual variation mean"
 ]
 
 dt1[
   variable %like% "Intercept" &
     !(variable %like% "sigma") &
     !(variable %like% "sd"),
-  parameter := "intercept (mean)"
+  parameter := "population mean"
 ]
 
 # Add trait
@@ -232,6 +232,18 @@ tab[
 
 tab <- unique(tab[, c(1, 2, 4:11)])
 
+# Reorder factor levels
+tab[
+  , parameter := factor(
+      parameter,
+      levels = c(
+        "individual variation IIV",
+        "individual variation mean",
+        "population variation",
+        "population mean"
+      )
+  )
+]
 
 
 # Compute plots ---------------------------------------------------------
@@ -249,6 +261,26 @@ tab$test <- c(
       rep("bold((B))~advanced~vs~intermediate", 10),
       rep("bold((C))~advanced~vs~novice", 10)
 )
+
+# Setup my theme
+custom_theme <- theme(
+    axis.title.y = element_blank(),
+    axis.title = element_text(size = 15, face = "plain", color = "black"),
+    axis.text = element_text(face = "plain", size = 12, color = "black"),
+    strip.text = element_text(size = 13),
+    axis.text.y.left = element_text(
+      margin = margin(0, 5.5, 0, 5.5),
+      hjust = 0.5
+    ),
+    # to left align panel titles
+    #strip.text = element_text(size = 13, hjust = 0),
+    panel.grid = element_blank(),
+    legend.position = "top",
+    legend.key = element_rect(fill = "transparent"),
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 13)
+  )
+
 
 # Plot
 fig <- ggplot(
@@ -296,24 +328,17 @@ fig <- ggplot(
     name = "Density:",
     values = colors
   ) +
+  scale_x_discrete(
+    labels = function(x) {
+      stringr::str_wrap(x, width = 14)
+      }
+  ) +
   ylab("\nPosterior median difference") +
   coord_flip() +
   theme_bw() +
   facet_wrap(~ test, labeller = label_parsed) +
-  theme(
-    axis.title.y = element_blank(),
-    axis.title = element_text(size = 15, face = "plain", color = "black"),
-    axis.text = element_text(face = "plain", size = 12, color = "black"),
-    strip.text = element_text(size = 13),
-    # to left align panel titles
-    #strip.text = element_text(size = 13, hjust = 0),
-    panel.grid = element_blank(),
-    legend.position = "top",
-    legend.key = element_rect(fill = "transparent"),
-    legend.title = element_text(size = 15),
-    legend.text = element_text(size = 13)
-  )
-
+  custom_theme
+fig
 
 
 # Export figure ---------------------------------------------------------
