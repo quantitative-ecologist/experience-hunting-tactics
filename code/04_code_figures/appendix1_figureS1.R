@@ -198,13 +198,13 @@ table[difference %between% c(-0.10, 0.10), diff_dir := "stable"]
 # Plot for players that had an increase in success -------------------------
 
 length(unique(table[diff_dir == "increase", predator_id]))
-# 63 players had an increase in hunting success
+# 23 players had an increase in hunting success
 
 gamm_plot1 <- ggplot(table[difference > 0.05, ],
                      aes(x = Zcumul_xp,
                          y = estimate__ / 4,
                          color = predator_id)) +
-  geom_line(linewidth = 1) +
+  geom_line(linewidth = 1, alpha = 0.5) +
   viridis::scale_color_viridis(discrete = TRUE, option = "D") + #B
   ylab("Hunting success\n") +
   scale_y_continuous(breaks = seq(0, 1, 0.25),
