@@ -50,6 +50,56 @@ dt <- dt[, c(1:15, 54:68)]
 
 
 
+# Back-transform values -------------------------------------------------
+
+# Take the exponent of sigma parameters
+dt[
+  , c("b_sigma_speednovice_Intercept",
+      "b_sigma_speedinterm_Intercept",
+      "b_sigma_speedadvanced_Intercept",
+      "b_sigma_preyspeednovice_Intercept",
+      "b_sigma_preyspeedinterm_Intercept",
+      "b_sigma_preyspeedadvanced_Intercept",
+      "sd_predator_id__sigma_speednovice_Intercept",
+      "sd_predator_id__sigma_speedinterm_Intercept",
+      "sd_predator_id__sigma_speedadvanced_Intercept",
+      "sd_predator_id__sigma_preyspeednovice_Intercept",
+      "sd_predator_id__sigma_preyspeedinterm_Intercept",
+      "sd_predator_id__sigma_preyspeedadvanced_Intercept"
+  )
+  := lapply(.SD, function(x) {exp(x)}),
+  .SDcols = c(
+    "b_sigma_speednovice_Intercept",
+    "b_sigma_speedinterm_Intercept",
+    "b_sigma_speedadvanced_Intercept",
+    "b_sigma_preyspeednovice_Intercept",
+    "b_sigma_preyspeedinterm_Intercept",
+    "b_sigma_preyspeedadvanced_Intercept",
+    "sd_predator_id__sigma_speednovice_Intercept",
+    "sd_predator_id__sigma_speedinterm_Intercept",
+    "sd_predator_id__sigma_speedadvanced_Intercept",
+    "sd_predator_id__sigma_preyspeednovice_Intercept",
+    "sd_predator_id__sigma_preyspeedinterm_Intercept",
+    "sd_predator_id__sigma_preyspeedadvanced_Intercept"
+  )
+]
+
+# Back-transform hunting success
+dt[
+  , c("b_successnovice_Intercept",
+      "b_successinterm_Intercept",
+      "b_successadvanced_Intercept"
+  )
+  := lapply(.SD, function(x) {plogis(x)}),
+  .SDcols = c(
+    "b_successnovice_Intercept",
+    "b_successinterm_Intercept",
+    "b_successadvanced_Intercept"
+  )
+]
+
+
+
 # Prepare the data ------------------------------------------------------
 
 # Reshape the table
