@@ -153,8 +153,8 @@ plot1 <- ggplot() +
              alpha = 0.8,
              stroke = 0) +
    scale_y_continuous(
-    breaks = seq(-4, 4, 2),
-    limits = c(-4, 4.1)
+    breaks = seq(-5, 5, 2.5),
+    limits = c(-5.1, 5)
    ) +
    scale_x_continuous(
     breaks = seq(-1, 2, 1),
@@ -162,7 +162,7 @@ plot1 <- ggplot() +
    ) +
    ylab("Hunting success\n") +
    xlab("\nIIV in predator speed") +
-   labs(title = "Novice: r = -0.15 (-0.26, -0.04)") +
+   labs(title = "Novice: r = -0.18 (-0.29, -0.06)") +
    custom_theme
 
 
@@ -191,8 +191,8 @@ plot2 <- ggplot() +
              alpha = 0.8,
              stroke = 0) +
    scale_y_continuous(
-    breaks = seq(-4, 4, 2),
-    limits = c(-4, 4.1)
+    breaks = seq(-5, 5, 2.5),
+    limits = c(-5.1, 5)
    ) +
    scale_x_continuous(
     breaks = seq(-1, 2, 1),
@@ -200,7 +200,7 @@ plot2 <- ggplot() +
    ) +
    ylab("Hunting success\n") +
    xlab("\nIIV in predator speed") +
-   labs(title = "Advanced: r = -0.12 (-0.23, 0.01)") +
+   labs(title = "Advanced: r = -0.24 (-0.34, -0.13)") +
    custom_theme
 
 # =======================================================================
