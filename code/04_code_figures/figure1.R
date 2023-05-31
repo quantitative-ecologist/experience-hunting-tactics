@@ -133,11 +133,11 @@
  # List the tables
  tables <- list(
   tabA2_a, tabA2_b,
-  tabA2_prey_a, tabA2_prey_b,
+  tabA2_prey_a, tabA2_prey_b
  )
  names(tables) <- c(
   "tabA2_a", "tabA2_b",
-  "tabA2_prey_a", "tabA2_prey_b",
+  "tabA2_prey_a", "tabA2_prey_b"
  )
 
  # Function to apply transformation
@@ -357,8 +357,8 @@
 
  # Arrange paneled figure
  figure <- ggarrange(
-    NULL, plotA2_a, NULL, plotA2p_a,
-    NULL, plotA2_b, NULL, plotA2p_b,
+    NULL, plotA2_a, NULL, plotA2_b,
+    NULL, plotA2p_a, NULL, plotA2p_b,
     ncol = 4, nrow = 2,
     labels = c(
       "(A)", "", "(B)", "",
@@ -374,11 +374,13 @@
 
  path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
- ggexport(figure,
-          filename = file.path(path, "figure1.png"),
-          width = 2700,
-          height = 2200,
-          res = 300)
+ ggexport(
+  figure,
+  filename = file.path(path, "figure1.png"),
+  width = 2700,
+  height = 2200,
+  res = 300
+)
 
 # ==========================================================================
 # ==========================================================================
