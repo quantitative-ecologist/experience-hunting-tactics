@@ -7,7 +7,7 @@ output:
   word_document:
     reference_docx: Chapter2-styles-appendix.docx
     fig_caption: yes
-bibliography: references2.bib
+bibliography: references.bib
 csl: ecology.csl
 ---
 
@@ -66,7 +66,7 @@ b_draws <- data.table(
   )
 )
 
-b_draws[, c(31:33) := NULL]
+b_draws[, c(34:36) := NULL]
 
 
 
@@ -111,7 +111,10 @@ b_draws[
       "b_successadvanced_Intercept",
       "b_successnovice_Zgame_duration",
       "b_successinterm_Zgame_duration",
-      "b_successadvanced_Zgame_duration"
+      "b_successadvanced_Zgame_duration",
+      "b_successnovice_Zprey_avg_rank",
+      "b_successinterm_Zprey_avg_rank",
+      "b_successadvanced_Zprey_avg_rank"
   )
   := lapply(.SD, function(x) {plogis(x)}),
   .SDcols = c(
@@ -120,7 +123,10 @@ b_draws[
     "b_successadvanced_Intercept",
     "b_successnovice_Zgame_duration",
     "b_successinterm_Zgame_duration",
-    "b_successadvanced_Zgame_duration"
+    "b_successadvanced_Zgame_duration",
+    "b_successnovice_Zprey_avg_rank",
+    "b_successinterm_Zprey_avg_rank",
+    "b_successadvanced_Zprey_avg_rank"
   )
 ]
 
@@ -181,14 +187,11 @@ setorder(
 
 
 # Create trait column
-fixef_tab[
-  , trait := rep(c(
-    "predator speed", "predator speed",
-    "prey speed", "prey speed", "hunting success"),
-    6
-  )
-]
-
+fixef_tab[, trait := ""][
+  parameter %like% "success", trait := "hunting success"][
+    parameter %like% "speed", trait := "predator speed"][
+      parameter %like% "preyspeed", trait := "prey speed"
+      ]
 
 # Rename parameter column
 fixef_tab[
@@ -197,7 +200,7 @@ fixef_tab[
       rep(c("intercept (mean)", "intercept (sigma)"), 2),
       "intercept (mean)",
       rep(c("prey rank (mean)", "prey rank (sigma)"), 2),
-      "match duration (mean)"
+      "match duration (mean)", "prey rank (mean)"
     ),
     3
   )
@@ -214,11 +217,12 @@ fixef_tab <- dcast(
 
 # Reorder columns and rows
 fixef_tab <- fixef_tab[, c(1, 2, 5, 4, 3)]
-table <- fixef_tab[c(3, 5, 4, 6, 7, 9, 8, 10, 1, 2)]
+table <- fixef_tab[c(4, 6, 5, 7, 8, 10, 9, 11, 1, 2, 3)]
 
 
-# Because I can't align hunting success properly
-table[10, 1] <- " "
+# Because I can't align the rows properly
+# in the flextable object
+table[c(2:4, 6:8, 10, 11), 1] <- " "
 
 # ===========================================================================
 # ===========================================================================
@@ -274,7 +278,7 @@ tab1 <-
   my_theme() %>%
 
   # Align repeated rows on column 1
-  merge_v(j = 1) %>%
+  #merge_v(j = 1) %>%
   valign(j = 1, valign = "top", part = "body") %>%
 
   # Align text
@@ -299,7 +303,7 @@ tab1 <-
 
   # Table caption
   set_caption(
-    caption = "Table S1. Posterior medians and 95% credible intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    caption = "Table S1. Posterior medians and 95% HDP intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
     style = "Table Caption"
   ) %>%
 
