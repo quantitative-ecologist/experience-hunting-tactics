@@ -219,13 +219,13 @@ gamm_plot1 <- ggplot(table[difference > 0.05, ],
 # Plot for players that had an decrease in success -------------------------
 
 length(unique(table[diff_dir == "decrease", predator_id]))
-# 4 players had a decrease in hunting success
+# 3 players had a decrease in hunting success
 
 gamm_plot2 <- ggplot(table[difference < -0.05, ],
                      aes(x = Zcumul_xp,
                          y = estimate__ / 4,
                          color = predator_id)) +
-  geom_line(linewidth = 1) +
+  geom_line(linewidth = 1, alpha = 0.5) +
   viridis::scale_color_viridis(discrete = TRUE, option = "D") + #B
   ylab("Hunting success\n") +
   scale_y_continuous(breaks = seq(0, 1, 0.25),
@@ -243,7 +243,7 @@ gamm_plot3 <- ggplot(table[difference %between% c(-0.05, 0.05), ],
                      aes(x = Zcumul_xp,
                          y = estimate__ / 4,
                          color = predator_id)) +
-  geom_line(linewidth = 1) +
+  geom_line(linewidth = 1, alpha = 0.5) +
   viridis::scale_color_viridis(discrete = TRUE, option = "D") + #B
   ylab("Hunting success\n") +
   scale_y_continuous(breaks = seq(0, 1, 0.25),
