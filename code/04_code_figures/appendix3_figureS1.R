@@ -63,25 +63,26 @@ dt1[variable %like% "advanced", xp_level := "advanced"]
 # Add variable
 dt1[
   , parameter := ifelse(
-    variable %like% "sd" & 
+    variable %like% "sd" &
       variable %like% "sigma",
-    "predator ID (sigma)",
-    "intercept (sigma)"
+    "individual variation IIV",
+    "population variation"
   )
 ]
 
 dt1[
   !(variable %like% "sigma") &
     variable %like% "sd",
-  parameter := "predator ID (mean)"
+  parameter := "individual variation mean"
 ]
 
 dt1[
   variable %like% "Intercept" &
     !(variable %like% "sigma") &
     !(variable %like% "sd"),
-  parameter := "intercept (mean)"
+  parameter := "population mean"
 ]
+
 
 # Add trait
 dt1[variable %like% "speed", trait := "predator speed"]
@@ -183,12 +184,18 @@ tab[
 
 tab <- unique(tab[, c(1, 2, 4:11)])
 
-tab$test <- factor(
-    tab$test,
-    levels = c("intermediate vs novice",
-               "advanced vs intermediate",
-               "advanced vs novice")
-)
+# Reorder factor levels
+tab[
+  , parameter := factor(
+      parameter,
+      levels = c(
+        "individual variation IIV",
+        "individual variation mean",
+        "population variation",
+        "population mean"
+      )
+  )
+]
 
 
 # Compute plots ---------------------------------------------------------
@@ -199,6 +206,34 @@ colors <- c(
   "0.50" = "gray21"
 )
 
+# To bold the letter but not the text
+tab$test <- c(
+      rep("bold((A))~intermediate~vs~novice", 10),
+      rep("bold((B))~advanced~vs~intermediate", 10),
+      rep("bold((C))~advanced~vs~novice", 10)
+)
+
+# Setup my theme
+custom_theme <- theme(
+    axis.title.y = element_blank(),
+    axis.title = element_text(size = 15, face = "plain", color = "black"),
+    axis.text = element_text(face = "plain", size = 12, color = "black"),
+    strip.text = element_text(size = 13),
+    axis.text.y.left = element_text(
+      margin = margin(0, 5.5, 0, 5.5),
+      hjust = 0.5
+    ),
+    # to left align panel titles
+    #strip.text = element_text(size = 13, hjust = 0),
+    panel.grid = element_blank(),
+    legend.position = "top",
+    legend.key = element_rect(fill = "transparent"),
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 13)
+  )
+
+
+# Plot
 fig <- ggplot(
   tab,
   aes(x = parameter, y = median_diff, shape = trait)
@@ -244,21 +279,16 @@ fig <- ggplot(
     name = "Density:",
     values = colors
   ) +
+  scale_x_discrete(
+    labels = function(x) {
+      stringr::str_wrap(x, width = 14)
+      }
+  ) +
   ylab("\nPosterior median difference") +
   coord_flip() +
   theme_bw() +
-  facet_wrap(~ test) +
-  theme(
-    axis.title.y = element_blank(),
-    axis.text = element_text(face = "plain", size = 11, color = "black"),
-    axis.title = element_text(size = 13, face = "plain", color = "black"),
-    strip.text = element_text(size = 11),
-    panel.grid = element_blank(),
-    legend.position = "top",
-    legend.key = element_rect(fill = "transparent"),
-    legend.title = element_text(size = 13),
-    legend.text = element_text(size = 11)
-  )
+  facet_wrap(~ test, labeller = label_parsed) +
+  custom_theme
 
 
 
