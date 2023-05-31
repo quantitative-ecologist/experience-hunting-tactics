@@ -315,7 +315,7 @@ dat[difference_sigma <= -0.2, change := "large"]
 dat[difference_sigma >= 0.2, change := "large"]
 dat[difference_sigma %between% c(-0.05, 0.05), change := "stable"]
 dat[difference_sigma %between% c(-0.1999, -0.0499), change := "moderate"]
-dat[difference_sigma %between% c(0.0504, 0.1999), change := "moderate"]
+dat[difference_sigma %between% c(0.05006892, 0.1999), change := "moderate"]
 
 # =======================================================================
 # =======================================================================
