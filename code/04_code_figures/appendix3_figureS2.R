@@ -106,11 +106,11 @@ tab <- unique(
 tab[, c(2:8) := round(tab[, c(2:8)], digits = 2)]
 
 names <- c(
-  "(mean speed, IIV speed)", "(mean speed, mean prey speed)",
-  "(IIV speed, mean prey speed)", "(mean speed, IIV prey speed)",
-  "(IIV speed, IIV prey speed)", "(mean prey speed, IIV prey speed)",
-  "(mean speed, mean success)", "(IIV speed, mean success)",
-  "(mean prey speed, mean success)", "(IIV prey speed, mean success)"
+  "mean speed\n IIV speed", "mean speed\n mean prey speed",
+  "IIV speed\n mean prey speed", "mean speed\n IIV prey speed",
+  "IIV speed\n IIV prey speed", "mean prey speed\n IIV prey speed",
+  "mean speed\n mean success", "IIV speed\n mean success",
+  "mean prey speed\n mean success", "IIV prey speed\n mean success"
 )
 tab[, variable_adv := names]
 
@@ -138,6 +138,8 @@ colors <- c(
   "0.50" = "gray21"
 )
 
+scaleFUN <- function(x) sprintf("%.2f", x)
+
 fig <- ggplot(
   tab,
   aes(x = variable_adv, y = median_difference)
@@ -146,10 +148,6 @@ fig <- ggplot(
     yintercept = 0, linewidth = 1, colour = "red",
     linetype = "dashed", alpha = 0.5
   ) +
-  #geom_pointrange(
-  #  aes(ymin = lower_ci_95, ymax = upper_ci_95),
-  #  size = 0.5, position = position_dodge(width = 0.8)
-  #) +
   geom_linerange(
     aes(ymin = lower_ci_95,
         ymax = upper_ci_95,
@@ -172,23 +170,34 @@ fig <- ggplot(
     key_glyph = "path"
   ) +
   geom_point(size = 3, color = "black") +
-  ylab("\nPosterior median difference") +
-  scale_y_continuous(breaks = seq(-0.2, 0.2, 0.1)) +
+  ylab("Posterior median difference\n") +
+  #scale_y_continuous(
+  #  labels = scaleFUN,
+  #  breaks = seq(-0.3, 0.3, 0.15),
+  #  limits = c(-0.3,0.3)
+  #  ) +
+  scale_y_continuous(
+    breaks = seq(-0.2, 0.2, 0.1)
+    ) +
   scale_color_manual(
     name = "Density:",
-    values = colors) +
-  coord_flip() +
+    values = colors
+  ) +
   theme_bw() +
   theme(
-    axis.title.y = element_blank(),
-    axis.text = element_text(face = "plain", size = 11, color = "black"),
-    axis.title = element_text(size = 13, face = "plain", color = "black"),
-    strip.text = element_text(size = 11),
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(
+      face = "plain", size = 11,
+      color = "black"),
+    axis.text.y = element_text(
+      face = "plain", size = 12,
+      color = "black"),
+    axis.title = element_text(size = 15, face = "plain", color = "black"),
     panel.grid = element_blank(),
-    legend.position = "top",
+    legend.position = "bottom",
     legend.key = element_rect(fill = "transparent"),
-    legend.title = element_text(size = 13),
-    legend.text = element_text(size = 11)
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 13)
   )
 
 
@@ -203,7 +212,7 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 ggsave(
   filename = file.path(path, "appendix3_figureS2.png"),
   plot = fig,
-  width = 15, height = 12, # 32 14
+  width = 35, height = 10, # 32 14
   #scale = 1.2,
   units = "cm",
   dpi = 300,

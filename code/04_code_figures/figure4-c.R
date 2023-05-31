@@ -143,6 +143,22 @@ colors <- c(
 
 scaleFUN <- function(x) sprintf("%.2f", x)
 
+custom_theme <- theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(
+      face = "plain", size = 11,
+      color = "black"),
+    axis.text.y = element_text(
+      face = "plain", size = 12,
+      color = "black"),
+    axis.title = element_text(size = 15, face = "plain", color = "black"),
+    panel.grid = element_blank(),
+    legend.position = "bottom",
+    legend.key = element_rect(fill = "transparent"),
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 13)
+  )
+
 fig <- ggplot(
   tab,
   aes(x = variable_adv, y = median_difference)
@@ -187,21 +203,7 @@ fig <- ggplot(
     values = colors
   ) +
   theme_bw() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.text.x = element_text(
-      face = "plain", size = 11,
-      color = "black"),
-    axis.text.y = element_text(
-      face = "plain", size = 12,
-      color = "black"),
-    axis.title = element_text(size = 15, face = "plain", color = "black"),
-    panel.grid = element_blank(),
-    legend.position = "bottom",
-    legend.key = element_rect(fill = "transparent"),
-    legend.title = element_text(size = 15),
-    legend.text = element_text(size = 13)
-  )
+  custom_theme
 
 
 
