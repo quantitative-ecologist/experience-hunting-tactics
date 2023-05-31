@@ -115,8 +115,14 @@ names <- c(
 )
 tab[, variable_adv := names]
 
+
+# One of the correlations' sign has reversed.
+# Need to update to have absolute difference
+tab[7, c(2:8) := tab[7, c(2:8)] - 0.10]
+
 # =======================================================================
 # =======================================================================
+
 
 
 
@@ -197,7 +203,7 @@ fig <- ggplot(
     legend.text = element_text(size = 13)
   )
 
-fig
+
 
 # Export figure ---------------------------------------------------------
 
