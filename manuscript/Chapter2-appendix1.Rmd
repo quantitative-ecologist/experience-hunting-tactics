@@ -303,7 +303,7 @@ tab1 <-
 
   # Table caption
   set_caption(
-    caption = "Table S1. Posterior medians and 95% HDP intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    caption = "Table S1. Posterior medians and 95% HPD intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
     style = "Table Caption"
   ) %>%
 
@@ -540,18 +540,18 @@ tab2 <-
     part = "header",
     value = as_paragraph(
       as_sup("a "),
-      "We exponentiated the dispersion parameters (i.e. sigma) which are estimated on a log scale. All the reported values are standard deviations.",
+      "We exponentiated the dispersion parameters (i.e. sigma) which are estimated on a log scale.",
       as_sup("\nb "),
       "The standard deviation values on the mean part of the equation indicate, for all traits, among individual differences in mean behaviour, prey encountered, and success.",
       as_sup("\nc "),
-      "Values on the dispersion (i.e. sigma) for predator speed indicate among individual differences in behavioural specialization. For prey speed, they indicate among individual differences in the variability of prey encounters."
+      "The standard deviation values on the dispersion part of the equation (i.e. sigma) for predator speed indicate among individual differences in behavioural specialization. For prey speed, they indicate among individual differences in the variability of prey encounters."
     ),
     ref_symbols = " "
   ) %>%
 
   # Add table caption
   set_caption(
-    caption = "Table S2. Posterior medians and 95% credible intervals of the random effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success. All the reported values are standard deviations.",
+    caption = "Table S2. Posterior medians and 95% HPD intervals of the random effect standard deviations estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
     style = "Table Caption"
   ) %>%
 
@@ -569,7 +569,7 @@ tab2
 
 \newpage
 
-```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Among individual differences in the development of hunting expertise in the model where we do not account for prey speed and average rank. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. (A) Individuals with a >0.5 unit increase in hunting success with experience (B) Individuals with a <-0.5 unit decrease in hunting success with experience. (C) Individuals that maintained a stable hunting success (between -0.5 and 0.5 unit change in hunting success)"}
+```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Among individual differences in the development of hunting expertise in the model where we do not account for prey speed and average rank. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. The individual curves are separated by differences between their first and last predicted value, and displayed as such in three distinct panels. (A) Individuals with a >0.5 unit increase in hunting success with experience (B) Individuals with a <-0.5 unit decrease in hunting success with experience. (C) Individuals that maintained a stable hunting success (between -0.5 and 0.5 unit change in hunting success)"}
 
 knitr::include_graphics(
   here::here(
@@ -580,7 +580,7 @@ knitr::include_graphics(
 
 ```
 
-```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Correlations between the predators' mean hunting success (y axis) and intra individual variance in speed (x axis) to test for differences in success between specialist and flexible hunters. Individuals with lower IIV are specialist hunters, while individuals with higher IIV are flexible hunters. (A) Correlation when predators were novice (B) Correlation when predators were advanced"}
+```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Correlations between the predators' mean hunting success (y axis) and intra individual variance in speed (x axis) to test for differences in success between individuals along the flexible-specialist hunter continuum. Each point represents the posterior median predicted value of an individual predator along with its 95% HPD interval. Individuals with lower IIV are specialist hunters, while individuals with higher IIV are flexible hunters. (A) Correlation when predators were novice (B) Correlation when predators were advanced"}
 
 knitr::include_graphics(
   here::here(
