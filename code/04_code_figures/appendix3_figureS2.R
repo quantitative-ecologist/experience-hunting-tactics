@@ -31,6 +31,8 @@ fit <- readRDS(file.path(path, "B1_DHMLM.rds"))
 # 2. Estimate differences between novices and advanced levels
 # =======================================================================
 
+# Prepare the draws -----------------------------------------------------
+
 cors <- as_draws_df(fit, variable = "cor", regex = TRUE)
 cors <- data.table(cors)
 cors <- cors[, !c(".chain", ".iteration", ".draw")]
@@ -47,11 +49,15 @@ setnames(cors1, c("variable", "value"), c("variable_adv", "value_adv"))
 setnames(cors2, c("variable", "value"), c("variable_nov", "value_nov"))
 
 
+
+# Compute the differences -----------------------------------------------
+
+# Compute the difference in absolute values
+# since the signs of the correlations do not change
 tab <- cbind(cors1, cors2)
-tab[, difference_cor := value_adv - value_nov]
+tab[, difference_cor := abs(value_adv) - abs(value_nov)]
 
 
-# Intervals
 # Intervals
 lower_95 <- function(x) {
   coda::HPDinterval(as.mcmc(x), 0.95)[1]
@@ -107,6 +113,10 @@ names <- c(
   "(mean prey speed, mean success)", "(IIV prey speed, mean success)"
 )
 tab[, variable_adv := names]
+
+# One of the correlations' sign has reversed.
+# Need to update to have absolute difference
+tab[7, c(2:8) := tab[7, c(2:8)] - 0.18]
 
 # =======================================================================
 # =======================================================================
