@@ -266,56 +266,11 @@ dat <- unique(dat)
 
 # Calculate percentages of players learning -----------------------------
 
-# Inspect quantiles
-quantile(dat[, difference_sigma])
-
-
-# Subset greatest increases + players that did not change
-flex <- unique(
-  dat[
-    difference_sigma <= -0.2,
-    .(predator_id, difference_sigma)
-  ]
-)
-
-specialists <- unique(
-  dat[
-    difference_sigma >= 0.2,
-    .(predator_id, difference_sigma)
-  ]
-)
-
-constant <- unique(
-  dat[
-    difference_sigma %between% c(-0.05, 0.05),
-    .(predator_id, difference_sigma)
-  ]
-)
-
-# Inspect range
-range(specialists$difference_sigma)
-range(flex$difference_sigma)
-range(constant$difference_sigma)
-
-# Check percentages
-length(unique(flex$predator_id)) / length(unique(dat$predator_id))
-# 8%
-
-length(unique(specialists$predator_id)) / length(unique(dat$predator_id))
-# 4%
-
-length(unique(constant$predator_id)) / length(unique(dat$predator_id))
-# 43%
-
 dat[difference_sigma <= -0.2, change := "large"]
 dat[difference_sigma >= 0.2, change := "large"]
 dat[difference_sigma %between% c(-0.05, 0.05), change := "stable"]
 dat[difference_sigma %between% c(-0.1999, -0.0499), change := "moderate"]
-dat[difference_sigma %between% c(0.0504, 0.1999), change := "moderate"]
-
-length(unique(dat[change == "large", predator_id])) / length(unique(dat$predator_id))
-length(unique(dat[change == "stable", predator_id])) / length(unique(dat$predator_id))
-length(unique(dat[change == "moderate", predator_id])) / length(unique(dat$predator_id))
+dat[difference_sigma %between% c(0.05006892, 0.1999), change := "moderate"]
 
 
 
