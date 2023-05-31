@@ -46,7 +46,7 @@ dt <- data.table(
     regex = TRUE
   )
 )
-dt <- dt[, c(1:15, 48:62)]
+dt <- dt[, c(1:15, 54:68)]
 
 
 
@@ -232,22 +232,25 @@ tab[
 
 tab <- unique(tab[, c(1, 2, 4:11)])
 
-tab$test <- factor(
-    tab$test,
-    levels = c("intermediate vs novice",
-               "advanced vs intermediate",
-               "advanced vs novice")
-)
 
 
 # Compute plots ---------------------------------------------------------
 
+# Color scale for CIs
 colors <- c(
   "0.95" = "gray91",
   "0.80" = "gray71",
   "0.50" = "gray21"
 )
 
+# To bold the letter but not the text
+tab$test <- c(
+      rep("bold((A))~intermediate~vs~novice", 10),
+      rep("bold((B))~advanced~vs~intermediate", 10),
+      rep("bold((C))~advanced~vs~novice", 10)
+)
+
+# Plot
 fig <- ggplot(
   tab,
   aes(x = parameter, y = median_diff, shape = trait)
@@ -296,12 +299,14 @@ fig <- ggplot(
   ylab("\nPosterior median difference") +
   coord_flip() +
   theme_bw() +
-  facet_wrap(~ test) +
+  facet_wrap(~ test, labeller = label_parsed) +
   theme(
     axis.title.y = element_blank(),
     axis.title = element_text(size = 15, face = "plain", color = "black"),
     axis.text = element_text(face = "plain", size = 12, color = "black"),
     strip.text = element_text(size = 13),
+    # to left align panel titles
+    #strip.text = element_text(size = 13, hjust = 0),
     panel.grid = element_blank(),
     legend.position = "top",
     legend.key = element_rect(fill = "transparent"),
