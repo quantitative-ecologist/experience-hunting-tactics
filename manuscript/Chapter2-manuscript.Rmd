@@ -38,7 +38,7 @@ dat[, date := as.POSIXct(sub(" .*", "", timestamp))]
 
 ```
 
-Journal name : Ecology test
+Journal name : Ecology
 
 Manuscript type : article
 
