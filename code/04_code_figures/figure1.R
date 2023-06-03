@@ -277,7 +277,7 @@
    geom_text(
      aes(label = paste("y =", format(round(max(tabA2_b$estimate__ / 4), digits = 2), nsmall = 2)),
          y = max(tabA2_b$estimate__ / 4) + 0.10,
-         x = tabA2_b[which.max(estimate__), Zcumul_xp] + 0.35),
+         x = tabA2_b[which.max(estimate__), Zcumul_xp] + 0.55),
      color = "#440154",
      size = 5
    ) +
@@ -323,7 +323,7 @@
    geom_text(
      aes(label = paste("y =", format(round(max(tabA2_prey_b$estimate__ / 4), digits = 2), nsmall = 2)),
          y = max(tabA2_prey_b$estimate__ / 4) + 0.10,
-         x = tabA2_prey_b[which.max(estimate__), Zcumul_xp] + 0.35),
+         x = tabA2_prey_b[which.max(estimate__), Zcumul_xp] + 0.3),
      color = "#440154",
      size = 5
    ) +
