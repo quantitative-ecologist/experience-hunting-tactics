@@ -13,7 +13,10 @@
 
 
 # Load libraries and model -------------------------------------------------
+ 
+ options(mc.cores = parallel::detectCores()) 
 
+ library(parallel)
  library(brms)
  library(data.table)
  library(ggplot2)
@@ -357,8 +360,8 @@
 
  # Arrange paneled figure
  figure <- ggarrange(
-    NULL, plotA2_a, NULL, plotA2_b,
-    NULL, plotA2p_a, NULL, plotA2p_b,
+    NULL, plotA2_b, NULL, plotA2_a,
+    NULL, plotA2p_b, NULL, plotA2p_a,
     ncol = 4, nrow = 2,
     labels = c(
       "(A)", "", "(B)", "",
