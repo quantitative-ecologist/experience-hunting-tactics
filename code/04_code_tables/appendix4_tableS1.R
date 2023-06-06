@@ -39,7 +39,7 @@
 
 
 # Extract the posterior correlations ----------------------------------------
- 
+
  # Taken from fit
  corrs <- data.table(
    as_draws_df(fit, variable = "^cor_", regex = TRUE)
@@ -90,10 +90,10 @@
 
 
 # Compute the matrix --------------------------------------------------------
- 
+
  # Empty 15x15 matrix
  full_mat <- matrix(nrow = 15, ncol = 15)
- 
+
  # Row names
  rownames(full_mat) <- c(
    "mean speed", "IIV speed",
@@ -106,7 +106,7 @@
    "mean prey speed", "IIV prey speed",
    "mean success"
  )
- 
+
  # Column names
  colnames(full_mat) <- c(
    "mean speed", "IIV speed",
@@ -169,39 +169,39 @@
 
  # Add 1 to the diagonal
  diag(full_mat) <- 1
- 
+
  # Start with novices
  full_mat[c(2, 3, 4, 5), 1] <- nov[c(1, 2, 4, 7), estim]
  full_mat[c(3, 4, 5), 2] <- nov[c(3, 5, 8), estim]
  full_mat[c(4, 5), 3] <- nov[c(6, 9), estim]
  full_mat[5, 4] <- nov[10, estim]
- 
+
  # intermediate
  full_mat[c(7, 8, 9, 10), 6] <- int[c(1, 2, 4, 7), estim]
  full_mat[c(8, 9, 10), 7] <- int[c(3, 5, 8), estim]
  full_mat[c(9, 10), 8] <- int[c(6, 9), estim]
  full_mat[10, 9] <- int[10, estim]
- 
+
  # advanced
  full_mat[c(12, 13, 14, 15), 11] <- adv[c(1, 2, 4, 7), estim]
  full_mat[c(13, 14, 15), 12] <- adv[c(3, 5, 8), estim]
  full_mat[c(14, 15), 13] <- adv[c(6, 9), estim]
  full_mat[15, 14] <- adv[10, estim]
- 
+
  # novice x intermediate
  full_mat[c(6, 7, 8, 9, 10), 1] <- nov2[c(1, 3, 9, 13, 21), estim]
  full_mat[c(6, 7, 8, 9, 10), 2] <- nov2[c(2, 4, 10, 14, 22), estim]
  full_mat[c(6, 7, 8, 9, 10), 3] <- nov2[c(5, 6, 11, 15, 23), estim]
  full_mat[c(6, 7, 8, 9, 10), 4] <- nov2[c(7, 8, 12, 16, 24), estim]
  full_mat[c(6, 7, 8, 9, 10), 5] <- nov2[c(17, 18, 19, 20, 25), estim]
- 
+
  # novice x advanced
  full_mat[c(11, 12, 13, 14, 15), 1] <- nov3[c(1, 3, 9, 13, 21), estim]
  full_mat[c(11, 12, 13, 14, 15), 2] <- nov3[c(2, 4, 10, 14, 22), estim]
  full_mat[c(11, 12, 13, 14, 15), 3] <- nov3[c(5, 6, 11, 15, 23), estim]
  full_mat[c(11, 12, 13, 14, 15), 4] <- nov3[c(7, 8, 12, 16, 24), estim]
  full_mat[c(11, 12, 13, 14, 15), 5] <- nov3[c(17, 18, 19, 20, 25), estim]
- 
+
  # intermediate x advanced
  full_mat[c(11, 12, 13, 14, 15), 6] <- int2[c(1, 3, 9, 13, 21), estim]
  full_mat[c(11, 12, 13, 14, 15), 7] <- int2[c(2, 4, 10, 14, 22), estim]
