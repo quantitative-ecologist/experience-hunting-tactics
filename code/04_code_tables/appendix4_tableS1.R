@@ -34,59 +34,91 @@
 
 
 # ===========================================================================
-# 2. Correlation matrix
+# 2. Create correlation matrix
 # ===========================================================================
 
 
-# Prepare the correlation matrix --------------------------------------------
-
- # Extract the full object
- ar <- VarCorr(fit)
-
- # Extract the covariances from the object
- cov <- ar$predator_id$cov
-
- # Extract the covariance matrix
- vcov_mat <- cov[, 1, ] # covariance
- upper_vcov_mat <- cov[, 4, ] # upper ci
- lower_vcov_mat <- cov[, 3, ] # lower ci
-
- # Transform to correlation matrix
- cormat <- cov2cor(vcov_mat)
- upper_cormat <- cov2cor(upper_vcov_mat)
- lower_cormat <- cov2cor(lower_vcov_mat)
+# Extract the posterior correlations ----------------------------------------
+ 
+ # Taken from fit
+ corrs <- data.table(
+   as_draws_df(fit, variable = "^cor_", regex = TRUE)
+ )
+ # Remove MCMC columns
+ corrs[, c(".chain", ".iteration", ".draw") := NULL]
+ # Table to long format
+ corrs1 <- melt(corrs)
 
 
 
-# Arrange the correlation matrix ----------------------------------------
+# Summarize posterior correlations --------------------------------------
 
- # Reorder by XP level in order
- cormat_ord <- cormat[
-   c(1, 2, 7, 8, 13,
-     3, 4, 9, 10, 14,
-     5, 6, 11, 12, 15),
-   c(1, 2, 7, 8, 13,
-     3, 4, 9, 10, 14,
-     5, 6, 11, 12, 15)
+ # HPD intervals functions
+ lower_95 <- function(x) {
+   coda::HPDinterval(as.mcmc(x), 0.95)[1]
+ }
+ upper_95 <- function(x) {
+   coda::HPDinterval(as.mcmc(x), 0.95)[2]
+ }
+
+ # Summary of posterior
+ corrs1[
+   , ":=" (
+     median_cor = median(value),
+     lower_95 = lower_95(value),
+     upper_95 = upper_95(value)
+   ),
+   by = variable
  ]
 
- upper_cormat_ord <- upper_cormat[
-   c(1, 2, 7, 8, 13,
-     3, 4, 9, 10, 14,
-     5, 6, 11, 12, 15),
-   c(1, 2, 7, 8, 13,
-     3, 4, 9, 10, 14,
-     5, 6, 11, 12, 15)
+ # Round the values to 2 digits
+ corrs1[
+   , c(3:5) := lapply(.SD, function(x) round(x, digits = 2)),
+   .SDcols = c(3:5)
  ]
 
- lower_cormat_ord <- lower_cormat[
-   c(1, 2, 7, 8, 13,
-     3, 4, 9, 10, 14,
-     5, 6, 11, 12, 15),
-   c(1, 2, 7, 8, 13,
-     3, 4, 9, 10, 14,
-     5, 6, 11, 12, 15)
- ]
+ # Keep unique values
+ cor_tab <- unique(corrs1[, c(1, 3:5)])
+
+ # Paste estimate with lower and upper ci into a single column
+ cor_tab[, estim := paste(format(median_cor, digits = 2), "(")]
+ cor_tab[, estim := paste(estim, format(lower_95, digits = 2), sep = "")]
+ cor_tab[, estim := paste(estim, ",", sep = "")]
+ cor_tab[, estim := paste(estim, format(upper_95, digits = 2), sep = "")]
+ cor_tab[, estim := paste(estim, ")", sep = "")]
+
+
+
+# Compute the matrix --------------------------------------------------------
+ 
+ # Empty 15x15 matrix
+ full_mat <- matrix(nrow = 15, ncol = 15)
+ 
+ # Row names
+ rownames(full_mat) <- c(
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success",
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success",
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success"
+ )
+ 
+ # Column names
+ colnames(full_mat) <- c(
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success",
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success",
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success"
+ )
 
 # ===========================================================================
 # ===========================================================================
@@ -100,90 +132,82 @@
 # ===========================================================================
 
 
- # Round values to 2 digits
- cormat_ord <- round(cormat_ord, digits = 2)
- upper_cormat_ord <- round(upper_cormat_ord, digits = 2)
- lower_cormat_ord <- round(lower_cormat_ord, digits = 2)
+# Decompose matrix sections -------------------------------------------------
 
+# Correlations within xp levels
+ # novice correlations
+ nov <- cor_tab[variable %like% "novice"][
+   !(variable %like% "interm|advanced")
+ ]
+ # intermediate correlations
+ int <- cor_tab[variable %like% "interm"][
+   !(variable %like% "novice|advanced")
+ ]
+ # advanced correlations
+ adv <- cor_tab[variable %like% "advanced"][
+   !(variable %like% "novice|interm")
+ ]
 
-# Combine the matrices together ---------------------------------------------
+# Correlations across xp levels
+ # novice x intermediate
+ nov2 <- cor_tab[variable %like% "novice"][
+   !(variable %like% "advanced")][
+     variable %like% "interm"
+   ]
+ # novice x advanced
+ nov3 <- cor_tab[variable %like% "novice"][
+   !(variable %like% "interm")][
+     variable %like% "advanced"
+   ]
+ # intermediate x advanced
+ int2 <- cor_tab[variable %like% "interm"][
+   !(variable %like% "novice")][
+     variable %like% "advanced"
+   ]
 
- # Paste opening parentheses
- full_mat <- matrix(
-   paste(
-     format(cormat_ord, digits = 2),
-     "(",
-     sep = " "
-   ),
-   15, 15
- )
-
- # Paste lower CI
- full_mat <- matrix(
-    paste(
-      format(full_mat, digits = 2),
-      format(lower_cormat_ord, digits = 2),
-      sep = ""
-    ),
-    15, 15
-  )
-
- # Paste upper CI
- full_mat <- matrix(
-   paste(
-     format(full_mat, digits = 2),
-     format(upper_cormat_ord, digits = 2),
-     sep = ","
-   ),
-   15, 15
- )
-
- # Paste closing parentheses
- full_mat <- matrix(
-   paste(
-     format(full_mat, digits = 2),
-     ")",
-     sep = ""
-   ),
-   15, 15
- )
-
-
- # Add NAs to values on the upper diagonal
- full_mat[upper.tri(full_mat)] <- NA
+# Add values to matrix section-wise -----------------------------------------
 
  # Add 1 to the diagonal
  diag(full_mat) <- 1
-
-
-
-# Add names to the columns and rows -----------------------------------------
-
- # Change rownames
- rownames(full_mat) <- c(
-   "mean speed", "IIV speed",
-   "mean prey speed", "IIV prey speed",
-   "mean success",
-   "mean speed", "IIV speed",
-   "mean prey speed", "IIV prey speed",
-   "mean success",
-   "mean speed", "IIV speed",
-   "mean prey speed", "IIV prey speed",
-   "mean success"
- )
-
- # Change colnames
- colnames(full_mat) <- c(
-   "mean speed", "IIV speed",
-   "mean prey speed", "IIV prey speed",
-   "mean success",
-   "mean speed", "IIV speed",
-   "mean prey speed", "IIV prey speed",
-   "mean success",
-   "mean speed", "IIV speed",
-   "mean prey speed", "IIV prey speed",
-   "mean success"
- )
+ 
+ # Start with novices
+ full_mat[c(2, 3, 4, 5), 1] <- nov[c(1, 2, 4, 7), estim]
+ full_mat[c(3, 4, 5), 2] <- nov[c(3, 5, 8), estim]
+ full_mat[c(4, 5), 3] <- nov[c(6, 9), estim]
+ full_mat[5, 4] <- nov[10, estim]
+ 
+ # intermediate
+ full_mat[c(7, 8, 9, 10), 6] <- int[c(1, 2, 4, 7), estim]
+ full_mat[c(8, 9, 10), 7] <- int[c(3, 5, 8), estim]
+ full_mat[c(9, 10), 8] <- int[c(6, 9), estim]
+ full_mat[10, 9] <- int[10, estim]
+ 
+ # advanced
+ full_mat[c(12, 13, 14, 15), 11] <- adv[c(1, 2, 4, 7), estim]
+ full_mat[c(13, 14, 15), 12] <- adv[c(3, 5, 8), estim]
+ full_mat[c(14, 15), 13] <- adv[c(6, 9), estim]
+ full_mat[15, 14] <- adv[10, estim]
+ 
+ # novice x intermediate
+ full_mat[c(6, 7, 8, 9, 10), 1] <- nov2[c(1, 3, 9, 13, 21), estim]
+ full_mat[c(6, 7, 8, 9, 10), 2] <- nov2[c(2, 4, 10, 14, 22), estim]
+ full_mat[c(6, 7, 8, 9, 10), 3] <- nov2[c(5, 6, 11, 15, 23), estim]
+ full_mat[c(6, 7, 8, 9, 10), 4] <- nov2[c(7, 8, 12, 16, 24), estim]
+ full_mat[c(6, 7, 8, 9, 10), 5] <- nov2[c(17, 18, 19, 20, 25), estim]
+ 
+ # novice x advanced
+ full_mat[c(11, 12, 13, 14, 15), 1] <- nov3[c(1, 3, 9, 13, 21), estim]
+ full_mat[c(11, 12, 13, 14, 15), 2] <- nov3[c(2, 4, 10, 14, 22), estim]
+ full_mat[c(11, 12, 13, 14, 15), 3] <- nov3[c(5, 6, 11, 15, 23), estim]
+ full_mat[c(11, 12, 13, 14, 15), 4] <- nov3[c(7, 8, 12, 16, 24), estim]
+ full_mat[c(11, 12, 13, 14, 15), 5] <- nov3[c(17, 18, 19, 20, 25), estim]
+ 
+ # intermediate x advanced
+ full_mat[c(11, 12, 13, 14, 15), 6] <- int2[c(1, 3, 9, 13, 21), estim]
+ full_mat[c(11, 12, 13, 14, 15), 7] <- int2[c(2, 4, 10, 14, 22), estim]
+ full_mat[c(11, 12, 13, 14, 15), 8] <- int2[c(5, 6, 11, 15, 23), estim]
+ full_mat[c(11, 12, 13, 14, 15), 9] <- int2[c(7, 8, 12, 16, 24), estim]
+ full_mat[c(11, 12, 13, 14, 15), 10] <- int2[c(17, 18, 19, 20, 25), estim]
 
 # ===========================================================================
 # ===========================================================================
