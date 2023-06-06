@@ -31,59 +31,141 @@
 
 
 
-# =======================================================================
-# 2. Prepare 3 matrices to plot
-# =======================================================================
+# ===========================================================================
+# 2. Create correlation matrix
+# ===========================================================================
 
 
-# Prepare the full correlation matrix -----------------------------------
+# Extract the posterior correlations ----------------------------------------
 
- # Extract the full object
- ar <- VarCorr(fit)
-
- # Extract the covariances from the object
- cov <- ar$predator_id$cov
-
- # Extract the covariance matrix
- vcovmat <- cov[, 1, ]
-
- # Transform to correlation matrix
- cormat <- cov2cor(vcovmat)
-
- # Reorder by XP level in order
- cormat_ord <- cormat[c(1, 2, 7, 8, 13,
-                        3, 4, 9, 10, 14,
-                        5, 6, 11, 12, 15),
-                      c(1, 2, 7, 8, 13,
-                        3, 4, 9, 10, 14,
-                        5, 6, 11, 12, 15)]
-
- # Separate each matrix
- cormat_novice <- cormat_ord[c(1:5), c(1:5)]
- cormat_interm <- cormat_ord[c(6:10), c(6:10)]
- cormat_adv <- cormat_ord[c(11:15), c(11:15)]
+ # Taken from fit
+ corrs <- data.table(
+   as_draws_df(fit, variable = "^cor_", regex = TRUE)
+ )
+ # Remove MCMC columns
+ corrs[, c(".chain", ".iteration", ".draw") := NULL]
+ # Table to long format
+ corrs1 <- melt(corrs)
 
 
 
-# Arrange the correlation matrices --------------------------------------
+# Summarize posterior correlations --------------------------------------
 
- # Names
- names <- c(
-    "mean speed", "IIV speed",
-    "mean prey speed", "IIV prey speed",
-    "mean success"
+ # HPD intervals functions
+ lower_95 <- function(x) {
+   coda::HPDinterval(as.mcmc(x), 0.95)[1]
+ }
+ upper_95 <- function(x) {
+   coda::HPDinterval(as.mcmc(x), 0.95)[2]
+ }
+
+ # Summary of posterior
+ corrs1[
+   , ":=" (
+     median_cor = median(value),
+     lower_95 = lower_95(value),
+     upper_95 = upper_95(value)
+   ),
+   by = variable
+ ]
+
+ # Round the values to 2 digits
+ corrs1[
+   , c(3:5) := lapply(.SD, function(x) round(x, digits = 2)),
+   .SDcols = c(3:5)
+ ]
+
+ # Keep unique values
+ cor_tab <- unique(corrs1[, c(1, 3:5)])
+
+ # Paste estimate with lower and upper ci into a single column
+ cor_tab[, estim := paste(format(median_cor, digits = 2), "(")]
+ cor_tab[, estim := paste(estim, format(lower_95, digits = 2), sep = "")]
+ cor_tab[, estim := paste(estim, ",", sep = "")]
+ cor_tab[, estim := paste(estim, format(upper_95, digits = 2), sep = "")]
+ cor_tab[, estim := paste(estim, ")", sep = "")]
+
+
+
+# Compute the matrix --------------------------------------------------------
+
+ # Empty 15x15 matrix
+ full_mat <- matrix(nrow = 15, ncol = 15)
+
+ # Row names
+ rownames(full_mat) <- c(
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success",
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success",
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success"
  )
 
- # Change rownames
- rownames(cormat_novice) <- names
- rownames(cormat_interm) <- names
- rownames(cormat_adv) <- names
+ # Column names
+ colnames(full_mat) <- c(
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success",
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success",
+   "mean speed", "IIV speed",
+   "mean prey speed", "IIV prey speed",
+   "mean success"
+ )
+
+# ===========================================================================
+# ===========================================================================
 
 
- # Change colnames
- colnames(cormat_novice) <- names
- colnames(cormat_interm) <- names
- colnames(cormat_adv) <- names
+
+
+
+# ===========================================================================
+# 3. Modify the correlation matrix
+# ===========================================================================
+
+
+# Decompose matrix sections -------------------------------------------------
+
+# Correlations within xp levels
+ # novice correlations
+ nov <- cor_tab[variable %like% "novice"][
+   !(variable %like% "interm|advanced")
+ ]
+ # intermediate correlations
+ int <- cor_tab[variable %like% "interm"][
+   !(variable %like% "novice|advanced")
+ ]
+ # advanced correlations
+ adv <- cor_tab[variable %like% "advanced"][
+   !(variable %like% "novice|interm")
+ ]
+
+# Add 1 to the diagonal
+ diag(full_mat) <- 1
+
+ # Start with novices
+ full_mat[c(2, 3, 4, 5), 1] <- nov[c(1, 2, 4, 7), median_cor]
+ full_mat[c(3, 4, 5), 2] <- nov[c(3, 5, 8), median_cor]
+ full_mat[c(4, 5), 3] <- nov[c(6, 9), median_cor]
+ full_mat[5, 4] <- nov[10, median_cor]
+
+ # intermediate
+ full_mat[c(7, 8, 9, 10), 6] <- int[c(1, 2, 4, 7), median_cor]
+ full_mat[c(8, 9, 10), 7] <- int[c(3, 5, 8), median_cor]
+ full_mat[c(9, 10), 8] <- int[c(6, 9), median_cor]
+ full_mat[10, 9] <- int[10, median_cor]
+
+ # advanced
+ full_mat[c(12, 13, 14, 15), 11] <- adv[c(1, 2, 4, 7), median_cor]
+ full_mat[c(13, 14, 15), 12] <- adv[c(3, 5, 8), median_cor]
+ full_mat[c(14, 15), 13] <- adv[c(6, 9), median_cor]
+ full_mat[15, 14] <- adv[10, median_cor]
 
 # =======================================================================
 # =======================================================================
@@ -113,7 +195,7 @@
 
  # Produce the plots
  cm1 <- corrplot(
-    cormat_novice, method = "circle",
+    full_mat[1:5,1:5], method = "circle",
     tl.col = "black",
     tl.cex = 1.5,
     tl.srt = 45,
@@ -171,6 +253,6 @@
 
  # After exporting the plots to ppt, I modify them there and save
  # the image as a .png file in the same directory
- 
+
 # =======================================================================
 # =======================================================================
