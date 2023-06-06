@@ -162,7 +162,7 @@ plot1 <- ggplot() +
    ) +
    ylab("Hunting success\n") +
    xlab("\nIIV in predator speed") +
-   labs(title = "Novice: r = -0.18 (-0.29, -0.06)") +
+   labs(title = "Novice: r = -0.18 (-0.29, -0.07)") +
    custom_theme
 
 
@@ -200,7 +200,7 @@ plot2 <- ggplot() +
    ) +
    ylab("Hunting success\n") +
    xlab("\nIIV in predator speed") +
-   labs(title = "Advanced: r = -0.24 (-0.34, -0.13)") +
+   labs(title = "Advanced: r = -0.24 (-0.35, -0.14)") +
    custom_theme
 
 # =======================================================================
