@@ -28,15 +28,15 @@
 
 # Import the model ------------------------------------------------------
 
- #path <- file.path(getwd(), "outputs", "01_outputs_models")
- path <- getwd()
+ path <- file.path(getwd(), "outputs", "01_outputs_models")
+ #path <- getwd()
 
  # Load models
- mod1 <- readRDS(file.path(path, "A1_GAMM.rds"))
- mod2 <- readRDS(file.path(path, "A2_GAMM.rds"))
- mod3 <- readRDS(file.path(path, "A3_GAMM.rds"))
- mod4 <- readRDS(file.path(path, "A2_GAMM-prey.rds"))
- mod5 <- readRDS(file.path(path, "A3_GAMM-prey.rds"))
+ mod1 <- readRDS(file.path(path, "A1_GAMM-rank.rds"))
+ mod2 <- readRDS(file.path(path, "A2_GAMM-rank.rds"))
+ mod3 <- readRDS(file.path(path, "A3_GAMM-rank.rds"))
+ mod4 <- readRDS(file.path(path, "A2_GAMM-speed-rank.rds"))
+ mod5 <- readRDS(file.path(path, "A3_GAMM-speed-rank.rds"))
 
  # Check object size
  #print(object.size(mod1), units = "MB")
