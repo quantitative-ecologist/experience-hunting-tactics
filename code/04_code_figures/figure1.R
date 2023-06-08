@@ -13,7 +13,7 @@
 
 
 # Load libraries and model -------------------------------------------------
- 
+
  options(mc.cores = parallel::detectCores()) 
 
  library(parallel)
@@ -300,6 +300,24 @@
 
 # Model A2 rank + speed ----------------------------------------------------
 
+ # Predicted values from the GAMM
+ predicted_values <- tabA2_prey_b$estimate__
+
+ # Define the x-axis range
+ x <- tabA2_prey_b$Zcumul_xp
+
+# Fit a spline to the predicted values
+spline_fit <- splinefun(x, predicted_values)
+
+ # Calculate the first derivative using finite differences
+ dx <- mean(diff(x))
+ derivatives <- diff(predicted_values) / dx
+
+ # Establish the treshold at a value very close to 0 since its optimization
+ threshold <- 0.0088
+ # Find the point where the slope is close to zero
+ stabilized_point <- x[which(abs(derivatives) <= threshold)][1]
+
  plotA2p_b <- ggplot(
    tabA2_prey_b,
    aes(x = Zcumul_xp,
@@ -317,13 +335,19 @@
      size = 5
      ) +
    geom_vline(
-     xintercept = tabA2_prey_b[which.max(estimate__), Zcumul_xp],
+     xintercept = tabA2_prey_b[Zcumul_xp == stabilized_point]$Zcumul_xp,
      lty = "dashed",
      color = "#440154") +
    geom_text(
-     aes(label = paste("y =", format(round(max(tabA2_prey_b$estimate__ / 4), digits = 2), nsmall = 2)),
-         y = max(tabA2_prey_b$estimate__ / 4) + 0.10,
-         x = tabA2_prey_b[which.max(estimate__), Zcumul_xp] + 0.3),
+     aes(label = paste(
+      "y =",
+      format(
+        round(tabA2_prey_b[Zcumul_xp == stabilized_point]$estimate__ / 4, digits = 2),
+        nsmall = 2
+        )
+      ),
+         y = (tabA2_prey_b[Zcumul_xp == stabilized_point]$estimate__ / 4) + 0.10,
+         x = tabA2_prey_b[Zcumul_xp == stabilized_point]$Zcumul_xp + 0.3),
      color = "#440154",
      size = 5
    ) +
