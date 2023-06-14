@@ -1,13 +1,12 @@
 ---
 title: |
-     Hunting experience shapes individual foraging specialisation and predator-prey interactions in an online videogame: \
+     Experience shapes individual foraging specialization and success in a virtual predator-prey system: \
      Appendix 3
     
 output: 
   word_document:
     reference_docx: Chapter2-styles-appendix.docx
     fig_caption: yes
-bibliography: references2.bib
 csl: ecology.csl
 ---
 
