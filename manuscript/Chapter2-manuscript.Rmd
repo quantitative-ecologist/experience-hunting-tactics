@@ -133,12 +133,20 @@ The model can be written as:
 #  "Y_{3}(T_{j}) = X_{3}(T_{j})\\ b_{3}(T_{j}) + Z_{3}(T_{j})\\ id_{3}(T_{j}) + e_{3}(T_{j})"
 #)
 
+#eqs <- c(
+#  "Y_{1}(T_{j}) = T^2_{j}(X_{1}\\ b_{1}) + T^2_{j}(M_{1}\\ en_{1}) + T^2_{j}(N_{1}\\ av_{1}) + T^2_{j}(Z_{1}\\ id_{1}) + e_{1}(T_{j})",
+#  "log(\\sigma_{e_{Y_{1}(T_{j})}}) = T^2_{j}(X_{d1}\\ b_{d1}) + T^2_{j}(Z_{d1}\\ id_{d1})",
+#  "Y_{2}(T_{j}) = T^2_{j}(X_{2}\\ b_{2}) + T^2_{j}(M_{2}\\ en_{2}) + T^2_{j}(N_{2}\\ av_{2}) + T^2_{j}(Z_{2}\\ id_{2}) + e_{2}(T_{j})",
+#  "log(\\sigma_{e_{Y_{2}(T_{j})}}) = T^2_{j}(X_{d2}\\ b_{d2}) + T^2_{j}(Z_{d2}\\ id_{d2})",
+#  "Y_{3}(T_{j}) = T^2_{j}(X_{3}\\ b_{3}) + T^2_{j}(Z_{3}\\ id_{3}) + e_{3}(T_{j})"
+#)
+
 eqs <- c(
-  "Y_{1}(T_{j}) = T^2_{j}(X_{1}\\ b_{1}) + T^2_{j}(M_{1}\\ en_{1}) + T^2_{j}(N_{1}\\ av_{1}) + T^2_{j}(Z_{1}\\ id_{1}) + e_{1}(T_{j})",
-  "log(\\sigma_{e_{Y_{1}(T_{j})}}) = T^2_{j}(X_{d1}\\ b_{d1}) + T^2_{j}(Z_{d1}\\ id_{d1})",
-  "Y_{2}(T_{j}) = T^2_{j}(X_{2}\\ b_{2}) + T^2_{j}(M_{2}\\ en_{2}) + T^2_{j}(N_{2}\\ av_{2}) + T^2_{j}(Z_{2}\\ id_{2}) + e_{2}(T_{j})",
-  "log(\\sigma_{e_{Y_{2}(T_{j})}}) = T^2_{j}(X_{d2}\\ b_{d2}) + T^2_{j}(Z_{d2}\\ id_{d2})",
-  "Y_{3}(T_{j}) = T^2_{j}(X_{3}\\ b_{3}) + T^2_{j}(Z_{3}\\ id_{3}) + e_{3}(T_{j})"
+  "Y_{1j} = X_{1j}\\ b_{1j} + M_{1j}\\ en_{1j} + N_{1j}\\ av_{1j} + Z_{1j}\\ id_{1j} + e_{1j}",
+  "log(\\sigma_{e_{Y_{1j}}}) = X_{d1j}\\ b_{d1j} + Z_{d1j}\\ id_{d1j}",
+  "Y_{2j} = X_{2j}\\ b_{2j} + M_{2j}\\ en_{2j} + N_{2j}\\ av_{2j} + Z_{2j}\\ id_{2j} + e_{2j}",
+  "log(\\sigma_{e_{Y_{2j}}}) = X_{d2j}\\ b_{d2j} + Z_{d2j}\\ id_{d2j}",
+  "Y_{3j} = X_{3j}\\ b_{3j} + Z_{3j}\\ id_{3j} + e_{3j}"
 )
 
 eqs_num <- c(
@@ -187,7 +195,7 @@ ft
 
 ```
 
-where $j$ is the index of the experience levels. The model is fitted on the three experience levels denoted by $T_{j}$, where $j$ ranges from 1 to 3 (i.e. novice, intermediate, advanced). The $d$ subscript indicates that a term is from the dispersion part of the model. The $b$ terms are vectors of fixed effects with their design matrices $X$. The terms $en$, $av$, and $id$ are the vectors of random environment, random avatar, and random individual identity effects associated with their design matrices $M$, $N$, and $Z$. For all experience levels of the predator and prey speed, we assumed that the game environment and avatar random effects followed a Gaussian distribution with estimated standard deviation ($en \sim N(0,\ I\ \sigma_{en})$ and $av \sim N(0,\ I\ \sigma_{av})$). $I$ is the identity matrix, with $I\sigma$ indicating that the random effects are independently and identically distributed. All the individual identity random effects (mean and dispersion) across all response variables and experience levels are indexed in vector $u$. The $u$ vector follows a multivariate Gaussian distribution $u \sim MVN(0,\ \Sigma)$ where $\Sigma$ is a 15x15 (co)variance matrix of the individual identity standard deviations $\sigma_{id_i}$ across all experience levels and response variables.
+where $j$ is the index of the three experience levels (i.e. novice, intermediate, advanced). The $d$ subscript indicates that a term is from the dispersion part of the model. The $b$ terms are vectors of fixed effects with their design matrices $X$. The terms $en$, $av$, and $id$ are the vectors of random environment, random avatar, and random individual identity effects associated with their design matrices $M$, $N$, and $Z$. For all experience levels of $Y_{1}$ and $Y_{2}$, we assumed that the game environment and avatar random effects followed a Gaussian distribution with estimated standard deviation ($en_{12j} \sim N(0,\ I\ \sigma_{en_{12j}})$ and $av_{12j} \sim N(0,\ I\ \sigma_{av_{12j}})$). $I$ is the identity matrix, with $I\sigma$ indicating that the random effects are independently and identically distributed. In addition, we assumed that the residuals follow a Gaussian distribution with observation-specific standard deviations $e_{12j} \sim N(0,\ Diag\{\sigma_{e_{12j}}\})$. All the individual identity random effects (mean and dispersion) across all response variables and experience levels are indexed in vector $\alpha$. The $\alpha$ vector follows a multivariate Gaussian distribution $\alpha \sim MVN(0,\ \Sigma)$ where $\Sigma$ is a 15x15 (co)variance matrix of the individual identity standard deviations $\sigma_{id_{ij}}$ across all response variables and experience levels.
 
 We used weakly informative Gaussian priors for the prey rank ($N(0,\ 1)$: eqn. 1.1 to 2.2) and game duration ($N(0.5,\ 0.5)$: eqn. 3). Based on previous results showing that the mean predator speed revolves around 3 m/s [@FraserFranco.etal2022], we applied a weakly informative Gaussian prior on the intercept for predator and prey speed ($N(3,\ 0.5)$: eqn. 1.1 and 2.1). Similarly, we used a weakly informative Gaussian prior on the intercept for the dispersion part ($N(0,\ 1)$: eqn 1.2 and 2.2). For hunting success, we applied a positive Gaussian prior on the precision parameter ($N(2,\ 1)$: eqn. 3) and a negative Gaussian prior ($N(-4,\ 1)$: eqn 3) on the intercept because hunting success should be close to 0 at the lowest game duration. For every predicted variable, we applied a weakly informative half-Gaussian prior ($N(0,\ 1)$) on the random effects for the mean part and the dispersion part of the model. We used a regularizing $LKJ(2)$ prior on the correlation matrix.
 
