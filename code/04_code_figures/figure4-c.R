@@ -149,7 +149,7 @@ custom_theme <- theme(
       face = "plain", size = 11,
       color = "black"),
     axis.text.y = element_text(
-      face = "plain", size = 12,
+      face = "plain", size = 13,
       color = "black"),
     axis.title = element_text(size = 15, face = "plain", color = "black"),
     panel.grid = element_blank(),
