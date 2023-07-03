@@ -22,10 +22,6 @@ library(tidyr)
 
 ```
 
-Journal name : Ecology 
-
-Authors : Maxime Fraser Franco, Francesca Santostefano, Julien G. A. Martin, Clint D. Kelly, Pierre-Olivier Montiglio
-
 \newpage
 
 ```{r tableprep, include = FALSE}
