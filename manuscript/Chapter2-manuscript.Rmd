@@ -85,6 +85,8 @@ We define hunting tactics as the mean movement speed of the predator along a slo
 If experience reduces the costs of switching between low and high speeds as predators encounter varying groups of prey, we predict that individuals (and thus the population) should all converge towards flexible speeds. However, if individuals encounter similar groups of prey, then the efficiency of a specific tactic should increase with experience and everyone should instead specialize in similar speeds. In both scenarios, among individual variation in IIV (i.e. individual differences in specialization) would be low across experience, whereas the population variance would either increase (flexibility) or decrease (specialization). Alternatively, both processes may operate at the same time if behavioural interactions with the prey vary among predators, such that among individual variation in IIV would increase. In this case, we expect predators that experienced more predictable encounters with their prey (i.e. similar groups across matches) to specialize in similar speeds, while predators that experienced unpredictable encounters with their prey (i.e. heterogeneous groups across matches) should adopt flexible movement speeds. If we detect such prey-dependent fine-tuning, then all hunters along the flexible-specialist continuum should attain equal success probably because they learned from experience how to adjust their hunting style to their prey.
 
 
+
+
 # MATERIALS AND METHODS {.unnumbered}
 
 
