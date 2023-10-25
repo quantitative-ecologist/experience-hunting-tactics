@@ -1,0 +1,18 @@
+---
+title: "Experience shapes individual foraging specialization and success in a virtual predator-prey system"
+output: 
+  word_document:
+    reference_docx: Chapter2-styles.docx
+---
+
+Authors : Maxime Fraser Franco^1^, Francesca Santostefano^1,2^, Julien G. A. Martin^3^, Clint D. Kelly^1^, Pierre-Olivier Montiglio^1^ 
+
+Affiliations : ^1^ Département des Sciences Biologiques, Université du Québec à Montréal, Montréal, QC, Canada. ^2^ Centre for Ecology and Conservation, Penryn Campus, University of Exeter, Cornwall, United Kingdom. ^3^ Department of Biology, University of Ottawa, Ottawa, ON, Canada. 
+
+Corresponding author : fraser_franco.maxime@courrier.uqam.ca 
+
+Authorship statement : With MFF as the leader, all authors participated in conceiving the ideas behind the study. MFF prepared the data, conducted the analyses, and wrote the manuscript with input from all coauthors. All authors reviewed and accepted the final version of the manuscript.
+
+Open research statement : The data and code used to produce the results in this manuscript are freely available on GitHub https://github.com/quantitative-ecologist/experience-hunting-tactics
+
+Keywords: foraging behaviour, reciprocal behavioural plasticity, learning, antipredator behaviour, virtual ecology, Dead by Daylight
