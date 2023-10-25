@@ -5,7 +5,7 @@ title: |
     
 output: 
   word_document:
-    reference_docx: Chapter2-styles-appendix.docx
+    reference_docx: appendix-styles.docx
     fig_caption: yes
 csl: ecology.csl
 ---

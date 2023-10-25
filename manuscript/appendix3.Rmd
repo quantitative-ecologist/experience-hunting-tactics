@@ -1,11 +1,11 @@
 ---
 title: |
      Experience shapes individual foraging specialization and success in a virtual predator-prey system: \
-     Appendix 1
+     Appendix 3
     
 output: 
   word_document:
-    reference_docx: Chapter2-styles-appendix.docx
+    reference_docx: appendix-styles.docx
     fig_caption: yes
 csl: ecology.csl
 ---
@@ -22,7 +22,6 @@ library(dplyr)
 
 ```
 
-
 \newpage
 
 
@@ -38,7 +37,7 @@ path <- file.path(here::here("outputs"))
 
 # Import the model
 fit <- readRDS(
-  file.path(path, "01_outputs_models", "B1_DHMLM-no-outlier.rds")
+  file.path(path, "01_outputs_models", "B1_DHMLM.rds")
 )
 
 # ===========================================================================
@@ -299,7 +298,7 @@ tab1 <-
 
   # Table caption
   set_caption(
-    caption = "Table S1. Posterior medians and 95% HPD intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    caption = "Table S1. Posterior medians and 95% HPD intervals of the fixed effects estimated by the MDHGLM of predator speed, prey speed, and predator hunting success. The coefficients are from the model that includes the outlier.",
     style = "Table Caption"
   ) %>%
 
@@ -328,7 +327,7 @@ path <- file.path(here::here("outputs"))
 
 # Import the model
 fit <- readRDS(
-  file.path(path, "01_outputs_models", "B1_DHMLM-no-outlier.rds")
+  file.path(path, "01_outputs_models", "B1_DHMLM.rds")
 )
 
 # ===========================================================================
@@ -547,7 +546,7 @@ tab2 <-
 
   # Add table caption
   set_caption(
-    caption = "Table S2. Posterior medians and 95% HPD intervals of the random effect standard deviations estimated by the MDHGLM of predator speed, prey speed, and predator hunting success.",
+    caption = "Table S2. Posterior medians and 95% HPD intervals of the random effect standard deviations estimated by the MDHGLM of predator speed, prey speed, and predator hunting success. The coefficients are from the model that includes the outlier.",
     style = "Table Caption"
   ) %>%
 
@@ -565,23 +564,25 @@ tab2
 
 \newpage
 
-```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Among individual differences in the development of hunting expertise in the model where we do not account for prey speed and average rank. The predators' hunting success (i.e. the probability of capturing the four prey) is on the y axis, and the predators' cumulative experience (i.e. the number of matches played prior to each observation) is on the x axis. Each fitted curve represents an individual predator. The individual curves are separated by differences between their first and last predicted value, and displayed as such in three distinct panels. (A) Individuals with a >0.5 unit increase in hunting success with experience (B) Individuals with a <-0.5 unit decrease in hunting success with experience. (C) Individuals that maintained a stable hunting success (between -0.5 and 0.5 unit change in hunting success)"}
+```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Posterior median differences and HPD intervals comparing the parameter values predicted by the MDHGLM among all predator experience levels. The parameter being compared is on the y axis, and the difference in parameter values between two experience levels is displayed on the x axis. The pairwise comparisons between experience levels are displayed across the three panels A, B, and C. The results are from the model that includes the outlier."}
 
 knitr::include_graphics(
-  here::here(
-    "outputs", "04_outputs_figures",
-    "appendix1_figureS1.png"
-  )
+    here::here(
+        "outputs", "04_outputs_figures",
+        "appendix3_figureS1.png"
+    )
 )
 
 ```
 
-```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Correlations between the predators' mean hunting success (y axis) and intra individual variance in speed (x axis) to test for differences in success between individuals along the flexible-specialist hunter continuum. Each point represents the posterior median predicted value of an individual predator along with its 95% HPD interval. Individuals with lower IIV are specialist hunters, while individuals with higher IIV are flexible hunters. (A) Correlation when predators were novice (B) Correlation when predators were advanced"}
+\newpage
+
+```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Posterior median differences and HPD intervals comparing the trait correlations predicted by the MDHGLM between the advanced and novice levels. The difference is displayed on the y axis and the correlated parameters are displayed on the x axis. Positive values indicate that the correlation was greater when predators where advanced, while negative values indicate that the correlation was greater when predators where novices. The results are from the MDHGLM that includes the outlier."}
 
 knitr::include_graphics(
   here::here(
     "outputs", "04_outputs_figures",
-    "appendix1_figureS2.png"
+    "appendix3_figureS2.png"
   )
 )
 

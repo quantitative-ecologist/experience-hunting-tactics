@@ -2,7 +2,7 @@
 title: "Experience shapes individual foraging specialization and success in a virtual predator-prey system"
 output: 
   word_document:
-    reference_docx: Chapter2-styles.docx
+    reference_docx: manuscript-styles.docx
     fig_caption: yes
 bibliography: 
   - references1.bib
@@ -50,7 +50,6 @@ The capacity of predators to match their tactic to the behaviour of their prey i
 
 
 
-\newpage
 # INTRODUCTION {.unnumbered}
 
 Predator express a diverse array of hunting tactics to capture their prey. In natural populations, differences among individuals in tactics such as ambushing, fast movement speeds, or high attack frequencies are associated with differences in prey consumption [@toscanoTraitmediatedFunctionalResponses2014;@Patrick.Weimerskirch2014;@toscanoPersonalityForagingBehavior2016]. Prey usually respond to predation cues by reducing their activity, or use rapid or unpredictable movements to successfully escape when they are chased [@Walker.etal2005;@Kelley.Magurran2011;@Herbert-Read.etal2017]. This results in reciprocal interactions where predators fine-tune their tactics to their prey, suggesting that they learn and become efficient hunters through repeated encounters [@Estes.etal2003;@Woo.etal2008;@Phillips.etal2017]. These behavioural adjustments with experience can shape the outcome of predator-prey interactions, which may result in larger implications for community and ecosystem dynamics [@wooster2023].
