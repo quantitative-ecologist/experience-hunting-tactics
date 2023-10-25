@@ -1,13 +1,8 @@
-manuscript/dump_ideas.txt
 manuscript/submission_files
 manuscript/versions
 data/assemble_data.R
 data/FraserFranco-demande-partage-donnees.docx
-tests
-plan
-dump
-plots_presentations
-notes
+hidden
 outputs/01_outputs_models
 .Rproj.user
 .radian_profile
