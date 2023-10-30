@@ -260,13 +260,6 @@ A general assumption of predator-prey studies is that predators maximize success
 
 
 
-# ACKNOWLEDGEMENTS
-
-We warmly thank Behaviour Interactive Inc. for our collaboration which helps in advancing predator-prey science. We thank Julien Céré who managed the communication between us and Behaviour Interactive Inc., and Marine Dupuy who helped us prepare the data used in this study. We thank Alastair J. Wilson for insightful comments on the results. We also thank all members of Pierre-Olivier Montiglio's laboratory who provided useful feedback on earlier versions of this work. This work was supported by an NSERC postgraduate doctoral scholarship (569716-2022).
-
-
-
-
 # CONFLICT OF INTEREST STATEMENT
 
 The authors declare no conflict of interest.
