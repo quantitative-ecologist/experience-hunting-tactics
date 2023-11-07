@@ -45,6 +45,8 @@ dat[, date := as.POSIXct(sub(" .*", "", timestamp))]
 
 The capacity of predators to match their tactic to the behaviour of their prey is expected to drive the outcome of predator-prey interactions. To do so, predators need to practice their tactics extensively to develop the skills and expertise to successfully hunt their prey, which may result in individual foraging specialization. Yet, there are very limited empirical assessments showing links between experience, foraging specialization, and hunting success at the individual level, due to the numerous challenges of monitoring direct interactions in the wild. In this study, we used a virtual predator-prey system (the online game *Dead by Daylight*) to investigate if and how hunting experience shapes individual foraging specialization and success in predators across repeated interactions with their prey. Our results show that predators optimized prey consumption as they gained experience. Prey behaviour was an important mediator of this relationship, resulting in differences among predators in the development of expertise. Throughout experience, 68% of predators became either increasingly specialized by always moving at a fast pace, or flexible by switching between slow and fast speeds. The remaining 32% of predators used a specialized tactic of fast movement throughout the study period. The predators' strategies (i.e. flexible or specialized foraging) were partially matched to the preys' speed, suggesting that changes in hunting behaviour were driven by repeated encounters with prey. Ultimately, flexible foragers were only slightly less successful than specialist foragers, such that both achieved similar success overall. Our observations suggest that experience drives among individual differences in foraging tactics, which may act as a stabilizing mechanism promoting behavioural diversification in predator-prey systems.
 
+Keywords: foraging behaviour, reciprocal behavioural plasticity, learning, antipredator behaviour, virtual ecology, Dead by Daylight
+
 
 
 
@@ -394,13 +396,6 @@ Classical theory predicts that individual foraging specialization should maximiz
 ## Conclusions
 
 We found support of our prediction that prey were driving individual differences in expertise in a predator population. We also confirmed that experience and predator-prey encounters drove the patterns of individual foraging specialization. Our results suggest that predators learned with experience, as their success increased and their speed remained matched to the speed of their prey.  Even though individuals were not all equally successful, both specialized and flexible hunters achieved similar success. A potential caveat is that the more flexible hunters might have experimented with various tactics out of boredom, which could impede ecologically realistic interpretations of our data. However, the consistent association between this tactic and heterogeneous prey groups gives us confidence that it emerged from their interactions. One limitation of our study was that we couldn't monitor all the matches of the prey, which prevented us from assessing their responses to the predator through their experience. Hence, future studies should aim at monitoring reciprocal behavioural dynamics through time, which may reveal important insights on the mechanisms driving stable equilibria in predator-prey systems. Lastly, virtual systems are increasingly recognized as being useful to test hypotheses on ecological interactions [@beauchamp2020;@cere.etal2021;@fraserfranco.etal2022;@lymbery.etal2023]. We therefore hope that our study will inspire more collaborations between scientists and the videogame industry to tackle fundamental questions in ecology.
-
-
-
-
-# CONFLICT OF INTEREST STATEMENT
-
-The authors declare no conflict of interest.
 
 
 
