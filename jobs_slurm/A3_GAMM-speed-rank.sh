@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=48
 #SBATCH --mem=64000M
-#SBATCH --time=1-15:00
+#SBATCH --time=3-00:00
 #SBATCH --mail-user=fraser_franco.maxime@courrier.uqam.ca
 #SBATCH --mail-type=ALL
 
@@ -13,4 +13,4 @@ module load r-bundle-bioconductor/3.14
 module load r/4.1.2
 
 #export R_LIBS=~/.local/R/$EBVERSIONR/
-Rscript A3_GAMM.R
+Rscript A3_GAMM-speed-rank.R
