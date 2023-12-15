@@ -33,7 +33,7 @@ Here is a table showing the workflow employed to generate the model outputs usin
 
 | Generator              | Operating system | Programming language | Code               | Results                  |
 | ---------------------- | ---------------- | -------------------- | ------------------ | ------------------------ |
-| Compute Canada / Cedar | CentOS Linux 7   | R                    | [code](./code) folder | [outputs](./outputs) folder |
+| Digital Research Alliance of Canada / Cedar | CentOS Linux 7   | R                    | [code](./code) folder | [outputs](./outputs) folder |
 
 **Note** : The model outputs are archived on OSF (**provide link to repo**).
 
