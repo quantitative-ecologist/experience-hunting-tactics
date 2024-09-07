@@ -22,6 +22,7 @@ library(dplyr)
 
 ```
 
+
 \newpage
 
 
@@ -314,7 +315,9 @@ tab1
 
 ```
 
+
 \newpage
+
 
 ```{r tableS2, ft.align = "left"}
 
@@ -562,7 +565,9 @@ tab2
 
 ```
 
+
 \newpage
+
 
 ```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Posterior median differences and HPD intervals comparing the parameter values predicted by the MDHGLM among all predator experience levels. The parameter being compared is on the y axis, and the difference in parameter values between two experience levels is displayed on the x axis. The pairwise comparisons between experience levels are displayed across the three panels A, B, and C. The results are from the model that includes the outlier."}
 
@@ -575,7 +580,9 @@ knitr::include_graphics(
 
 ```
 
+
 \newpage
+
 
 ```{r figS2, out.width = "100%", fig.cap = "**Figure S2.** Posterior median differences and HPD intervals comparing the trait correlations predicted by the MDHGLM between the advanced and novice levels. The difference is displayed on the y axis and the correlated parameters are displayed on the x axis. Positive values indicate that the correlation was greater when predators where advanced, while negative values indicate that the correlation was greater when predators where novices. The results are from the MDHGLM that includes the outlier."}
 
