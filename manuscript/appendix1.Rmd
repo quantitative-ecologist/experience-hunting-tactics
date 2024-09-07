@@ -313,7 +313,9 @@ tab1
 
 ```
 
+
 \newpage
+
 
 ```{r tableS2, ft.align = "left"}
 
@@ -561,7 +563,9 @@ tab2
 
 ```
 
+
 \newpage
+
 
 ```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Correlations between the predators' mean hunting success (y axis) and intra individual variance in speed (x axis) to test for differences in success between individuals along the flexible-specialist hunter continuum. Each point represents the posterior median predicted value of an individual predator along with its 95% HPD interval. Individuals with lower IIV are specialist hunters, while individuals with higher IIV are flexible hunters. (A) Correlation when predators were novice (B) Correlation when predators were advanced"}
 
