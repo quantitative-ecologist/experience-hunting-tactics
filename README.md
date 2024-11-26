@@ -6,7 +6,7 @@
 
 Online repository to reproduce the results presented in :
 
-Fraser Franco, M., Santostefano, F., Martin, G. A., Julien, Kelly, Clint D., Montiglio, P.-O. (submitted to *The American Naturalist*) Experience shapes individual foraging specialization and success in a virtual predator-prey system.
+Fraser Franco, M., Santostefano, F., Martin, G. A., Julien, Kelly, Clint D., Montiglio, P.-O. (XXXX) Individual foraging specialization and success change across experience in a virtual predator-prey system.
 
 ## General coding workflow
 
