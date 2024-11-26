@@ -1,6 +1,6 @@
 ---
 title: |
-     Experience shapes individual foraging specialization and success in a virtual predator-prey system: \
+     Individual foraging specialization and success change across experience in a virtual predator-prey system: \
      Appendix 1
     
 output: 

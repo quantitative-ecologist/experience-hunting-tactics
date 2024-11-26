@@ -1,6 +1,6 @@
 # =======================================================================
 
-#                       Code to produce Figure S3                       #
+#                 Code to produce Appendix 2: Figure S3                 #
 
 # =======================================================================
 
@@ -349,7 +349,7 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
 # Export
 ggsave(
-  filename = file.path(path, "appendix3_figureS1.png"),
+  filename = file.path(path, "appendix2_figureS1.png"),
   plot = fig,
   width = 32, height = 14, # 32 14
   units = "cm",
