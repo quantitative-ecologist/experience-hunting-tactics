@@ -1,6 +1,6 @@
 # =======================================================================
 
-#               Code to produce Appendix 3 : Figure S2                  #
+#                       Code to produce Figure 3 C                      #
 
 # =======================================================================
 
@@ -18,7 +18,7 @@ library(ggplot2)
 library(data.table)
 
 path <- file.path(getwd(), "outputs", "01_outputs_models")
-fit <- readRDS(file.path(path, "B1_DHMLM.rds"))
+fit <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
 
 # =======================================================================
 # =======================================================================
@@ -105,6 +105,7 @@ tab <- unique(
 
 tab[, c(2:8) := round(tab[, c(2:8)], digits = 2)]
 
+
 names <- c(
   "mean speed\n IIV speed", "mean speed\n mean prey speed",
   "IIV speed\n mean prey speed", "mean speed\n IIV prey speed",
@@ -114,12 +115,14 @@ names <- c(
 )
 tab[, variable_adv := names]
 
+
 # One of the correlations' sign has reversed.
 # Need to update to have absolute difference
-tab[7, c(2:8) := tab[7, c(2:8)] - 0.18]
+tab[7, c(2:8) := tab[7, c(2:8)] - 0.10]
 
 # =======================================================================
 # =======================================================================
+
 
 
 
@@ -139,6 +142,22 @@ colors <- c(
 )
 
 scaleFUN <- function(x) sprintf("%.2f", x)
+
+custom_theme <- theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(
+      face = "plain", size = 11,
+      color = "black"),
+    axis.text.y = element_text(
+      face = "plain", size = 13,
+      color = "black"),
+    axis.title = element_text(size = 15, face = "plain", color = "black"),
+    panel.grid = element_blank(),
+    legend.position = "bottom",
+    legend.key = element_rect(fill = "transparent"),
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 13)
+  )
 
 fig <- ggplot(
   tab,
@@ -184,22 +203,7 @@ fig <- ggplot(
     values = colors
   ) +
   theme_bw() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.text.x = element_text(
-      face = "plain", size = 11,
-      color = "black"),
-    axis.text.y = element_text(
-      face = "plain", size = 12,
-      color = "black"),
-    axis.title = element_text(size = 15, face = "plain", color = "black"),
-    panel.grid = element_blank(),
-    legend.position = "bottom",
-    legend.key = element_rect(fill = "transparent"),
-    legend.title = element_text(size = 15),
-    legend.text = element_text(size = 13)
-  )
-
+  custom_theme
 
 
 
@@ -210,7 +214,7 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
 # Export
 ggsave(
-  filename = file.path(path, "appendix3_figureS2.png"),
+  filename = file.path(path, "figure3-c.png"),
   plot = fig,
   width = 35, height = 10, # 32 14
   #scale = 1.2,
