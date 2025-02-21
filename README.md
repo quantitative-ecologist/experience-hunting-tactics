@@ -6,7 +6,7 @@
 
 Online repository to reproduce the results presented in :
 
-Fraser Franco, M., Santostefano, F., Martin, G. A., Julien, Kelly, Clint D., Montiglio, P.-O. (submitted to *The American Naturalist*) Experience shapes individual foraging specialization and success in a virtual predator-prey system.
+Fraser Franco, M., Santostefano, F., Martin, G. A., Julien, Kelly, Clint D., Montiglio, P.-O. (XXXX) Individual foraging specialization and success change across experience in a virtual predator-prey system.
 
 ## General coding workflow
 
@@ -33,21 +33,13 @@ Here is a table showing the workflow employed to generate the model outputs usin
 | ---------------------- | ---------------- | -------------------- | ------------------ | ------------------------ |
 | Digital Research Alliance of Canada / Cedar | CentOS Linux 7   | R                    | [code](./code) folder | [outputs](./outputs) folder |
 
-**Note** : The model outputs are archived on [this OSF repository](https://osf.io/hdv38/).
-
 ## Reproducibility
 
-### Model outputs
+### Model fitting
 
-The model fitting cannot be reproduced on your personal computer as it requires important computing resources.
+The model fitting can be reproduced on your personal computer but requires important computing resources so fitting may take some time.
 
-Here are the necessary steps to reproduce our analyses :
-
-1. Download the model output files (`.rds`) on this [OSF repository](https://osf.io/hdv38/).
-
-2. Put the model outputs in a folder that you should name "01_outputs_models".
-
-3. Put this folder as a subfolder in the [outputs](./outputs) folder.
+Output files will be promptly uploaded on an OSF repository. Stay tuned...
 
 ### R packages versions
 

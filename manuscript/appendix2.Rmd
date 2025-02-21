@@ -1,7 +1,7 @@
 ---
 title: |
      Individual foraging specialization and success change across experience in a virtual predator-prey system: \
-     Appendix 3
+     Appendix 2
     
 output: 
   word_document:
