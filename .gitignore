@@ -5,3 +5,4 @@ outputs/01_outputs_models
 data/osf_folder
 .Rproj.user
 .radian_profile
+.vscode
