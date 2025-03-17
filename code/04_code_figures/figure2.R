@@ -1,8 +1,6 @@
 # =======================================================================
 
-
 #                       Code to produce Figure 2                        #
-#          Plot distribution of players from novice to advanced         #
 
 # =======================================================================
 
@@ -11,36 +9,18 @@
 
 
 # =======================================================================
-# 1. Prepare the script
+# 1. Load libraries and import model
 # =======================================================================
 
-
-# Load libraries and model ----------------------------------------------
-
-# Libraries
+# Load libraries
 library(brms)
-library(data.table)
 library(ggplot2)
-library(ggpubr)
-library(ggridges)
+library(viridis)
+library(data.table)
 
-# import model
 path <- file.path(getwd(), "outputs", "01_outputs_models")
 fit <- readRDS(file.path(path, "B1_DHMLM-no-outlier.rds"))
 
-
-
-# Load data ------------------------------------------------------------
-
-# Data
-data <- fread("./data/FraserFrancoetal2023-data.csv",
-              select = c("predator_id",
-                         "cumul_xp_pred",
-                         "pred_speed"))
-
-# Predator id as factor
-data[, predator_id := as.factor(predator_id)]
-
 # =======================================================================
 # =======================================================================
 
@@ -49,337 +29,330 @@ data[, predator_id := as.factor(predator_id)]
 
 
 # =======================================================================
-# 2. Extract posterior draws for predator speed
+# 2. Estimate differences between experience levels
 # =======================================================================
 
-# Extract values --------------------------------------------------------
+# a -> Compare novices vs intermediate
+# b -> Compare intermediate with advanced
+# c-> Compare novices with advanced
 
-# individual means
-draws <- data.table(
+
+# Extract the posterior samples -----------------------------------------
+
+dt <- data.table(
   as_draws_df(
     fit,
-    variable = c(
-      "r_predator_id__sigma_speed",
-      "r_predator_id__speed"
-    ),
-    regex = TRUE)
-)
-
-# Remove columns that are not needed
-draws <- draws[, .SD, .SDcols = ! names(draws) %like% "cor"]
-draws <- draws[, .SD, .SDcols = ! names(draws) %like% "interm"]
-draws <- draws[, .SD, .SDcols = ! names(draws) %like% "prey"]
-
-# =======================================================================
-# =======================================================================
-
-
-
-
-
-# =======================================================================
-# 3. Prepare the draws table
-# =======================================================================
-
-
-# Reshape ---------------------------------------------------------------
-
-# Long format
-draws <- melt(draws,
-              measure = patterns("^r_predator_id"),
-              variable.name = "predator_id")
-
-
-
-# Add columns -----------------------------------------------------------
-
-# Add experience level
-draws[, xp_level := ifelse(predator_id %like% "novice",
-                           "novice",
-                           "advanced")]
-
-# Add parameter
-draws[, parameter := ifelse(predator_id %like% "sigma", "sigma", "mean")]
-
-# Add predator ID
-draws[, predator_id := as.character(predator_id)]
-draws[, predator_id := gsub("[]_,a-zA-Z,[]", "", predator_id)]
-draws[, predator_id := gsub(" ", "", paste("pred", predator_id))]
-draws[, predator_id := as.factor(predator_id)]
-
-# Delete the mcmc columns
-draws[, c(1:3) := NULL]
-
-
-
-# Add intercept values to predator means --------------------------------
-
-# Extract intercepts
-int1 <- fixef(fit, pars = "speednovice_Intercept")[1]
-int2 <- fixef(fit, pars = "speedadvanced_Intercept")[1]
-int3 <- fixef(fit, pars = "sigma_speednovice_Intercept")[1]
-int4 <- fixef(fit, pars = "sigma_speedadvanced_Intercept")[1]
-
-# Add the intercept values
-draws[
-  xp_level == "novice" & parameter == "mean",
-  value_and_intercept := value + int1
-]
-
-draws[
-  xp_level == "novice" & parameter == "sigma",
-  value_and_intercept := value + int3
-]
-
-draws[
-  xp_level == "advanced" & parameter == "mean",
-  value_and_intercept := value + int2
-]
-
-draws[
-  xp_level == "advanced" & parameter == "sigma",
-  value_and_intercept := value + int4
-]
-
-
-
-# Calculate the averages ------------------------------------------------
-
-# Back transform sigma
-draws[parameter == "sigma", value_and_intercept := exp(value_and_intercept)]
-
-# Compute the mean
-table <- draws[
-  , .(mean_value = mean(value_and_intercept)),
-  by = .(predator_id, xp_level, parameter)
-]
-
-
-
-# Calculate the difference between novice and advanced ------------------
-
-# Wide format to calculate the difference
-table <- dcast(
-  table,
-  predator_id + parameter ~ xp_level,
-  value.var = "mean_value"
-)
-
-# Reorder
-setcolorder(table, c(1, 2, 4, 3))
-
-# Calculate difference in sigma values between novice and advanced
-table[, difference := novice - advanced, by = .(predator_id, parameter)]
-
-# Reorder the table to long format for further changes
-table <- melt(
-  table,
-  measure = c("novice", "advanced"),
-  variable.name = "xp_level"
+    variable = c("b_", "sd"),
+    regex = TRUE
   )
-
-# =======================================================================
-# =======================================================================
-
+)
+dt <- dt[, c(1:15, 54:68)]
 
 
 
+# Back-transform values -------------------------------------------------
 
-# =======================================================================
-# 4. Generate a distribution for every player based on model estimates
-# =======================================================================
+# Take the exponent of sigma parameters
+dt[
+  , c("b_sigma_speednovice_Intercept",
+      "b_sigma_speedinterm_Intercept",
+      "b_sigma_speedadvanced_Intercept",
+      "b_sigma_preyspeednovice_Intercept",
+      "b_sigma_preyspeedinterm_Intercept",
+      "b_sigma_preyspeedadvanced_Intercept",
+      "sd_predator_id__sigma_speednovice_Intercept",
+      "sd_predator_id__sigma_speedinterm_Intercept",
+      "sd_predator_id__sigma_speedadvanced_Intercept",
+      "sd_predator_id__sigma_preyspeednovice_Intercept",
+      "sd_predator_id__sigma_preyspeedinterm_Intercept",
+      "sd_predator_id__sigma_preyspeedadvanced_Intercept"
+  )
+  := lapply(.SD, function(x) {exp(x)}),
+  .SDcols = c(
+    "b_sigma_speednovice_Intercept",
+    "b_sigma_speedinterm_Intercept",
+    "b_sigma_speedadvanced_Intercept",
+    "b_sigma_preyspeednovice_Intercept",
+    "b_sigma_preyspeedinterm_Intercept",
+    "b_sigma_preyspeedadvanced_Intercept",
+    "sd_predator_id__sigma_speednovice_Intercept",
+    "sd_predator_id__sigma_speedinterm_Intercept",
+    "sd_predator_id__sigma_speedadvanced_Intercept",
+    "sd_predator_id__sigma_preyspeednovice_Intercept",
+    "sd_predator_id__sigma_preyspeedinterm_Intercept",
+    "sd_predator_id__sigma_preyspeedadvanced_Intercept"
+  )
+]
+
+# Back-transform hunting success
+dt[
+  , c("b_successnovice_Intercept",
+      "b_successinterm_Intercept",
+      "b_successadvanced_Intercept"
+  )
+  := lapply(.SD, function(x) {plogis(x)}),
+  .SDcols = c(
+    "b_successnovice_Intercept",
+    "b_successinterm_Intercept",
+    "b_successadvanced_Intercept"
+  )
+]
 
 
-# Prepare the data for sampling -----------------------------------------
-
-# Add sample size to sample normal distribution
-table[, sample_size := 500]
+# Prepare the data ------------------------------------------------------
 
 # Reshape the table
-table <- dcast(
-  table,
-   xp_level + predator_id + sample_size ~ parameter,
-  value.var = c("value", "difference")
+dt1 <- melt(dt, measure.vars = names(dt))
+
+# Add xp level
+dt1[variable %like% "novice", xp_level := "novice"]
+dt1[variable %like% "interm", xp_level := "intermediate"]
+dt1[variable %like% "advanced", xp_level := "advanced"]
+
+# Add variable
+dt1[
+  , parameter := ifelse(
+    variable %like% "sd" &
+      variable %like% "sigma",
+    "individual variation IIV",
+    "population variation"
+  )
+]
+
+dt1[
+  !(variable %like% "sigma") &
+    variable %like% "sd",
+  parameter := "individual variation mean"
+]
+
+dt1[
+  variable %like% "Intercept" &
+    !(variable %like% "sigma") &
+    !(variable %like% "sd"),
+  parameter := "population mean"
+]
+
+# Add trait
+dt1[variable %like% "speed", trait := "predator speed"]
+dt1[variable %like% "preyspeed", trait := "prey speed"]
+dt1[variable %like% "success", trait := "success"]
+
+dt1[, variable := NULL]
+
+
+
+# Individual tables by xp -----------------------------------------------
+
+nov <- dt1[xp_level == "novice", ]
+int <- dt1[xp_level == "intermediate", ]
+adv <- dt1[xp_level == "advanced", ]
+
+nov[, value_nov :=  value][, c("value", "xp_level") := NULL]
+int[, value_int :=  value][, c("value", "xp_level") := NULL]
+adv[, value_adv :=  value][, c("value", "xp_level") := NULL]
+
+tab1 <- cbind(nov, int[, 3])
+tab2 <- cbind(int, adv[, 3])
+tab3 <- cbind(nov, adv[, 3])
+
+# =======================================================================
+# =======================================================================
+
+
+
+
+
+# =======================================================================
+# 3. Plot the differences
+# =======================================================================
+
+
+# Combine estimated differences as 1 table ------------------------------
+
+# Calculate difference
+tab1[, diff := value_int - value_nov][
+  , test := "intermediate vs novice"
+]
+tab2[, diff := value_adv - value_int][
+  , test := "advanced vs intermediate"
+]
+tab3[, diff := value_adv - value_nov][
+  , test := "advanced vs novice"
+]
+
+# Combine
+vars <- c("parameter", "trait", "diff", "test")
+tab <- rbind(tab1[, ..vars], tab2[, ..vars], tab3[, ..vars])
+
+
+
+# Calculate posterior medians and intervals -----------------------------
+
+# HPD intervals
+lower_95 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.95)[1]
+}
+upper_95 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.95)[2]
+}
+
+lower_80 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.80)[1]
+}
+upper_80 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.80)[2]
+}
+
+lower_50 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.50)[1]
+}
+upper_50 <- function(x) {
+  coda::HPDinterval(as.mcmc(x), 0.50)[2]
+}
+
+# Median difference + CIs
+tab[
+  , ":=" (
+    median_diff = median(diff),
+    lower_95 = lower_95(diff),
+    lower_80 = lower_80(diff),
+    lower_50 = lower_50(diff),
+    upper_95 = upper_95(diff),
+    upper_80 = upper_80(diff),
+    upper_50 = upper_50(diff)
+    ),
+  by = .(trait, parameter, test)
+]
+
+# Now round the values to 3 digits
+tab[
+  , c(5:11) := lapply(.SD, function(x) round(x, digits = 3)),
+  .SDcols = c(5:11)
+]
+
+tab <- unique(tab[, c(1, 2, 4:11)])
+
+# Reorder factor levels
+tab[
+  , parameter := factor(
+      parameter,
+      levels = c(
+        "individual variation IIV",
+        "individual variation mean",
+        "population variation",
+        "population mean"
+      )
+  )
+]
+
+
+# Compute plots ---------------------------------------------------------
+
+# Color scale for CIs
+colors <- c(
+  "0.95" = "gray91",
+  "0.80" = "gray71",
+  "0.50" = "gray21"
+)
+
+# To bold the letter but not the text
+tab$test <- c(
+      rep("bold((A))~intermediate~vs~novice", 10),
+      rep("bold((B))~advanced~vs~intermediate", 10),
+      rep("bold((C))~advanced~vs~novice", 10)
+)
+
+# Setup my theme
+custom_theme <- theme(
+    axis.title.y = element_blank(),
+    axis.title = element_text(size = 15, face = "plain", color = "black"),
+    axis.text = element_text(face = "plain", size = 12, color = "black"),
+    strip.text = element_text(size = 13),
+    axis.text.y.left = element_text(
+      margin = margin(0, 5.5, 0, 5.5),
+      hjust = 0.5
+    ),
+    # to left align panel titles
+    #strip.text = element_text(size = 13, hjust = 0),
+    panel.grid = element_blank(),
+    legend.position = "top",
+    legend.key = element_rect(fill = "transparent"),
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 13)
   )
 
-# Compute normal distributions for each predator
-#normalize <- apply(
-#  table[,c(3:5)],
-#  1,
-#  function(x) rnorm(x[1], mean = x[2], sd = x[3])
-#)
 
-# Compute truncated normal distributions for each predator
-table[, trunc := 0]
-
-normalize <- apply(
-  table[, c(3:5, 8)],
-  1,
-  function(x) truncnorm::rtruncnorm(x[1], mean = x[2], sd = x[3], a = x[4])
-)
-
-
-
-# Extract the data for every xp level -----------------------------------
-
-# As data table
-normalize <- data.table(normalize)
-
-# Novice players
-novice <- normalize[, c(1:252)]
-novice <- melt(novice)
-novice[, xp_level := "novice"]
-colnames(novice) <- paste(colnames(novice), "nov", sep = "_")
-
-# Advanced players
-adv <- normalize[, c(253:504)]
-adv <- melt(adv)
-adv[, xp_level := "advanced"]
-colnames(adv) <- paste(colnames(adv), "adv", sep = "_")
-
-# Combine as one table
-dat <- cbind(novice, adv)
-
-# Add predator ID
-dat[, predator_id := rep(levels(table$predator_id), each = 500)]
-dat[, predator_id := as.factor(predator_id)]
-
-# Merge the tables
-dat <- merge(
-  dat,
-  table[, .(predator_id, difference_sigma)],
-  allow.cartesian = TRUE
-)
-
-# The merging produces duplicates so I remove them
-dat <- unique(dat)
-
-# =======================================================================
-# =======================================================================
-
-
-
-
-
-# =======================================================================
-# 5. Compute the plots
-# =======================================================================
-
-
-# Calculate percentages of players learning -----------------------------
-
-dat[difference_sigma <= -0.2, change := "large"]
-dat[difference_sigma >= 0.2, change := "large"]
-dat[difference_sigma %between% c(-0.05, 0.05), change := "stable"]
-dat[difference_sigma %between% c(-0.1999, -0.0499), change := "moderate"]
-dat[difference_sigma %between% c(0.05006892, 0.1999), change := "moderate"]
-
-
-
-# Check quantiles to subsample predators --------------------------------
-
-# Check quantiles
-lower_q <- as.vector(quantile(dat$difference_sigma)[2])
-upper_q <- as.vector(quantile(dat$difference_sigma)[4])
-
-# Extract players with the greatest differences in sigma
-# lower values = increase in flexibility
-# higher values = decrease in flexibility (i.e. specialization)
-ids <- factor(
-  unique(
-    dat[difference_sigma <= lower_q | difference_sigma >= upper_q, predator_id]
-  )
-)
-#set.seed(123)
-#id_sample <- factor(sample(ids, 50))
-dat_sample <- dat[predator_id %in% ids]
-
-# Inspect the distribution of sigma differences
-hist(
-  unique(dat_sample[, .(predator_id, difference_sigma)])$difference_sigma,
-  breaks = 20
-)
-
-# Check sample range
-unique(dat_sample[, .(predator_id, difference_sigma)][, range(difference_sigma)])
-length(unique(dat_sample[, predator_id])) / length(unique(dat[, predator_id]))
-# 50% se situent entre -1.62 et 0.66 avec les limites -0.05 et 0.07
-
-
-
-# Compute the plots -----------------------------------------------------
-
-# Highest increase in specialization
-plot1 <- ggplot() +
-  geom_density(
-    data = dat_sample[difference_sigma > 0.19 & predator_id != "pred600874"],
-    fill = "#999999",
-    color = "#999999",
-    alpha = 0.5,
-    aes(x = value_nov)) +
-  geom_density(
-    data = dat_sample[difference_sigma > 0.19 & predator_id != "pred600874"],
-    fill = "#00AFBB",
-    alpha = 0.5,
-    aes(x = value_adv)) +
-  ylab("Density\n") +
-  xlab("\nPredator speed (m/s)") +
-  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 9)) +
+# Plot
+fig <- ggplot(
+  tab,
+  aes(x = parameter, y = median_diff, shape = trait)
+) +
+  geom_hline(
+    yintercept = 0, linewidth = 1, colour = "red",
+    linetype = "dashed", alpha = 0.5
+  ) +
+  geom_linerange(
+    aes(ymin = lower_95,
+        ymax = upper_95,
+        color = "0.95"),
+    position = position_dodge(width = 0.8),
+    linewidth = 1,
+    key_glyph = "path"
+    ) +
+  geom_linerange(
+    aes(ymin = lower_80,
+        ymax = upper_80,
+        color = "0.80"),
+    position = position_dodge(width = 0.8),
+    linewidth = 1,
+    key_glyph = "path"
+    ) +
+  geom_linerange(
+    aes(ymin = lower_50,
+        ymax = upper_50,
+        color = "0.50"),
+    position = position_dodge(width = 0.8),
+    linewidth = 1,
+    key_glyph = "path"
+    ) +
+  geom_point(
+    fill = "black",
+    size = 2,
+    position = position_dodge(width = 0.8)
+  ) +
+  scale_shape_manual(
+    name = "Trait :",
+    values = c(22, 25, 21)
+  ) +
+  scale_color_manual(
+    name = "Density:",
+    values = colors
+  ) +
+  scale_x_discrete(
+    labels = function(x) {
+      stringr::str_wrap(x, width = 14)
+      }
+  ) +
+  ylab("\nPosterior median difference") +
+  coord_flip() +
   theme_bw() +
-  theme(#axis.text.y = element_blank(),
-        #axis.ticks.y = element_blank(),
-        panel.grid = element_blank()) +
-  facet_wrap(~ reorder(as.factor(predator_id), difference_sigma))
-
-# Highest increase in flexibility
-plot2 <- ggplot() +
-  geom_density(data = dat_sample[difference_sigma < -0.279],
-               fill = "#999999",
-               color = "#999999",
-               alpha = 0.5,
-               aes(x = value_nov)) +
-  geom_density(data = dat_sample[difference_sigma < -0.279],
-               fill = "#00AFBB",
-               alpha = 0.5,
-               aes(x = value_adv)) +
-  ylab("Density\n") +
-  xlab("\nPredator speed (m/s)") +
-  scale_x_continuous(breaks = seq(0, 8, 2), limits = c(0, 9)) +
-  scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.5)) +
-  theme_bw() +
-  theme(#axis.text.y = element_blank(),
-        #axis.ticks.y = element_blank(),
-        panel.grid = element_blank()) +
-  facet_wrap(~ reorder(as.factor(predator_id), -difference_sigma))
-
-# =======================================================================
-# =======================================================================
+  facet_wrap(~ test, labeller = label_parsed) +
+  custom_theme
+fig
 
 
+# Export figure ---------------------------------------------------------
 
-
-
-# =======================================================================
-# 6. Combine the plots as one figure
-# =======================================================================
-
-# Combine as one figure -------------------------------------------------
-
-# Combine plots
-figure <- ggarrange(plot1, plot2,
-                    labels = c("(A)", "(B)"),
-                    ncol = 2, nrow = 1)
-
-# Folder path
+# Folder
 path <- file.path(getwd(), "outputs", "04_outputs_figures")
 
-# Save figure
-ggexport(
-  figure,
+# Export
+ggsave(
   filename = file.path(path, "figure2.png"),
-  width = 2500,
-  height = 1200,
-  res = 300
+  plot = fig,
+  width = 32, height = 14, # 32 14
+  units = "cm",
+  dpi = 300, scale = 0.9
 )
 
 # =======================================================================
