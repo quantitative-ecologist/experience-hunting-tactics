@@ -174,6 +174,19 @@
       ],
       "Hash": "0459d4dd7a8c239be18469a30c23dd4b"
     },
+    "V8": {
+      "Package": "V8",
+      "Version": "6.0.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp",
+        "curl",
+        "jsonlite",
+        "utils"
+      ],
+      "Hash": "4999464deb1df7d0ba723c458307ce3d"
+    },
     "abind": {
       "Package": "abind",
       "Version": "1.4-5",
@@ -555,6 +568,16 @@
       ],
       "Hash": "6aa54f69598c32177e920eb3402e8293"
     },
+    "curl": {
+      "Package": "curl",
+      "Version": "5.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "e4f97056611e8e6b8b852d13b7400cf1"
+    },
     "data.table": {
       "Package": "data.table",
       "Version": "1.14.2",
@@ -685,6 +708,19 @@
         "rlang"
       ],
       "Hash": "bb0eec2fe32e88d9e2836c2f73ea2077"
+    },
+    "equatags": {
+      "Package": "equatags",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "katex",
+        "xml2",
+        "xslt"
+      ],
+      "Hash": "5d87c78e0c592a29d685f97abd0817a2"
     },
     "evaluate": {
       "Package": "evaluate",
@@ -1199,6 +1235,16 @@
       ],
       "Hash": "d07e729b27b372429d42d24d503613a0"
     },
+    "katex": {
+      "Package": "katex",
+      "Version": "1.5.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "V8"
+      ],
+      "Hash": "d7cf0de178413f81f06f333fefb140a6"
+    },
     "knitr": {
       "Package": "knitr",
       "Version": "1.38",
@@ -1377,17 +1423,6 @@
       ],
       "Hash": "36ad89a805c436c5316c22490079da67"
     },
-    "memoise": {
-      "Package": "memoise",
-      "Version": "2.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "cachem",
-        "rlang"
-      ],
-      "Hash": "e2817ccf4a065c5d9d7f2cfbe7c1d78c"
-    },
     "mgcv": {
       "Package": "mgcv",
       "Version": "1.8-40",
@@ -1512,26 +1547,6 @@
         "R"
       ],
       "Hash": "df58958f293b166e4ab885ebcad90e02"
-    },
-    "officedown": {
-      "Package": "officedown",
-      "Version": "0.4.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "grDevices",
-        "knitr",
-        "memoise",
-        "officer",
-        "rlang",
-        "rmarkdown",
-        "rvg",
-        "utils",
-        "uuid",
-        "xml2",
-        "yaml"
-      ],
-      "Hash": "dd2510d800c1b29eb12570b1cbc95964"
     },
     "officer": {
       "Package": "officer",
@@ -2529,6 +2544,17 @@
         "methods"
       ],
       "Hash": "40682ed6a969ea5abfd351eb67833adc"
+    },
+    "xslt": {
+      "Package": "xslt",
+      "Version": "1.5.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp",
+        "xml2"
+      ],
+      "Hash": "1366fba8d6ae5359c33085beb11777b9"
     },
     "xtable": {
       "Package": "xtable",
