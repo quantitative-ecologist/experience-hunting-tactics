@@ -15,6 +15,7 @@
 # Load libraries
 library(brms)
 library(ggplot2)
+library(ggpubr)
 library(viridis)
 library(data.table)
 
@@ -114,28 +115,28 @@ dt1[
   , parameter := ifelse(
     variable %like% "sd" &
       variable %like% "sigma",
-    "individual variation IIV",
-    "population variation"
+    "id_var",
+    "pop_var"
   )
 ]
 
 dt1[
   !(variable %like% "sigma") &
     variable %like% "sd",
-  parameter := "individual variation mean"
+  parameter := "id_mean"
 ]
 
 dt1[
   variable %like% "Intercept" &
     !(variable %like% "sigma") &
     !(variable %like% "sd"),
-  parameter := "population mean"
+  parameter := "pop_mean"
 ]
 
 # Add trait
-dt1[variable %like% "speed", trait := "predator speed"]
-dt1[variable %like% "preyspeed", trait := "prey speed"]
-dt1[variable %like% "success", trait := "success"]
+dt1[variable %like% "speed", trait := "Predator speed"]
+dt1[variable %like% "preyspeed", trait := "Prey speed"]
+dt1[variable %like% "success", trait := "Hunting success"]
 
 dt1[, variable := NULL]
 
@@ -171,13 +172,13 @@ tab3 <- cbind(nov, adv[, 3])
 
 # Calculate difference
 tab1[, diff := value_int - value_nov][
-  , test := "intermediate vs novice"
+  , test := "intermediate - novice"
 ]
 tab2[, diff := value_adv - value_int][
-  , test := "advanced vs intermediate"
+  , test := "advanced - intermediate"
 ]
 tab3[, diff := value_adv - value_nov][
-  , test := "advanced vs novice"
+  , test := "advanced - novice"
 ]
 
 # Combine
@@ -232,113 +233,118 @@ tab[
 
 tab <- unique(tab[, c(1, 2, 4:11)])
 
-# Reorder factor levels
-tab[
-  , parameter := factor(
-      parameter,
-      levels = c(
-        "individual variation IIV",
-        "individual variation mean",
-        "population variation",
-        "population mean"
-      )
-  )
-]
 
 
 # Compute plots ---------------------------------------------------------
 
 # Color scale for CIs
 colors <- c(
-  "0.95" = "gray91",
-  "0.80" = "gray71",
+  "0.95" = "gray85",
+  "0.80" = "gray61",
   "0.50" = "gray21"
 )
 
-# To bold the letter but not the text
-tab$test <- c(
-      rep("bold((A))~intermediate~vs~novice", 10),
-      rep("bold((B))~advanced~vs~intermediate", 10),
-      rep("bold((C))~advanced~vs~novice", 10)
-)
 
 # Setup my theme
 custom_theme <- theme(
-    axis.title.y = element_blank(),
-    axis.title = element_text(size = 15, face = "plain", color = "black"),
-    axis.text = element_text(face = "plain", size = 12, color = "black"),
-    strip.text = element_text(size = 13),
-    axis.text.y.left = element_text(
-      margin = margin(0, 5.5, 0, 5.5),
-      hjust = 0.5
-    ),
-    # to left align panel titles
-    #strip.text = element_text(size = 13, hjust = 0),
-    panel.grid = element_blank(),
-    legend.position = "top",
-    legend.key = element_rect(fill = "transparent"),
-    legend.title = element_text(size = 15),
-    legend.text = element_text(size = 13)
-  )
+  axis.title = element_text(size = 14),
+  axis.text = element_text(size = 11, color = "black"),
+  strip.text = element_text(size = 13, face = "bold"),
+  panel.grid = element_blank(),
+  panel.background = element_rect(fill = "white"),
+  panel.border = element_rect(color = "black", fill = NA),
+  legend.position = "top",
+  #legend.title = element_text(size = 13),
+  legend.title = element_blank(),
+  legend.text = element_text(size = 11)
+)
 
+# y-axis labels
+labels_speed <- c(
+  "id_var" = "Individual foraging specialisation",
+  "id_mean" = "Individual foraging tactic",
+  "pop_var" = "Population foraging specialisation",
+  "pop_mean" = "Population foraging tactic"
+)
+
+labels_preyspeed <- c(
+  "id_var" = "Variation in prey encountered (id.)",
+  "id_mean" = "Mean prey encountered (id.)",
+  "pop_var" = "Variation in prey encountered (pop.)",
+  "pop_mean" = "Mean prey encountered (pop.)"
+)
+
+labels_success <- c(
+  "id_mean" = "Mean individual success",
+  "pop_mean" = "Mean population success"
+)
+
+# Set dodge
+dodge <- position_dodge(width = 0.7)
 
 # Plot
-fig <- ggplot(
-  tab,
-  aes(x = parameter, y = median_diff, shape = trait)
-) +
-  geom_hline(
-    yintercept = 0, linewidth = 1, colour = "red",
-    linetype = "dashed", alpha = 0.5
-  ) +
-  geom_linerange(
-    aes(ymin = lower_95,
-        ymax = upper_95,
-        color = "0.95"),
-    position = position_dodge(width = 0.8),
-    linewidth = 1,
-    key_glyph = "path"
+tab[, test := factor(test, levels = c(
+  "intermediate - novice",
+  "advanced - intermediate",
+  "advanced - novice"
+))]
+
+make_trait_plot <- function(trait_name, label_map) {
+  dat <- tab[trait == trait_name]
+  dat[, parameter := factor(
+    parameter,
+    levels = names(label_map),
+    labels = label_map)
+  ]
+
+  ggplot(dat, aes(x = median_diff, y = parameter, shape = test)) +
+    geom_vline(
+      xintercept = 0,
+      linetype = "dashed",
+      color = "purple",
+      linewidth = 0.8
     ) +
-  geom_linerange(
-    aes(ymin = lower_80,
-        ymax = upper_80,
-        color = "0.80"),
-    position = position_dodge(width = 0.8),
-    linewidth = 1,
-    key_glyph = "path"
+    geom_errorbarh(
+      aes(xmin = lower_95, xmax = upper_95, color = "0.95"),
+      height = 0.25, position = dodge,
+      linewidth = 1, show.legend = FALSE
     ) +
-  geom_linerange(
-    aes(ymin = lower_50,
-        ymax = upper_50,
-        color = "0.50"),
-    position = position_dodge(width = 0.8),
-    linewidth = 1,
-    key_glyph = "path"
+    geom_errorbarh(
+      aes(xmin = lower_80, xmax = upper_80, color = "0.80"),
+      height = 0.25, position = dodge,
+      linewidth = 1, show.legend = FALSE
     ) +
-  geom_point(
-    fill = "black",
-    size = 2,
-    position = position_dodge(width = 0.8)
-  ) +
-  scale_shape_manual(
-    name = "Trait :",
-    values = c(22, 25, 21)
-  ) +
-  scale_color_manual(
-    name = "Density:",
-    values = colors
-  ) +
-  scale_x_discrete(
-    labels = function(x) {
-      stringr::str_wrap(x, width = 14)
-      }
-  ) +
-  ylab("\nPosterior median difference") +
-  coord_flip() +
-  theme_bw() +
-  facet_wrap(~ test, labeller = label_parsed) +
-  custom_theme
+    geom_errorbarh(
+      aes(xmin = lower_50, xmax = upper_50, color = "0.50"),
+      height = 0.25, position = dodge,
+      linewidth = 1, show.legend = FALSE
+    ) +
+    geom_point(size = 2.5, fill = "black", position = dodge) +
+    scale_color_manual(name = "Interval", values = colors) +
+    scale_shape_manual(name = "Comparison", values = c(21, 22, 24)) +
+    labs(
+      title = trait_name,
+      x = "\nPosterior median difference",
+      y = NULL
+    ) +
+    theme_bw() +
+    custom_theme
+}
+
+p1 <- make_trait_plot("Predator speed", labels_speed)
+p2 <- make_trait_plot("Prey speed", labels_preyspeed)
+p3 <- make_trait_plot("Hunting success", labels_success)
+
+fig <- ggarrange(
+  p1, p2, p3,
+  ncol = 3,
+  labels = c("A", "B", "C"),
+  common.legend = TRUE,
+  legend = "top",
+  widths = c(1, 1, 1)
+)
 fig
+
 
 
 # Export figure ---------------------------------------------------------
@@ -350,7 +356,7 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 ggsave(
   filename = file.path(path, "figure2.png"),
   plot = fig,
-  width = 32, height = 14, # 32 14
+  width = 52, height = 14, # 32 14
   units = "cm",
   dpi = 300, scale = 0.9
 )
