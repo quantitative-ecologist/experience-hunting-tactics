@@ -342,7 +342,7 @@ p3 <- make_plot("Hunting success", labels_success)
 fig <- ggarrange(
   p1, p2, p3,
   ncol = 3,
-  labels = c("A", "B", "C"),
+  labels = c("(A)", "(B)", "(C)"),
   common.legend = TRUE,
   legend = "top",
   widths = c(1, 1, 1)
