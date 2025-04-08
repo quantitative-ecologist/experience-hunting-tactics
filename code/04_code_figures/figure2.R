@@ -289,7 +289,7 @@ tab[, test := factor(test, levels = c(
   "advanced - novice"
 ))]
 
-make_trait_plot <- function(trait_name, label_map) {
+make_plot <- function(trait_name, label_map) {
   dat <- tab[trait == trait_name]
   dat[, parameter := factor(
     parameter,
@@ -322,6 +322,10 @@ make_trait_plot <- function(trait_name, label_map) {
     geom_point(size = 2.5, fill = "black", position = dodge) +
     scale_color_manual(name = "Interval", values = colors) +
     scale_shape_manual(name = "Comparison", values = c(21, 22, 24)) +
+    scale_x_continuous(
+      breaks = seq(-0.2, 0.2, 0.1),
+      limits = c(-0.245, 0.245)
+    ) +
     labs(
       title = trait_name,
       x = "\nPosterior median difference",
@@ -331,9 +335,9 @@ make_trait_plot <- function(trait_name, label_map) {
     custom_theme
 }
 
-p1 <- make_trait_plot("Predator speed", labels_speed)
-p2 <- make_trait_plot("Prey speed", labels_preyspeed)
-p3 <- make_trait_plot("Hunting success", labels_success)
+p1 <- make_plot("Predator speed", labels_speed)
+p2 <- make_plot("Prey speed", labels_preyspeed)
+p3 <- make_plot("Hunting success", labels_success)
 
 fig <- ggarrange(
   p1, p2, p3,
