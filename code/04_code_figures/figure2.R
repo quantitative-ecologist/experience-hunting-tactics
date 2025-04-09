@@ -261,22 +261,22 @@ custom_theme <- theme(
 
 # y-axis labels
 labels_speed <- c(
-  "id_var" = "Individual foraging specialisation",
-  "id_mean" = "Individual foraging tactic",
-  "pop_var" = "Population foraging specialisation",
-  "pop_mean" = "Population foraging tactic"
+  "id_var" = "Individual foraging\nspecialisation",
+  "id_mean" = "Individual\nforaging tactic",
+  "pop_var" = "Population foraging\nspecialisation",
+  "pop_mean" = "Population\nforaging tactic"
 )
 
 labels_preyspeed <- c(
-  "id_var" = "Variation in prey encountered (id.)",
-  "id_mean" = "Mean prey encountered (id.)",
-  "pop_var" = "Variation in prey encountered (pop.)",
-  "pop_mean" = "Mean prey encountered (pop.)"
+  "id_var" = "Variation in prey\nencountered (id.)",
+  "id_mean" = "Mean prey\nencountered (id.)",
+  "pop_var" = "Variation in prey\nencountered (pop.)",
+  "pop_mean" = "Mean prey\nencountered (pop.)"
 )
 
 labels_success <- c(
-  "id_mean" = "Mean individual success",
-  "pop_mean" = "Mean population success"
+  "id_mean" = "Mean individual\nsuccess",
+  "pop_mean" = "Mean population\nsuccess"
 )
 
 # Set dodge
