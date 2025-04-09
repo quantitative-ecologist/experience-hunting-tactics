@@ -360,7 +360,7 @@ path <- file.path(getwd(), "outputs", "04_outputs_figures")
 ggsave(
   filename = file.path(path, "figure2.png"),
   plot = fig,
-  width = 52, height = 14, # 32 14
+  width = 38, height = 14, # 32 14
   units = "cm",
   dpi = 300, scale = 0.9
 )
