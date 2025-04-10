@@ -569,7 +569,7 @@ tab2
 \newpage
 
 
-```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Posterior median differences and HPD intervals comparing the parameter values predicted by the MDHGLM among all predator experience levels. The parameter being compared is on the y axis, and the difference in parameter values between two experience levels is displayed on the x axis. The pairwise comparisons between experience levels are displayed across the three panels A, B, and C. The results are from the model that includes the outlier."}
+```{r figS1, out.width = "100%", fig.cap = "**Figure S1.** Median posterior differences and HPD intervals comparing predator foraging behaviour, prey behaviour, and predator hunting success at the population and individual level across experience stages. The parameters being compared are on the y axis, and the differences in parameter values between two experience stages are on the x axis. The pairwise comparisons between experience stages are displayed as different point shapes on each panel. A) For the predator speed, we compare the foraging tactic (mean) and specialisation (variance) at the population level and at the individual level between each experience stage. B) For the prey speed, we compare the mean and the variance in speed of prey encountered at the population and individual level between each experience stage. C) For the predator hunting success, we compare the mean success at the population and individual level between each experience stage. The results are from the model that includes the outlier."}
 
 knitr::include_graphics(
     here::here(

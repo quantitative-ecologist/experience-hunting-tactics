@@ -166,7 +166,7 @@ We fitted the model in R (version 4.1.2) using Hamiltonian Monte Carlo (HMC) sam
 
 We parametrized the MDHGLM to run 2500 iterations on four chains with a thinning interval set at eight iterations, with the first 500 used as warm up iterations (yielding 1000 posterior samples for each parameter). We assessed the convergence of the chains using trace plots, R-hat diagnostics with a threshold of <1.01, and effective sample sizes (ESS) with a threshold of >100 [@vehtari.etal2021]. We also performed posterior predictive checks which showed an adequate fit of the models (for details, see https://github.com/quantitative-ecologist/experience-hunting-tactics). We report all the posterior parameter estimates using the median of the posterior distribution with the highest posterior density (HPD) intervals at 50%, 80%, and 95%.
 
-After inspection of the results, we found that key parameter values for our hypotheses were in the direction of our predictions, but they were largely driven by the very slow speed of one predator. Removing this individual reduced the estimates by a significant margin. To remain conservative, we thus present the results of the model without this individual in the main text, and provide the results of the model including it in the Appendix 2.
+After inspection of the results, we found that key parameter values for our hypotheses were driven by the very slow speed of one predator. Although the results are mostly similar, removing this individual reduced the variance estimates at the individual level. To remain conservative, we thus present the results of the model without this individual in the main text, and provide the results of the model including it in the Appendix 2.
 
 
 
